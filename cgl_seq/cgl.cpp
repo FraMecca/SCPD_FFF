@@ -123,3 +123,9 @@ void Cgl<T>::copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
     }
 }
 
+int main() {
+    Cgl<5*5> c(20,0.1);
+    c.prepareGrid();
+    c.printGrid();
+    c.startCgl();
+}
