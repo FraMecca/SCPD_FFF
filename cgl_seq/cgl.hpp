@@ -43,12 +43,12 @@ class Cgl {
         /**
          * Returns the number of cellc in the grid
          */
-        size_t getGridSize();
+        inline size_t getGridSize();
 
         /**
          * Return the lenght of the side
          */
-        size_t getGridSide();
+        inline size_t getGridSide();
 
     private:
 
@@ -60,7 +60,7 @@ class Cgl {
         /**
          * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
          */
-        int getPos(int x, int y);
+        inline int getPos(int x, int y);
 
         /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.

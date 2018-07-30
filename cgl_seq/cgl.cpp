@@ -30,6 +30,7 @@ void Cgl<T>::startCgl() {
     for (int i=0;i<max_iteration;++i) {
         for (int k=0;k<new_grid.size();++k)
             new_grid.reset(k);
+
         for (int x=0;x<dim;++x)
             for (int y=0;y<dim;++y)
                 updateCell(new_grid,x,y);
@@ -41,16 +42,21 @@ void Cgl<T>::startCgl() {
 
 template <size_t T>
 void Cgl<T>::printGrid() {
-    cout << grid << endl << endl;
+    for (int j=0;j<dim;++j) {
+        for (int i=0;i<dim;++i)
+            cout << grid[i + j*dim];
+        cout << endl;
+    }
+    cout << endl;
 }
 
 template <size_t T>
-size_t Cgl<T>::getGridSize()  {
+inline size_t Cgl<T>::getGridSize()  {
     return grid.size();
 }
 
 template <size_t T>
-size_t Cgl<T>::getGridSide() {
+inline size_t Cgl<T>::getGridSide() {
     return dim;
 }
 
@@ -71,7 +77,7 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
 }
 
 template <size_t T>
-int Cgl<T>::getPos(int x, int y) {
+inline int Cgl<T>::getPos(int x, int y) {
     return (x <0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
 }
 
@@ -124,7 +130,7 @@ void Cgl<T>::copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
 }
 
 int main() {
-    Cgl<5*5> c(20,0.1);
+    Cgl<5> c(10,0.5);
     c.prepareGrid();
     c.printGrid();
     c.startCgl();
