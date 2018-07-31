@@ -9,7 +9,6 @@ template<size_t T>
 class Cgl {
 
     private:
-        std::bitset<T*T> grid;             /**<The grid*/
         size_t dim;                   /**<Lenght of the grid side*/
         unsigned int max_iteration;   /**<Number of evolution step*/
         float density;                /**<Starging density of the population in the grid*/
@@ -17,6 +16,7 @@ class Cgl {
 
 
     public:
+        std::bitset<T*T> grid;             /**<The grid*/
 
         /**
          * Default constructor for the class.
@@ -75,4 +75,12 @@ class Cgl {
          */
         void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
 
+
+        /**
+         * print the bitset
+         */
+        friend std::ostream& operator << (std::ostream& os, const Cgl& m){
+          os << m.grid;
+          return os ;
+        }
 };
