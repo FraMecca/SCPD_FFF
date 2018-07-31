@@ -1,4 +1,5 @@
 #include <iostream>
+#include <assert.h>
 #include <bitset>
 #include <cstdlib>
 #include "cgl.hpp"
@@ -62,7 +63,8 @@ inline size_t Cgl<T>::getGridSide() {
 
 template <size_t T>
 void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
-    int* neigh = getNeighbourhood(x,y);
+    int neigh[MAX_NEIGH];
+    getNeighbourhood(x,y,(int*)neigh);
 
     int alive = 0;
     for (int i=0;i<MAX_NEIGH;++i) {
@@ -73,7 +75,6 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
     }
 
     applyRuleOfLife(new_grid,x,y,alive);
-    free(neigh);
 }
 
 template <size_t T>
@@ -82,8 +83,7 @@ inline int Cgl<T>::getPos(int x, int y) {
 }
 
 template <size_t T>
-int* Cgl<T>::getNeighbourhood(int x, int y) {
-    int* neigh = (int*) malloc(MAX_NEIGH*sizeof(int));
+int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
 
     neigh[0] = getPos(x-1,y-1);
     neigh[1] = getPos(x-1,y);
@@ -93,8 +93,6 @@ int* Cgl<T>::getNeighbourhood(int x, int y) {
     neigh[5] = getPos(x+1,y);
     neigh[6] = getPos(x+1,y-1);
     neigh[7] = getPos(x,y-1);
-
-    return neigh;
 }
 
         /*int countNeighbour(int x, int y) {
@@ -129,8 +127,11 @@ void Cgl<T>::copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
     }
 }
 
-int main() {
-    Cgl<5> c(10,0.5);
+int main(int argc, char* argv[]) {
+    assert(argc == 3); // dim, max-iter, density
+    unsigned int maxiter = (unsigned int)atoi(argv[1]);
+    float density = (float)atof(argv[2]);
+    Cgl<100> c(maxiter, density);
     c.prepareGrid();
     c.printGrid();
     c.startCgl();

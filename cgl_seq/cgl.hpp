@@ -1,6 +1,8 @@
 #pragma once
 #include <bitset>
 
+#define MAX_NEIGH 8      /**<Max number of neighbour for each cell*/
+
 /**
  * This class implements the Conways's Game of Life using a square bitarray as grid.
  *
@@ -12,7 +14,6 @@ class Cgl {
         size_t dim;                   /**<Lenght of the grid side*/
         unsigned int max_iteration;   /**<Number of evolution step*/
         float density;                /**<Starging density of the population in the grid*/
-        const int MAX_NEIGH = 8;      /**<Max number of neighbour for each cell*/
 
 
     public:
@@ -63,7 +64,7 @@ class Cgl {
         /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.
          */
-        int* getNeighbourhood(int x, int y);
+        int* getNeighbourhood(int x, int y, int* neigh);
 
         /**
          * Apply the rule of life to the given cell.
