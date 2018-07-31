@@ -15,7 +15,6 @@ class Cgl {
         unsigned int max_iteration;   /**<Number of evolution step*/
         float density;                /**<Starging density of the population in the grid*/
 
-
     public:
         std::bitset<T*T> grid;             /**<The grid*/
 
@@ -23,6 +22,11 @@ class Cgl {
          * Default constructor for the class.
          */
         Cgl(unsigned int max_iter = 10, float dens = 0.5);
+
+        /**
+         * Prepares the grid with the given values.
+         */
+        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10, float dens = 0.5);
 
         /**
          * Initializes the grid according to the given density using a random number generator.
@@ -45,9 +49,19 @@ class Cgl {
         inline size_t getGridSize();
 
         /**
-         * Return the lenght of the side
+         * Returns the lenght of the side
          */
         inline size_t getGridSide();
+
+        /**
+         * Returns the grid
+         */
+        inline std::bitset<T*T>& getGrid();
+
+        /**
+         * Copy the values in grid1 to grid2.
+         */
+        static void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
 
     private:
 
@@ -71,16 +85,11 @@ class Cgl {
          */
         void applyRuleOfLife(std::bitset<T*T>& new_grid, int x, int y, int alive);
 
-        /**
-         * Copy the values in grid1 to grid2.
-         */
-        void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
-
 
         /**
          * print the bitset
          */
-        friend std::ostream& operator << (std::ostream& os, const Cgl& m){
+        friend std::ostream& operator<< (std::ostream& os, const Cgl& m){
           os << m.grid;
           return os ;
         }

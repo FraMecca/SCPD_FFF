@@ -14,6 +14,17 @@ Cgl<T>::Cgl(unsigned int max_iter, float dens) {
 }
 
 template <size_t T>
+Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter, float dens) {
+    max_iteration = max_iter;
+    density = dens;
+    dim = T;
+
+    for (int i=0;i<init.size();++i)
+        if (init.test(i))
+            grid.set(i);
+}
+
+template <size_t T>
 void Cgl<T>::prepareGrid() {
     srand(time(NULL));
     for (int i=0;i<grid.size();++i) {
@@ -29,9 +40,6 @@ void Cgl<T>::startCgl() {
     bitset<T*T> new_grid;
 
     for (int i=0;i<max_iteration;++i) {
-        for (int k=0;k<new_grid.size();++k)
-            new_grid.reset(k);
-
         for (int x=0;x<dim;++x)
             for (int y=0;y<dim;++y)
                 updateCell(new_grid,x,y);
@@ -45,7 +53,7 @@ template <size_t T>
 void Cgl<T>::printGrid() {
     for (int j=0;j<dim;++j) {
         for (int i=0;i<dim;++i)
-            cout << grid[i + j*dim];
+            cout << grid[dim-i + j*dim];
         cout << endl;
     }
     cout << endl;
@@ -95,14 +103,14 @@ int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
     neigh[7] = getPos(x,y-1);
 }
 
-        /*int countNeighbour(int x, int y) {
-            if ((x == 0 || x = dim-1) && (y == 0 || y == dim-1))
-                return THREE_NEIGH;
-            if ((x == 0 && y != 0 && y != dim-1) || (y ==0 && x != 0 && x != dim-1))
-                return FIVE_NEIGH;
-            else
-                return EIGHT_NEIGH;
-        }*/
+/*int countNeighbour(int x, int y) {
+    if ((x == 0 || x = dim-1) && (y == 0 || y == dim-1))
+        return THREE_NEIGH;
+    if ((x == 0 && y != 0 && y != dim-1) || (y ==0 && x != 0 && x != dim-1))
+        return FIVE_NEIGH;
+    else
+        return EIGHT_NEIGH;
+}*/
 
 template <size_t T>
 void Cgl<T>::applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
@@ -127,12 +135,18 @@ void Cgl<T>::copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
     }
 }
 
-int main(int argc, char* argv[]) {
+template <size_t T>
+inline bitset<T*T>& Cgl<T>::getGrid() {
+    return grid;
+}
+
+
+/*int main(int argc, char* argv[]) {
     assert(argc == 3); // dim, max-iter, density
     unsigned int maxiter = (unsigned int)atoi(argv[1]);
     float density = (float)atof(argv[2]);
-    Cgl<100> c(maxiter, density);
+    Cgl<1000> c(maxiter, density);
     c.prepareGrid();
     c.printGrid();
     c.startCgl();
-}
+}*/
