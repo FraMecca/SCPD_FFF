@@ -1,6 +1,4 @@
-#ifndef CGL
-#define CGL
-
+#pragma once
 #include <bitset>
 
 /**
@@ -78,5 +76,3 @@ class Cgl {
         void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
 
 };
-
-#endif
