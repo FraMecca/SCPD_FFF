@@ -2,6 +2,8 @@
 #include <assert.h>
 #include <bitset>
 #include <cstdlib>
+#include <random>
+#include <vector>
 #include "cgl.hpp"
 
 using namespace std;
@@ -18,21 +20,19 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter, float dens) {
     max_iteration = max_iter;
     density = dens;
     dim = T;
-
-    for (int i=0;i<init.size();++i)
-        if (init.test(i))
-            grid.set(i);
+    grid = init;
 }
 
-template <size_t T>
-void Cgl<T>::prepareGrid() {
-    srand(time(NULL));
-    for (int i=0;i<grid.size();++i) {
-        if (static_cast <float>(rand()) / static_cast <float> (RAND_MAX) <= density)
-            grid.set(i);
-        else
-            grid.reset(i);
+template <size_t size>
+void Cgl<size>::prepareGrid() {
+    typename std::bitset<size> bits;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::bernoulli_distribution d(0.5);
+    for(int n = 0; n < size; ++n){
+      bits[n] = d(gen);
     }
+    grid = bits;
 }
 
 template <size_t T>
@@ -85,10 +85,13 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
     applyRuleOfLife(new_grid,x,y,alive);
 }
 
+/*
 template <size_t T>
 inline int Cgl<T>::getPos(int x, int y) {
     return (x <0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
 }
+*/
+#define getPos(x,y) (x <0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
 
 template <size_t T>
 int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
@@ -127,26 +130,10 @@ void Cgl<T>::applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
 
 template <size_t T>
 void Cgl<T>::copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
-    for (int i=0;i<grid1.size();++i) {
-        if (grid1.test(i))
-            grid2.set(i);
-        else
-            grid2.reset(i);
-    }
+  grid2 = grid1;
 }
 
 template <size_t T>
 inline bitset<T*T>& Cgl<T>::getGrid() {
     return grid;
 }
-
-
-/*int main(int argc, char* argv[]) {
-    assert(argc == 3); // dim, max-iter, density
-    unsigned int maxiter = (unsigned int)atoi(argv[1]);
-    float density = (float)atof(argv[2]);
-    Cgl<1000> c(maxiter, density);
-    c.prepareGrid();
-    c.printGrid();
-    c.startCgl();
-}*/

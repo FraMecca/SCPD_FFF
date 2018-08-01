@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include "cgl.hpp"
 #include "cgl.cpp"
-#include "catch.hpp"
+#include "../include/catch.hpp"
 
 /**
  * Test build for public methods of Cgl class
@@ -111,7 +111,7 @@ TEST_CASE("Iterations are computed correctly") {
     }
 }
 
-TEST_CASE("The grid is copied correctly") {
+TEST_CASE("copy_grid function") {
     bitset<16> init;
     bitset<16> init2;
     init.set(1);
@@ -138,5 +138,3 @@ TEST_CASE("The grid is copied correctly") {
     REQUIRE(init2.test(14) == 0);
     REQUIRE(init2.test(15) == 1);
 }
-
-
