@@ -73,7 +73,7 @@ class Cgl {
         /**
          * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
          */
-        inline int getPos(int x, int y);
+        //inline int getPos(int x, int y);
 
         /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.

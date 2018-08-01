@@ -23,13 +23,13 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter, float dens) {
     grid = init;
 }
 
-template <size_t size>
-void Cgl<size>::prepareGrid() {
-    typename std::bitset<size> bits;
+template <size_t T>
+void Cgl<T>::prepareGrid() {
+    std::bitset<T*T> bits;
     std::random_device rd;
     std::mt19937 gen(rd());
     std::bernoulli_distribution d(0.5);
-    for(int n = 0; n < size; ++n){
+    for(int n = 0; n < bits.size(); ++n){
       bits[n] = d(gen);
     }
     grid = bits;
@@ -85,13 +85,13 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
     applyRuleOfLife(new_grid,x,y,alive);
 }
 
-/*
+
 template <size_t T>
 inline int Cgl<T>::getPos(int x, int y) {
-    return (x <0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
+    return (x < 0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
 }
-*/
-#define getPos(x,y) (x <0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
+
+//#define getPos(x,y) (x < 0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
 
 template <size_t T>
 int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
@@ -137,3 +137,14 @@ template <size_t T>
 inline bitset<T*T>& Cgl<T>::getGrid() {
     return grid;
 }
+
+/*int main(int argc, char* argv[]) {
+    assert(argc == 3); // dim, max-iter, density
+    unsigned int maxiter = (unsigned int)atoi(argv[1]);
+    float density = (float)atof(argv[2]);
+    Cgl<10> c(maxiter, density);
+    c.prepareGrid();
+    c.printGrid();
+    c.startCgl();
+}*/
+

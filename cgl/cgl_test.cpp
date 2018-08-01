@@ -45,6 +45,13 @@ TEST_CASE("The grid is initialized correctly") {
         REQUIRE(c.grid.test(14) == 1);
         REQUIRE(c.grid.test(15) == 1);
     }
+
+    SECTION("The grid is set correctly with the random distribution") {
+        Cgl<4> c(2,0.5);
+        c.prepareGrid();
+        REQUIRE(c.getGridSize() == 16);
+        REQUIRE(c.getGridSide() == 4);
+    }
 }
 
 TEST_CASE("Iterations are computed correctly") {
