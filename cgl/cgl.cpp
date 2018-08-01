@@ -71,7 +71,7 @@ inline size_t Cgl<T>::getGridSide() {
 
 template <size_t T>
 void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
-    int neigh[MAX_NEIGH];
+    int neigh[MAX_NEIGH] = {0};
     getNeighbourhood(x,y,(int*)neigh);
 
     int alive = 0;
@@ -86,24 +86,29 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
 }
 
 
-template <size_t T>
-inline int Cgl<T>::getPos(int x, int y) {
-    return (x < 0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
-}
+//#define getPos(x,y,z) x < 0 || y < 0 || x >= dim || y >= dim ? -1 : (y + x*dim);
 
-//#define getPos(x,y) (x < 0 || y < 0 || x >= dim || y >= dim) ? -1 : y + x*dim;
+
+inline int getPos(int x, int y, int dim){
+  if(x < 0 || y < 0 || x >= dim || y >= dim) return -1 ;
+    else return y + x * dim;
+}
 
 template <size_t T>
 int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
-
-    neigh[0] = getPos(x-1,y-1);
-    neigh[1] = getPos(x-1,y);
-    neigh[2] = getPos(x-1,y+1);
-    neigh[3] = getPos(x,y+1);
-    neigh[4] = getPos(x+1,y+1);
-    neigh[5] = getPos(x+1,y);
-    neigh[6] = getPos(x+1,y-1);
-    neigh[7] = getPos(x,y-1);
+  neigh[0] = getPos(x-1,y-1, dim);
+  neigh[1] = getPos(x-1,y, dim);
+  neigh[2] = getPos(x-1,y+1, dim);
+  neigh[3] = getPos(x,y+1, dim);
+  neigh[4] = getPos(x+1,y+1, dim);
+  neigh[5] = getPos(x+1,y, dim);
+  neigh[6] = getPos(x+1,y-1, dim);
+  neigh[7] = getPos(x,y-1, dim);
+  for(size_t i = 0; i < MAX_NEIGH; ++i){
+    //    std::cout << neigh[i];
+    assert(neigh[i]>=-1);
+  }
+  //cout<< endl;
 }
 
 /*int countNeighbour(int x, int y) {
@@ -117,7 +122,7 @@ int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
 
 template <size_t T>
 void Cgl<T>::applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
-    int pos = getPos(x,y);
+  int pos = getPos(x,y, dim);
     if (grid.test(pos) && (alive < 2 || alive > 3))
         new_grid.reset(pos);
     else if (grid.test(pos))
