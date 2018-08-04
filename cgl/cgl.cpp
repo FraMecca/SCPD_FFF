@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <random>
 #include <vector>
+#include <functional>
 #include "cgl.hpp"
 
 using namespace std;
@@ -21,6 +22,7 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter, float dens) {
     density = dens;
     dim = T;
     grid = init;
+    fitness = std::vector<float>();
 }
 
 template <size_t T>
@@ -87,8 +89,6 @@ void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
 
 
 //#define getPos(x,y,z) x < 0 || y < 0 || x >= dim || y >= dim ? -1 : (y + x*dim);
-
-
 inline int getPos(int x, int y, int dim){
   if(x < 0 || y < 0 || x >= dim || y >= dim) return -1 ;
     else return y + x * dim;
@@ -143,13 +143,27 @@ inline bitset<T*T>& Cgl<T>::getGrid() {
     return grid;
 }
 
-/*int main(int argc, char* argv[]) {
-    assert(argc == 3); // dim, max-iter, density
-    unsigned int maxiter = (unsigned int)atoi(argv[1]);
-    float density = (float)atof(argv[2]);
-    Cgl<10> c(maxiter, density);
-    c.prepareGrid();
-    c.printGrid();
-    c.startCgl();
-}*/
-
+template <size_t T>
+void Cgl<T>::densityScore(int side) {
+  assert(side > 0);
+  assert(!fitness.size() != 0);
+  fitness.resize(dim*dim/side);
+  /* print array
+     for(i: fitness) cout << i << ' ';
+     cout <<endl;
+  */
+  for(size_t i = 0; i < dim * dim / side; ++i){
+      float density = 0.0;
+      for(size_t j = 0; j < side; ++j){
+        auto pos = i * side + j;
+        cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density: " << density << endl; 
+        density = grid.test(pos);
+      }
+      density = density / side;
+    fitness[i] = density;
+  }
+  /* print array
+    for(i: fitness) cout << i << ' ';
+    cout <<endl;
+  */
+}

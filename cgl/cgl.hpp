@@ -1,5 +1,6 @@
 #pragma once
 #include <bitset>
+#include <vector>
 
 #define MAX_NEIGH 8      /**<Max number of neighbour for each cell*/
 
@@ -17,6 +18,7 @@ class Cgl {
 
     public:
         std::bitset<T*T> grid;             /**<The grid*/
+        std::vector<float> fitness;        /** A vector of fitness scores for each area **/
 
         /**
          * Default constructor for the class.
@@ -62,6 +64,10 @@ class Cgl {
          * Copy the values in grid1 to grid2.
          */
         static void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
+
+
+
+  void densityScore(int side);
 
     private:
 

@@ -145,3 +145,33 @@ TEST_CASE("copy_grid function") {
     REQUIRE(init2.test(14) == 0);
     REQUIRE(init2.test(15) == 1);
 }
+
+TEST_CASE("Density function") {
+
+  SECTION("Compute density for side = 1") {
+    bitset<4> init;
+    init.set(0);
+    init.set(1);
+    init.set(2);
+    init.set(3);
+    Cgl<2> c(init,1,0.5);
+    REQUIRE(c.fitness.size() == 0);
+    c.densityScore(1);
+    REQUIRE(c.fitness.size() == 4);
+    for(auto f: c.fitness)
+      REQUIRE(f == 1.0);
+  }
+  SECTION("Compute density for side = 2") {
+    bitset<4> init;
+    init.set(0);
+    init.set(1);
+    init.set(2);
+    init.set(3);
+    Cgl<2> c(init,1,0.5);
+    REQUIRE(c.fitness.size() == 0);
+    c.densityScore(2);
+    REQUIRE(c.fitness.size() == 2);
+    for(auto f: c.fitness)
+      REQUIRE(f == 0.5);
+  }
+}
