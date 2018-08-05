@@ -14,6 +14,7 @@ Cgl<T>::Cgl(unsigned int max_iter) {
     max_iteration = max_iter;
     dim = T;
     density = std::vector<double>();
+    fitness = 0.0;
 }
 
 template <size_t T>
@@ -22,6 +23,7 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter) {
     dim = T;
     grid = init;
     density = std::vector<double>();
+    fitness = 0.0;
 }
 
 template <size_t T>
@@ -167,11 +169,8 @@ void Cgl<T>::densityScore(int side) {
   */
 }
 
-double cosine_similarity(std::vector<double> A, std::vector<double>B)
-{
-  double mul = 0.0;
-  double d_a = 0.0;
-  double d_b = 0.0 ;
+double similarity(std::vector<double> A, std::vector<double>B) {
+  double res = 0.0;
 
   if (A.size() != B.size())
       throw std::logic_error("Vector A and Vector B are not the same size");
@@ -183,12 +182,23 @@ double cosine_similarity(std::vector<double> A, std::vector<double>B)
   std::vector<double>::iterator B_iter = B.begin();
   std::vector<double>::iterator A_iter = A.begin();
   for( ; A_iter != A.end(); A_iter++ , B_iter++ ){
-      mul += *A_iter * *B_iter;
-      d_a += *A_iter * *A_iter;
-      d_b += *B_iter * *B_iter;
+    auto d = *B_iter - *A_iter;
+    res += d * d;
   }
-  if (d_a == 0.0f || d_b == 0.0f)
-      throw std::logic_error("cosine similarity is not defined whenever one or both input vectors are zero-vectors.");
 
-  return mul / (sqrt(d_a) * sqrt(d_b));
+  return 1.0f - sqrt(res);
+}
+
+template <size_t T>
+void Cgl<T>::fitnessScore(int side, std::vector<double> target) {
+  assert(density.size() == 0);
+  assert(fitness == 0);
+  densityScore(side);
+  /*  print arrayA 
+     for(i: density) cout << i << ' ';
+     cout <<endl;
+  */
+  assert(density.size() > 0);
+  fitness = similarity(density, target);
+  cout << "Fitness: "<< fitness << endl;
 }

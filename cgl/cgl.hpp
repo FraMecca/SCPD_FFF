@@ -66,11 +66,18 @@ class Cgl {
         static void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
 
         /**
-        * Compute the fitness of the object.
+        * Compute the density of the grid.
         * This function has SIDEEFFECTS.
         * Gives an assert error when called twice.
         */
         void densityScore(int side);
+
+        /**
+        * Compute the fitness of the object.
+        * This function has SIDEEFFECTS because it calls densityScore;
+        * Gives an assert error when called twice.
+        */
+        void fitnessScore(int side, std::vector<double> target);
 
   static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz, bool mutation=true);
 

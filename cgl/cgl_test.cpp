@@ -175,3 +175,35 @@ TEST_CASE("Density function") {
       REQUIRE(f == 0.5);
   }
 }
+
+TEST_CASE("Fitness function") {
+
+  SECTION("Compute fitness for side = 1") {
+    bitset<4> init;
+    init.set(0);
+    init.set(1);
+    init.set(2);
+    init.set(3);
+    Cgl<2> c(init,1);
+    std::vector<double> target = std::vector<double>();
+    target.push_back(1.0);
+    target.push_back(1.0);
+    target.push_back(1.0);
+    target.push_back(1.0);
+    c.fitnessScore(1, target);
+    REQUIRE(c.fitness == 1.0);
+  }
+  SECTION("Compute fitness for side = 2") {
+    bitset<4> init;
+    init.set(0);
+    init.set(1);
+    init.set(2);
+    init.set(3);
+    Cgl<2> c(init,1);
+    std::vector<double> target = std::vector<double>();
+    target.push_back(1.0);
+    target.push_back(1.0);
+    c.fitnessScore(2, target);
+    REQUIRE(c.fitness == Approx(0.292893));
+  }
+}
