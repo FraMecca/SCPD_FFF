@@ -10,19 +10,18 @@
 using namespace std;
 
 template <size_t T>
-Cgl<T>::Cgl(unsigned int max_iter, float dens) {
+Cgl<T>::Cgl(unsigned int max_iter) {
     max_iteration = max_iter;
-    density = dens;
     dim = T;
+    density = std::vector<double>();
 }
 
 template <size_t T>
-Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter, float dens) {
+Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter) {
     max_iteration = max_iter;
-    density = dens;
     dim = T;
     grid = init;
-    fitness = std::vector<float>();
+    density = std::vector<double>();
 }
 
 template <size_t T>
@@ -146,24 +145,50 @@ inline bitset<T*T>& Cgl<T>::getGrid() {
 template <size_t T>
 void Cgl<T>::densityScore(int side) {
   assert(side > 0);
-  assert(!fitness.size() != 0);
-  fitness.resize(dim*dim/side);
+  assert(!density.size() != 0);
+  density.resize(dim*dim/side);
   /* print array
-     for(i: fitness) cout << i << ' ';
+     for(i: density) cout << i << ' ';
      cout <<endl;
   */
   for(size_t i = 0; i < dim * dim / side; ++i){
-      float density = 0.0;
+      double density_sc = 0.0;
       for(size_t j = 0; j < side; ++j){
         auto pos = i * side + j;
-        cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density: " << density << endl; 
-        density = grid.test(pos);
+        cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density_sc: " << density_sc << endl; 
+        density_sc = grid.test(pos);
       }
-      density = density / side;
-    fitness[i] = density;
+      density_sc = density_sc / side;
+    density[i] = density_sc;
   }
   /* print array
-    for(i: fitness) cout << i << ' ';
+    for(i: density) cout << i << ' ';
     cout <<endl;
   */
+}
+
+double cosine_similarity(std::vector<double> A, std::vector<double>B)
+{
+  double mul = 0.0;
+  double d_a = 0.0;
+  double d_b = 0.0 ;
+
+  if (A.size() != B.size())
+      throw std::logic_error("Vector A and Vector B are not the same size");
+
+  // Prevent Division by zero
+  if (A.size() < 1)
+      throw std::logic_error("Vector A and Vector B are empty");
+
+  std::vector<double>::iterator B_iter = B.begin();
+  std::vector<double>::iterator A_iter = A.begin();
+  for( ; A_iter != A.end(); A_iter++ , B_iter++ ){
+      mul += *A_iter * *B_iter;
+      d_a += *A_iter * *A_iter;
+      d_b += *B_iter * *B_iter;
+  }
+  if (d_a == 0.0f || d_b == 0.0f)
+      throw std::logic_error("cosine similarity is not defined whenever one or both input vectors are zero-vectors.");
+
+  return mul / (sqrt(d_a) * sqrt(d_b));
 }

@@ -12,7 +12,7 @@
  */
 TEST_CASE("The grid is initialized correctly") {
     SECTION("The grid is set correctly with the default constructor") {
-        Cgl<5> c(2,0.5);
+        Cgl<5> c(2);
         REQUIRE(c.getGridSize() == 25);
         REQUIRE(c.getGridSide() == 5);
     }
@@ -27,7 +27,7 @@ TEST_CASE("The grid is initialized correctly") {
         init.set(12);
         init.set(14);
         init.set(15);
-        Cgl<4> c(init,2,0.5);
+        Cgl<4> c(init,2);
         REQUIRE(c.grid.test(0) == 1);
         REQUIRE(c.grid.test(1) == 0);
         REQUIRE(c.grid.test(2) == 1);
@@ -47,7 +47,7 @@ TEST_CASE("The grid is initialized correctly") {
     }
 
     SECTION("The grid is set correctly with the random distribution") {
-        Cgl<4> c(2,0.5);
+        Cgl<4> c(2);
         c.prepareGrid();
         REQUIRE(c.getGridSize() == 16);
         REQUIRE(c.getGridSide() == 4);
@@ -66,7 +66,7 @@ TEST_CASE("Iterations are computed correctly") {
         init.set(12);
         init.set(14);
         init.set(15);
-        Cgl<4> c(init,1,0.5);
+        Cgl<4> c(init,1);
         c.startCgl();
         REQUIRE(c.grid.test(0) == 0);
         REQUIRE(c.grid.test(1) == 1);
@@ -97,7 +97,7 @@ TEST_CASE("Iterations are computed correctly") {
         init.set(12);
         init.set(14);
         init.set(15);
-        Cgl<4> c(init,2,0.5);
+        Cgl<4> c(init,2);
         c.startCgl();
         REQUIRE(c.grid.test(0) == 0);
         REQUIRE(c.grid.test(1) == 1);
@@ -154,11 +154,11 @@ TEST_CASE("Density function") {
     init.set(1);
     init.set(2);
     init.set(3);
-    Cgl<2> c(init,1,0.5);
-    REQUIRE(c.fitness.size() == 0);
+    Cgl<2> c(init,1);
+    REQUIRE(c.density.size() == 0);
     c.densityScore(1);
-    REQUIRE(c.fitness.size() == 4);
-    for(auto f: c.fitness)
+    REQUIRE(c.density.size() == 4);
+    for(auto f: c.density)
       REQUIRE(f == 1.0);
   }
   SECTION("Compute density for side = 2") {
@@ -167,11 +167,11 @@ TEST_CASE("Density function") {
     init.set(1);
     init.set(2);
     init.set(3);
-    Cgl<2> c(init,1,0.5);
-    REQUIRE(c.fitness.size() == 0);
+    Cgl<2> c(init,1);
+    REQUIRE(c.density.size() == 0);
     c.densityScore(2);
-    REQUIRE(c.fitness.size() == 2);
-    for(auto f: c.fitness)
+    REQUIRE(c.density.size() == 2);
+    for(auto f: c.density)
       REQUIRE(f == 0.5);
   }
 }

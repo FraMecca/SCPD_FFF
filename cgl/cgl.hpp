@@ -14,21 +14,21 @@ class Cgl {
     private:
         size_t dim;                   /**<Lenght of the grid side*/
         unsigned int max_iteration;   /**<Number of evolution step*/
-        float density;                /**<Starging density of the population in the grid*/
 
     public:
         std::bitset<T*T> grid;             /**<The grid*/
-        std::vector<float> fitness;        /** A vector of fitness scores for each area **/
+        std::vector<double> density;        /** A vector of fitness scores for each area **/
+        double fitness; /** Fitness related to target density **/
 
         /**
          * Default constructor for the class.
          */
-        Cgl(unsigned int max_iter = 10, float dens = 0.5);
+        Cgl(unsigned int max_iter = 10);
 
         /**
          * Prepares the grid with the given values.
          */
-        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10, float dens = 0.5);
+        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10);
 
         /**
          * Initializes the grid according to the given density using a random number generator.
@@ -65,9 +65,14 @@ class Cgl {
          */
         static void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
 
+        /**
+        * Compute the fitness of the object.
+        * This function has SIDEEFFECTS.
+        * Gives an assert error when called twice.
+        */
+        void densityScore(int side);
 
-
-  void densityScore(int side);
+  static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz, bool mutation=true);
 
     private:
 
