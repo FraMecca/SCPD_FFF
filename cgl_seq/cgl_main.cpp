@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
   
     assert(argc == 2); // max-iter
     unsigned int maxiter = (unsigned int)atoi(argv[1]);
-    Cgl<1000>* c = new Cgl<1000>(maxiter);
+    Cgl<10>* c = new Cgl<10>(maxiter);
     c->prepareGrid();
     //c.printGrid();
     c->startCgl();

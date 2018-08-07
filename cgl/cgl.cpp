@@ -17,9 +17,10 @@ Cgl<T>::Cgl(unsigned int max_iter) {
     density = std::vector<double>();
     fitness = 0.0;
 
-    for (int i=0;i<dim;++i)
-        for (int j=0;j<dim;++j)
-            computeNeighbours(j,i);
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            computeNeighbours(x,y);
+
 }
 
 template <size_t T>
@@ -30,9 +31,9 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter) {
     density = std::vector<double>();
     fitness = 0.0;
 
-    for (int i=0;i<dim;++i)
-        for (int j=0;j<dim;++j)
-            computeNeighbours(j,i);
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            computeNeighbours(x,y);
 }
 
 template <size_t T>
@@ -46,9 +47,9 @@ void Cgl<T>::prepareGrid() {
     }
     grid = bits;
 
-    for (int i=0;i<dim;++i)
-        for (int j=0;j<dim;++j)
-            prev.reset(j + i * dim);
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            prev.reset(y + x * dim);
 }
 
 template <size_t T>
@@ -67,9 +68,9 @@ void Cgl<T>::startCgl() {
 
 template <size_t T>
 void Cgl<T>::printGrid() {
-    for (int j=0;j<dim;++j) {
-        for (int i=0;i<dim;++i)
-            cout << grid[dim-i + j*dim];
+    for (int x=0;x<dim;++x) {
+        for (int y=0;y<dim;++y)
+            cout << grid[dim-y + x*dim];
         cout << endl;
     }
     cout << endl;
@@ -125,7 +126,7 @@ int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
 
 template <size_t T>
 void Cgl<T>::applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
-  int pos = getPos(x,y, dim);
+  int pos = getPos(x,y,dim);
     if (grid.test(pos) && (alive < 2 || alive > 3))
         new_grid.reset(pos);
     else if (grid.test(pos))
@@ -147,18 +148,22 @@ inline bitset<T*T>& Cgl<T>::getGrid() {
 }
 
 template <size_t T>
-inline bool Cgl<T>::isChanged(int x, int y) {
-    if (x == -1 && y == -1) return false;
-    return grid[y + x * dim] != prev[y + x * dim];
+inline bool Cgl<T>::isChanged(int i) {
+    //if (x == -1 && y == -1) return false;
+    //cout << i << endl;
+    //assert(i<grid.size() && i<prev.size());
+    return grid.test(i) != prev.test(i);
 }
 
 template <size_t T>
 bool Cgl<T>::noChanges(int x, int y) {
-    if (isChanged(x,y))
+    if (isChanged(y + x * dim))
         return false;
 
     for (int i=0;i<MAX_NEIGH;++i) {
-        if (isChanged(neighbours[y + x * dim][i],neighbours[y + x * dim][i]))
+        if (neighbours[y + x * dim][i] == -1)
+            continue;
+        if (isChanged(neighbours[y + x * dim][i]))
             return false;
     }
 

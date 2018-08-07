@@ -116,7 +116,7 @@ class Cgl {
           return os ;
         }
 
-        inline bool isChanged(int x, int y);
+        inline bool isChanged(int i);
 
         bool noChanges(int x, int y);
 };
