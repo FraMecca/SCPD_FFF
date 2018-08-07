@@ -6,13 +6,12 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
   
-    assert(argc == 3); // dim, max-iter, density
+    assert(argc == 2); // max-iter
     unsigned int maxiter = (unsigned int)atoi(argv[1]);
-    float density = (float)atof(argv[2]);
-    Cgl<1000> c(maxiter, density);
-    c.prepareGrid();
+    Cgl<1000>* c = new Cgl<1000>(maxiter);
+    c->prepareGrid();
     //c.printGrid();
-    c.startCgl();
+    c->startCgl();
   
     /*bitset<16> init;
     init.set(0);

@@ -148,6 +148,7 @@ inline bitset<T*T>& Cgl<T>::getGrid() {
 
 template <size_t T>
 inline bool Cgl<T>::isChanged(int x, int y) {
+    if (x == -1 && y == -1) return false;
     return grid[y + x * dim] != prev[y + x * dim];
 }
 
