@@ -61,7 +61,7 @@ void Cgl<T>::startCgl() {
                 updateCell(new_grid,x,y,i==0);
         copyGrid(grid,prev);
         copyGrid(new_grid,grid);
-        printGrid();
+        //printGrid();
     }
 }
 
@@ -87,7 +87,7 @@ inline size_t Cgl<T>::getGridSide() {
 
 template <size_t T>
 void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y, bool first) {
-    if (first && noChanges(x,y))
+    if (!first && noChanges(x,y))
         return;
 
     int alive = 0;

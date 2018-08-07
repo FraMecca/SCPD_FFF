@@ -5,16 +5,16 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-  /*
+  
     assert(argc == 3); // dim, max-iter, density
     unsigned int maxiter = (unsigned int)atoi(argv[1]);
     float density = (float)atof(argv[2]);
-    Cgl<10> c(maxiter, density);
+    Cgl<1000> c(maxiter, density);
     c.prepareGrid();
-    c.printGrid();
+    //c.printGrid();
     c.startCgl();
-  */
-    bitset<16> init;
+  
+    /*bitset<16> init;
     init.set(0);
     init.set(2);
     init.set(3);
@@ -24,5 +24,5 @@ int main(int argc, char* argv[]) {
     init.set(14);
     init.set(15);
     Cgl<4> c(init,200);
-    c.startCgl();
+    c.startCgl();*/
 }
