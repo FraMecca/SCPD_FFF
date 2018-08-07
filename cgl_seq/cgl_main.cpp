@@ -23,6 +23,6 @@ int main(int argc, char* argv[]) {
     init.set(12);
     init.set(14);
     init.set(15);
-    Cgl<4> c(init,200,0.5);
+    Cgl<4> c(init,200);
     c.startCgl();
 }

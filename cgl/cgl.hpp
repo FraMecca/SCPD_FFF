@@ -16,9 +16,12 @@ class Cgl {
         unsigned int max_iteration;   /**<Number of evolution step*/
 
     public:
-        std::bitset<T*T> grid;             /**<The grid*/
+        std::bitset<T*T> grid;              /**<The grid*/
+        std::bitset<T*T> prev;              /**<Grid of the previous iteration*/
+        int neighbours[T*T][MAX_NEIGH];     /**<Array of neighbours assigned to each cell*/
+
         std::vector<double> density;        /** A vector of fitness scores for each area **/
-        double fitness; /** Fitness related to target density **/
+        double fitness;                     /** Fitness related to target density **/
 
         /**
          * Default constructor for the class.
@@ -79,14 +82,14 @@ class Cgl {
         */
         void fitnessScore(int side, std::vector<double> target);
 
-  static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz, bool mutation=true);
+        static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz, bool mutation=true);
 
     private:
 
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(std::bitset<T*T>& new_grid, int x, int y);
+        void updateCell(std::bitset<T*T>& new_grid, int x, int y, bool first);
 
         /**
          * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
@@ -103,6 +106,7 @@ class Cgl {
          */
         void applyRuleOfLife(std::bitset<T*T>& new_grid, int x, int y, int alive);
 
+        void computeNeighbours(int x, int y);
 
         /**
          * print the bitset
@@ -111,4 +115,8 @@ class Cgl {
           os << m.grid;
           return os ;
         }
+
+        inline bool isChanged(int x, int y);
+
+        bool noChanges(int x, int y);
 };
