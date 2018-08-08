@@ -3,7 +3,7 @@ CC = g++
 
 default: cgl_mp
 
-cgl_mp: cgl_mp.cpp
+cgl_mp: cgl_mp.cpp partition.hpp
 	$(CC) cgl_mp.cpp -o cgl_mp $(CFLAGS)
 clean:
 	rm -vf ./cgl_mp
