@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <cstring>
 #include "cgl.hpp"
 
 using namespace std;
@@ -16,6 +17,11 @@ Cgl<T>::Cgl(unsigned int max_iter) {
     dim = T;
     density = std::vector<double>();
     fitness = 0.0;
+
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            computeNeighbours(x,y);
+
 }
 
 template <size_t T>
@@ -26,6 +32,10 @@ Cgl<T>::Cgl(const std::bitset<T*T> init, unsigned int max_iter) {
     gene = init;
     density = std::vector<double>();
     fitness = 0.0;
+
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            computeNeighbours(x,y);
 }
 
 template <size_t T>
@@ -39,6 +49,10 @@ void Cgl<T>::prepareGrid() {
     }
     grid = bits;
     gene = bits;
+
+    for (int x=0;x<dim;++x)
+        for (int y=0;y<dim;++y)
+            prev.reset(y + x * dim);
 }
 
 template <size_t T>
@@ -48,18 +62,18 @@ void Cgl<T>::startCgl() {
     for (int i=0;i<max_iteration;++i) {
         for (int x=0;x<dim;++x)
             for (int y=0;y<dim;++y)
-                updateCell(new_grid,x,y);
-
+                updateCell(new_grid,x,y,i==0);
+        copyGrid(grid,prev);
         copyGrid(new_grid,grid);
-        printGrid();
+        //printGrid();
     }
 }
 
 template <size_t T>
 void Cgl<T>::printGrid() {
-    for (int j=0;j<dim;++j) {
-        for (int i=0;i<dim;++i)
-            cout << grid[dim-i + j*dim];
+    for (int x=0;x<dim;++x) {
+        for (int y=0;y<dim;++y)
+            cout << grid[dim-y + x*dim];
         cout << endl;
     }
     cout << endl;
@@ -76,23 +90,21 @@ inline size_t Cgl<T>::getGridSide() {
 }
 
 template <size_t T>
-void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y) {
-    int neigh[MAX_NEIGH] = {0};
-    getNeighbourhood(x,y,(int*)neigh);
+void Cgl<T>::updateCell(bitset<T*T>& new_grid, int x, int y, bool first) {
+    if (!first && noChanges(x,y))
+        return;
 
     int alive = 0;
     for (int i=0;i<MAX_NEIGH;++i) {
-        if (neigh[i] == -1)
+        if (neighbours[y + x * dim][i] == -1)
             continue;
-        if (grid.test(neigh[i]))
+        if (grid.test(neighbours[y + x * dim][i]))
             alive++;
     }
 
     applyRuleOfLife(new_grid,x,y,alive);
 }
 
-
-//#define getPos(x,y,z) x < 0 || y < 0 || x >= dim || y >= dim ? -1 : (y + x*dim);
 inline int getPos(int x, int y, int dim){
   if(x < 0 || y < 0 || x >= dim || y >= dim) return -1 ;
     else return y + x * dim;
@@ -115,18 +127,9 @@ int* Cgl<T>::getNeighbourhood(int x, int y, int* neigh) {
   //cout<< endl;
 }
 
-/*int countNeighbour(int x, int y) {
-    if ((x == 0 || x = dim-1) && (y == 0 || y == dim-1))
-        return THREE_NEIGH;
-    if ((x == 0 && y != 0 && y != dim-1) || (y ==0 && x != 0 && x != dim-1))
-        return FIVE_NEIGH;
-    else
-        return EIGHT_NEIGH;
-}*/
-
 template <size_t T>
 void Cgl<T>::applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
-  int pos = getPos(x,y, dim);
+  int pos = getPos(x,y,dim);
     if (grid.test(pos) && (alive < 2 || alive > 3))
         new_grid.reset(pos);
     else if (grid.test(pos))
@@ -158,6 +161,36 @@ inline bitset<T*T>& Cgl<T>::getGrid() {
 }
 
 template <size_t T>
+inline bool Cgl<T>::isChanged(int i) {
+    //if (x == -1 && y == -1) return false;
+    //cout << i << endl;
+    //assert(i<grid.size() && i<prev.size());
+    return grid.test(i) != prev.test(i);
+}
+
+template <size_t T>
+bool Cgl<T>::noChanges(int x, int y) {
+    if (isChanged(y + x * dim))
+        return false;
+
+    for (int i=0;i<MAX_NEIGH;++i) {
+        if (neighbours[y + x * dim][i] == -1)
+            continue;
+        if (isChanged(neighbours[y + x * dim][i]))
+            return false;
+    }
+
+    return true;
+}
+
+template <size_t T>
+void Cgl<T>::computeNeighbours(int x, int y) {
+    int neigh[MAX_NEIGH] = {0};
+    Cgl<T>::getNeighbourhood(x,y,neigh);
+    memcpy(neighbours[y + x * dim],neigh,MAX_NEIGH * sizeof(int));
+}
+
+template <size_t T>
 void Cgl<T>::densityScore(int side) {
   assert(side > 0);
   assert(!density.size() != 0);
@@ -170,7 +203,7 @@ void Cgl<T>::densityScore(int side) {
       double density_sc = 0.0;
       for(size_t j = 0; j < side; ++j){
         auto pos = i * side + j;
-        cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density_sc: " << density_sc << endl; 
+        cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density_sc: " << density_sc << endl;
         density_sc = grid.test(pos);
       }
       density_sc = density_sc / side;
@@ -207,7 +240,7 @@ void Cgl<T>::fitnessScore(int side, std::vector<double> target) {
   assert(density.size() == 0);
   assert(fitness == 0);
   densityScore(side);
-  /*  print arrayA 
+  /*  print arrayA
      for(i: density) cout << i << ' ';
      cout <<endl;
   */

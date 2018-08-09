@@ -17,9 +17,12 @@ class Cgl {
         std::bitset<T*T> gene;             /**<The initial configuration of the grid */
 
     public:
-        std::bitset<T*T> grid;             /**<The grid*/
+        std::bitset<T*T> grid;              /**<The grid*/
+        std::bitset<T*T> prev;              /**<Grid of the previous iteration*/
+        int neighbours[T*T][MAX_NEIGH];     /**<Array of neighbours assigned to each cell*/
+
         std::vector<double> density;        /** A vector of fitness scores for each area **/
-        double fitness; /** Fitness related to target density **/
+        double fitness;                     /** Fitness related to target density **/
 
         /**
          * Default constructor for the class.
@@ -108,7 +111,7 @@ class Cgl {
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(std::bitset<T*T>& new_grid, int x, int y);
+        void updateCell(std::bitset<T*T>& new_grid, int x, int y, bool first);
 
         /**
          * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
@@ -125,6 +128,7 @@ class Cgl {
          */
         void applyRuleOfLife(std::bitset<T*T>& new_grid, int x, int y, int alive);
 
+        void computeNeighbours(int x, int y);
 
         /**
          * print the bitset
@@ -140,6 +144,9 @@ class Cgl {
         friend bool operator<(const Cgl& l, const Cgl& r){
           return l.fitness < r.fitness;
         }
+        inline bool isChanged(int i);
+
+        bool noChanges(int x, int y);
 };
 
 template <size_t T>

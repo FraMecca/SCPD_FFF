@@ -6,7 +6,7 @@ DEBUG = -g
 default: bin/cgl
 
 bin/cgl: objs/cgl_main.o objs/cgl.o
-	$(CC) $(CFLAGS) -o bin/cgl objs/cgl_main.o objs/cgl.o
+	$(CC) $(CFLAGS) -o bin/cgl objs/cgl_main.o
 
 objs/cgl_main.o: ./cgl_seq/cgl_main.cpp ./cgl/cgl.hpp
 	$(CC) $(CFLAGS) -c ./cgl_seq/cgl_main.cpp -o ./objs/cgl_main.o
