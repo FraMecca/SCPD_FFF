@@ -14,6 +14,7 @@ class Cgl {
     private:
         size_t dim;                   /**<Lenght of the grid side*/
         unsigned int max_iteration;   /**<Number of evolution step*/
+        std::bitset<T*T> gene;             /**<The initial configuration of the grid */
 
     public:
         std::bitset<T*T> grid;             /**<The grid*/
@@ -29,6 +30,16 @@ class Cgl {
          * Prepares the grid with the given values.
          */
         Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10);
+
+        /**
+        * read only gene getter
+        */
+        const std::bitset<T*T> getGene();
+
+        /**
+        * read only getter for max_iterations.
+        */
+        const unsigned int getMaxIterations();
 
         /**
          * Initializes the grid according to the given density using a random number generator.
@@ -79,7 +90,18 @@ class Cgl {
         */
         void fitnessScore(int side, std::vector<double> target);
 
-  static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz, bool mutation=true);
+      /**
+      * Computes crossover from a vector of parents.
+      * vector can be sorted and mutation probability specified;
+      * Every child has the same number of max_iter (used in constructor) as parents[0];
+      * Reuse specifies the probability of a parent of surviving and being included into the next generation instead of yielding a child.
+      * Mutation means that a random gene is generated and parents not used.
+      * For drawing uses a weighted interval.
+      * For the cross over a 4-point non random crossover is used.
+      */
+      static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz,
+                                           double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
+
 
     private:
 
@@ -111,4 +133,14 @@ class Cgl {
           os << m.grid;
           return os ;
         }
+
+        /**
+        * overload of the < operator, used for sorting a vector of objs
+        */
+        friend bool operator<(const Cgl& l, const Cgl& r){
+          return l.fitness < r.fitness;
+        }
 };
+
+template <size_t T>
+size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos);
