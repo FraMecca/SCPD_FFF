@@ -17,40 +17,53 @@ struct Partition {
         int start;                          /** starting index of the partition */
         int end;                            /** ending index of the partition */
         bitset<T*(T/N_THREADS+2)> grid;     /** the bitset representing a partition */
+        bitset<T*(T/N_THREADS+2)> prev;     /** the bitset representing a partition */
         size_t psize;                       /** partition size */
-        size_t size = T*T/N_THREADS;        /** partition size without neighbours */
-        int nIndex[2] = {-1, -1};           /** indexes of the neighbourhood rows */
+        const size_t size = T*T/N_THREADS;        /** partition size without neighbours */
+        bool nIndex[2] = {false, false};           /** indexes of the neighbourhood rows */
+        int indexes[2] = {0,0};                /** indexes of the limiting rows */
+
+        /***
+         * Compute Cgl iteration for the partition grid
+         * Defined in 'cgl_mp.cpp'
+         */
+        void computeCells(int iter);
 
         /***
          * Compute a single partition by filling the grid in Partition
          * with the corresponding values in Cgl.grid
          */
-        void fill(int thread, bitset<T*T>& cglGrid)
+        void fill(int t, bitset<T*T>& cglGrid)
         {
-            grid.reset();
+            int p = 0;
+            psize = T*(T/N_THREADS+2);
+            thread = t;
             /**
              * considering neighbours (upper / lower limit rows)
              */
             if(thread == 0) {
-                psize = T*(T/N_THREADS+1);
                 start = 0;
                 end = (thread+1)*size + T;
-                nIndex[1] = (thread+1)*(T/N_THREADS);
+                nIndex[1] = true;
+                indexes[0] = 0;
+                indexes[1] = end/T-1;
+
             } else if (thread == N_THREADS-1) {
-                psize = T*(T/N_THREADS+1);
                 start = thread*size - T;
                 end = (thread+1)*size;
-                nIndex[0] = thread*(T/N_THREADS)-1;
+                nIndex[0] = true;
+                indexes[0] = start/T+1;
+                indexes[1] = end/T;
             } else {
-                psize = T*(T/N_THREADS+2);
                 start = thread*size - T;
                 end = (thread+1)*size + T;
-                nIndex[0] = thread*(T/N_THREADS)-1;
-                nIndex[1] = (thread+1)*(T/N_THREADS);
+                nIndex[0] = nIndex[1] = true;
+                indexes[0] = start/T+1;
+                indexes[1] = end/T-1;
             }
-
             assert(start >= 0 && end <= T*T);
-            int p = 0;
+
+            grid.reset();
             for(int i=start; i<end; i++) {
                 grid.set(p++, cglGrid.test(i));
             }
@@ -59,15 +72,95 @@ struct Partition {
         /***
          * Equivalent to the Cgl<T>::printGrid member function
          */
-        void printGrid() {
-            int nrows = psize/T;
-            for (int x=0; x<nrows; x++) {
-                for (int y=0; y<T; y++)
-                    cout << grid[y+x*T];
-                cout << endl;
+        void printGrid(bool full)
+        {
+            int nrows = psize/T-!nIndex[0]-!nIndex[1];
+            if (full) {
+                for (int x=0; x<nrows; x++) {
+                    for (int y=0; y<T; y++)
+                        cout << grid[y+x*T];
+                    cout << endl;
+                }
+            } else {
+                for (int x=nIndex[0]; x<nrows-nIndex[1]; x++) {
+                    for (int y=0; y<T; y++)
+                        cout << grid[y+x*T];
+                    cout << endl;
+                }
             }
-            cout << endl;
         }
+
+        /***
+         * Dump the grid into a biteset, corresponding rows
+         */
+        void dumpGrid(bitset<T*T>& dump)
+        {
+            int nrows = psize/T-!nIndex[0]-!nIndex[1];
+            int pos, dumpPos;
+            for (int x=nIndex[0]; x<nrows-nIndex[1]; x++) {
+                for (int y=0; y<T; y++) {
+                    // pos describes the position on the grid
+                    pos = getPos(x,y,T);
+                    // dumpPos maps the position on the grid to the one of the full grid
+                    dumpPos = indexes[0]*T + getPos(x-nIndex[0],y,T);
+                    dump.set(dumpPos, grid.test(pos));
+                }
+            }
+        }
+
+    private:
+        /***
+         * Two arrays to map the position of the neighbours
+         */
+        int nX[MAX_NEIGH] = {-1,-1,-1,0,1,1, 1, 0};
+        int nY[MAX_NEIGH] = {-1, 0, 1,1,1,0,-1,-1};
+
+        /***
+         * Convert from 2d indexing to 1d indexing
+         */
+        inline int getPos(int x, int y, int dim)
+        {
+          if(x < 0 || y < 0 || x >= dim || y >= dim) return -1 ;
+            else return y + x * dim;
+        }
+
+        /***
+         * Check for changes between the previous iteration
+         * and the current one
+         */
+        inline bool isChanged(int i)
+        {
+            return grid.test(i) != prev.test(i);
+        }
+
+        /***
+         * Test if a cell has no changes around
+         * (if so it can be excluded)
+         */
+        bool noChanges(int x, int y, int* neighbours)
+        {
+            if (isChanged(y + x * T))
+                return false;
+            for (int i=0;i<MAX_NEIGH;++i) {
+                if (neighbours[i] != -1 && \
+                        isChanged(neighbours[i]))
+                    return false;
+            }
+            return true;
+        }
+
+
+        /***
+         * Update a cell using its neighbours
+         * Defined in 'cgl_mp.cpp'
+         */
+        void updateCell(bitset<T*(T/N_THREADS+2)>& new_grid, int x, int y, bool first);
+
+        /***
+         * Apply rule of life to the given cell (x,y)
+         */
+        void applyRuleOfLife(bitset<T*(T/N_THREADS+2)>& new_grid, int x, int y, int alive);
+
 };
 
 
@@ -86,11 +179,17 @@ void fill_partitions(Partition<T>* partitions, bitset<T*T>& cglGrid)
  * debugging (print partition grids)
  */
 template <size_t T>
-void print_partitions(Partition<T>* partitions)
+void print_partitions(Partition<T>* partitions, bool full)
 {
     for(int t=0; t<N_THREADS; t++) {
-        cout << t << endl;
-        partitions[t].printGrid();
-        cout << endl;
+        partitions[t].printGrid(full);
+    }
+}
+
+template <size_t T>
+void dump_partitions(Partition<T>* partitions, bitset<T*T>& stepGrid)
+{
+    for(int p=0; p<N_THREADS; p++) {
+        partitions[p].dumpGrid(stepGrid);
     }
 }
