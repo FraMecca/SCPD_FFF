@@ -1,8 +1,24 @@
 #pragma once
+#include <iostream>
+#include <assert.h>
+#include <cstdlib>
+#include <random>
+#include <functional>
+#include <algorithm>
+#include <cstring>
 #include <bitset>
 #include <vector>
+using namespace std;
 
 #define MAX_NEIGH 8      /**<Max number of neighbour for each cell*/
+
+/**
+ * Convert from 2d coordinates to 1d
+ */
+inline int getPos(int x, int y, int dim){
+  if(x < 0 || y < 0 || x >= dim || y >= dim) return -1 ;
+    else return y + x * dim;
+}
 
 /**
  * This class implements the Conways's Game of Life using a square bitarray as grid.
@@ -27,57 +43,126 @@ class Cgl {
         /**
          * Default constructor for the class.
          */
-        Cgl(unsigned int max_iter = 10);
+        Cgl(unsigned int max_iter = 10) {
+            max_iteration = max_iter;
+            dim = T;
+            density = std::vector<double>();
+            fitness = 0.0;
+
+            for (int x=0;x<dim;++x)
+                for (int y=0;y<dim;++y)
+                    computeNeighbours(x,y);
+
+        }
 
         /**
          * Prepares the grid with the given values.
          */
-        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10);
+        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10) {
+            max_iteration = max_iter;
+            dim = T;
+            grid = init;
+            gene = init;
+            density = std::vector<double>();
+            fitness = 0.0;
+
+            for (int x=0;x<dim;++x)
+                for (int y=0;y<dim;++y)
+                    computeNeighbours(x,y);
+        }
 
         /**
         * read only gene getter
         */
-        const std::bitset<T*T> getGene();
+        const bitset<T*T> getGene() {
+            return gene;
+        }
+
 
         /**
         * read only getter for max_iterations.
         */
-        const unsigned int getMaxIterations();
+        const unsigned int getMaxIterations() {
+            return max_iteration;
+        }
 
         /**
          * Initializes the grid according to the given density using a random number generator.
          */
-        void prepareGrid();
+        void prepareGrid() {
+            std::bitset<T*T> bits;
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::bernoulli_distribution d(0.5);
+            for(int n = 0; n < bits.size(); ++n){
+                bits[n] = d(gen);
+            }
+            grid = bits;
+            gene = bits;
+
+            for (int x=0;x<dim;++x)
+                for (int y=0;y<dim;++y)
+                    prev.reset(y + x * dim);
+        }
+
 
         /**
          * Starts the game applying the Rule of Life at each iteration.
          */
-        void startCgl();
+        void startCgl() {
+            bitset<T*T> new_grid;
+
+            for (int i=0;i<max_iteration;++i) {
+                for (int x=0;x<dim;++x)
+                    for (int y=0;y<dim;++y)
+                        updateCell(new_grid,x,y,i==0);
+                copyGrid(grid,prev);
+                copyGrid(new_grid,grid);
+                //printGrid();
+            }
+        }
+
 
         /**
          * Prints the array visualisation of the grid, from right to left.
          */
-        void printGrid();
+        void printGrid() {
+            for (int x=0;x<dim;++x) {
+                for (int y=0;y<dim;++y)
+                    cout << grid[dim-y + x*dim];
+                cout << endl;
+            }
+            cout << endl;
+        }
 
         /**
          * Returns the number of cellc in the grid
          */
-        inline size_t getGridSize();
+        inline size_t getGridSize()  {
+            return grid.size();
+        }
 
         /**
          * Returns the lenght of the side
          */
-        inline size_t getGridSide();
+        inline size_t getGridSide() {
+            return dim;
+        }
 
         /**
          * Returns the grid
          */
-        inline std::bitset<T*T>& getGrid();
+        inline bitset<T*T>& getGrid() {
+            return grid;
+        }
+
 
         /**
          * Copy the values in grid1 to grid2.
          */
-        static void copyGrid(std::bitset<T*T>& grid1, std::bitset<T*T>& grid2);
+        static void copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
+            grid2 = grid1;
+        }
 
         /**
         * Compute the density of the grid.
@@ -111,7 +196,21 @@ class Cgl {
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(std::bitset<T*T>& new_grid, int x, int y, bool first);
+        void updateCell(bitset<T*T>& new_grid, int x, int y, bool first) {
+            if (!first && noChanges(x,y))
+                return;
+
+            int alive = 0;
+            for (int i=0;i<MAX_NEIGH;++i) {
+                if (neighbours[y + x * dim][i] == -1)
+                    continue;
+                if (grid.test(neighbours[y + x * dim][i]))
+                    alive++;
+            }
+
+            applyRuleOfLife(new_grid,x,y,alive);
+        }
+
 
         /**
          * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
@@ -121,14 +220,46 @@ class Cgl {
         /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.
          */
-        int* getNeighbourhood(int x, int y, int* neigh);
+        int* getNeighbourhood(int x, int y, int* neigh) {
+            neigh[0] = getPos(x-1,y-1, dim);
+            neigh[1] = getPos(x-1,y, dim);
+            neigh[2] = getPos(x-1,y+1, dim);
+            neigh[3] = getPos(x,y+1, dim);
+            neigh[4] = getPos(x+1,y+1, dim);
+            neigh[5] = getPos(x+1,y, dim);
+            neigh[6] = getPos(x+1,y-1, dim);
+            neigh[7] = getPos(x,y-1, dim);
+            for(size_t i = 0; i < MAX_NEIGH; ++i){
+                assert(neigh[i]>=-1);
+            }
+        }
+
 
         /**
          * Apply the rule of life to the given cell.
          */
-        void applyRuleOfLife(std::bitset<T*T>& new_grid, int x, int y, int alive);
+        void applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
+            int pos = getPos(x,y,dim);
+            if (grid.test(pos) && (alive < 2 || alive > 3))
+                new_grid.reset(pos);
+            else if (grid.test(pos))
+                new_grid.set(pos);
+            else if (alive == 3)
+                new_grid.set(pos);
+            else
+                new_grid.reset(pos);
+        }
 
-        void computeNeighbours(int x, int y);
+        /**
+         * Compute neighbours to a cell
+         * by computing their positions on 1 dimension
+         * and copying them into the neighbours vector
+         */
+        void computeNeighbours(int x, int y) {
+            int neigh[MAX_NEIGH] = {0};
+            Cgl<T>::getNeighbourhood(x,y,neigh);
+            memcpy(neighbours[y + x * dim],neigh,MAX_NEIGH * sizeof(int));
+        }
 
         /**
          * print the bitset
@@ -144,9 +275,36 @@ class Cgl {
         friend bool operator<(const Cgl& l, const Cgl& r){
           return l.fitness < r.fitness;
         }
-        inline bool isChanged(int i);
 
-        bool noChanges(int x, int y);
+        /**
+         * Check if cell is changed
+         * during the previous iteration
+         */
+        inline bool isChanged(int i) {
+            //if (x == -1 && y == -1) return false;
+            //cout << i << endl;
+            //assert(i<grid.size() && i<prev.size());
+            return grid.test(i) != prev.test(i);
+        }
+
+        /**
+         * return true if
+         * !isChanged(cell) &&
+         * !isChanged(neighbours)
+         */
+        bool noChanges(int x, int y) {
+            if (isChanged(y + x * dim))
+                return false;
+
+            for (int i=0;i<MAX_NEIGH;++i) {
+                if (neighbours[y + x * dim][i] == -1)
+                    continue;
+                if (isChanged(neighbours[y + x * dim][i]))
+                    return false;
+            }
+
+            return true;
+        }
 };
 
 template <size_t T>

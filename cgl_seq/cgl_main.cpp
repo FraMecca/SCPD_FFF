@@ -1,6 +1,6 @@
 #include <assert.h>
 #include "../cgl/cgl.hpp"
-#include "../cgl/cgl.cpp"
+#include "../cgl/cgl_eval.hpp"
 
 using namespace std;
 
