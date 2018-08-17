@@ -82,7 +82,7 @@ size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos) {
     if(choice <= 0) return i;
   }
   double tot = 0;
-  for(i: parents) tot += i.fitness;
+  for(auto i: parents) tot += i.fitness;
   throw std::logic_error("Possible logic error: choice = " + std::to_string(choice) +", pos=" + std::to_string((long long)pos) +",tot=" + std::to_string(tot));
 }
 
@@ -115,7 +115,7 @@ std::vector<Cgl<T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, do
     std::sort(parents.begin(), parents.end());
 
   double interval = 0.0;
-  for(i: parents) interval += i.fitness;
+  for(auto i: parents) interval += i.fitness;
 
   // SLOW RETRIEVAL: TODO
   std::random_device rd;

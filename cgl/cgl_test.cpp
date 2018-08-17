@@ -266,7 +266,7 @@ TEST_CASE("Crossover function") {
 
     // test that the only parent survived (reuse probability = 1.0)
     auto surv = Cgl<2>::crossover(v, 2, 0.0f, 1.0f);
-    for(i: surv) REQUIRE(i.grid == a.grid);
+    for(auto i: surv) REQUIRE(i.grid == a.grid);
 
     // weak tests
     v.push_back(b);
@@ -274,12 +274,12 @@ TEST_CASE("Crossover function") {
     auto res = Cgl<2>::crossover(v, nchildren, 0.0f, 0.0f);
     REQUIRE(res.size() == nchildren);
     cout << "parents: ";
-    for(i: v) cout<<i << " ";
+    for(auto i: v) cout<<i << " ";
     cout << endl << "children: ";
-    for(i: res) cout<<i << " ";
+    for(auto i: res) cout<<i << " ";
     cout << endl;
     auto res2 = Cgl<2>::crossover(v, 1, 1.0f, 0.0f);
-    for(i: res) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
-    for(i: res2) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
+    for(auto i: res) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
+    for(auto i: res2) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
   }
 }

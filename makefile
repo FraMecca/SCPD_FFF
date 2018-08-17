@@ -8,22 +8,27 @@ default: bin/cgl # sequential
 
 # sequential
 bin/cgl: objs/cgl_main.o objs/cgl.o
+	mkdir -p bin
 	$(CC) $(CFLAGS) -o bin/cgl objs/cgl_main.o
 
 # parallel: partitioning + openmp
 bin/cgl_mp: objs/cgl_mp.o objs/cgl.o
+	mkdir -p bin
 	$(CC) $(MPCFLAGS) -o bin/cgl_mp objs/cgl_mp.o -DPARALLEL
 
 # object files for sequential
 objs/cgl_main.o: ./cgl_seq/cgl_main.cpp ./cgl/cgl.hpp
+	mkdir -p objs
 	$(CC) $(CFLAGS) -c ./cgl_seq/cgl_main.cpp -o ./objs/cgl_main.o
 
 # object files for cgl library
 objs/cgl.o: ./cgl/cgl_eval.hpp ./cgl/cgl.hpp
+	mkdir -p objs
 	$(CC) $(CFLAGS) -c ./cgl/cgl_eval.hpp -o ./objs/cgl.o
 
 # object files for parallel
 objs/cgl_mp.o: cgl_mp/cgl_mp.cpp cgl_mp/partition.hpp
+	mkdir -p objs
 	$(CC) $(MPCFLAGS) -c cgl_mp/cgl_mp.cpp -o objs/cgl_mp.o -DPARALLEL
 
 prof: ./cgl/cgl_eval.hpp ./cgl/cgl.hpp
