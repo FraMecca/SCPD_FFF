@@ -4,6 +4,11 @@
 using namespace std;
 
 #define N_THREADS 8
+/***
+ * Two arrays to map the position of the neighbours
+ */
+const int nX[] = {-1,-1,-1,0,1,1, 1, 0};
+const int nY[] = {-1, 0, 1,1,1,0,-1,-1};
 
 /***
  * Partition of the Cgl grid
@@ -120,11 +125,6 @@ struct Partition {
         }
 
     private:
-        /***
-         * Two arrays to map the position of the neighbours
-         */
-        int nX[MAX_NEIGH] = {-1,-1,-1,0,1,1, 1, 0};
-        int nY[MAX_NEIGH] = {-1, 0, 1,1,1,0,-1,-1};
 
         /***
          * Convert from 2d indexing to 1d indexing

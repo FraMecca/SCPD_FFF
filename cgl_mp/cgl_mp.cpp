@@ -54,19 +54,13 @@ int main(int argc, char* argv[])
     Cgl<SIZE>* c = new Cgl<SIZE>(maxiter);
     c->prepareGrid();
     cout << "Grid dimension is " << SIZE << " on " << maxiter << " iterations." << endl;
-#ifndef PARALLEL
-        cout << "Running on a single thread." << endl;
-        c->startCgl();
-#else
-        cout << "Running on " << N_THREADS << " threads." << endl;
-        // partition the cgl grid
-        Partition<SIZE> partitions[N_THREADS];
-        fill_partitions(partitions, c->grid);
-        // debugging
-        // end debugging
-        run_parallel(partitions, maxiter);
-#endif
-
+    cout << "Running on " << N_THREADS << " threads." << endl;
+    // partition the cgl grid
+    Partition<SIZE> partitions[N_THREADS];
+    fill_partitions(partitions, c->grid);
+    // debugging
+    // end debugging
+    run_parallel(partitions, maxiter);
     delete c;
     return 0;
 }
