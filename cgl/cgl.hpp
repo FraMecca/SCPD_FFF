@@ -129,7 +129,7 @@ class Cgl {
         void printGrid() {
             for (int x=0;x<dim;++x) {
                 for (int y=0;y<dim;++y)
-                    cout << grid[dim-y + x*dim];
+                    cout << grid[getPos(x,y,dim)];
                 cout << endl;
             }
             cout << endl;
