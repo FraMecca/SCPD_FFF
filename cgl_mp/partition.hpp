@@ -1,6 +1,7 @@
 #pragma once
 #include <bitset>
 #include <vector>
+#include "../cgl/cgl.hpp"
 using namespace std;
 
 #define N_THREADS 8
@@ -34,7 +35,7 @@ struct Partition {
          */
         void computeCells(int iter)
         {
-            int nrows = psize/T - !nIndex[0] - !nIndex[1];
+            int nrows = psize/T;
             bitset<T*(T/N_THREADS + 2)> newGrid;
             for(int x=nIndex[0]; x<nrows-nIndex[1]; x++) {
                 for(int y=0; y<T; y++) {
@@ -54,6 +55,7 @@ struct Partition {
             int p = 0;
             psize = T*(T/N_THREADS+2);
             thread = t;
+            grid.reset();
             /**
              * considering neighbours (upper / lower limit rows)
              */
@@ -63,13 +65,14 @@ struct Partition {
                 nIndex[1] = true;
                 indexes[0] = 0;
                 indexes[1] = end/T-1;
-
+                psize -= T;
             } else if (thread == N_THREADS-1) {
                 start = thread*size - T;
                 end = (thread+1)*size;
                 nIndex[0] = true;
                 indexes[0] = start/T+1;
                 indexes[1] = end/T;
+                psize -= T;
             } else {
                 start = thread*size - T;
                 end = (thread+1)*size + T;
@@ -79,10 +82,15 @@ struct Partition {
             }
             assert(start >= 0 && end <= T*T);
 
+            //cout << start << ":" << end << endl;
+            //cout << indexes[0] << ":" << indexes[1] << endl;
             grid.reset();
             for(int i=start; i<end; i++) {
+                //cout << p << ":" << i << endl;
                 grid.set(p++, cglGrid.test(i));
             }
+            //printGrid(true);
+            //cout << endl;
         }
 
         /***
@@ -90,7 +98,7 @@ struct Partition {
          */
         void printGrid(bool full)
         {
-            int nrows = psize/T-!nIndex[0]-!nIndex[1];
+            int nrows = psize/T;
             if (full) {
                 for (int x=0; x<nrows; x++) {
                     for (int y=0; y<T; y++)
@@ -111,7 +119,7 @@ struct Partition {
          */
         void dumpGrid(bitset<T*T>& dump)
         {
-            int nrows = psize/T-!nIndex[0]-!nIndex[1];
+            int nrows = psize/T;
             int pos, dumpPos;
             for (int x=nIndex[0]; x<nrows-nIndex[1]; x++) {
                 for (int y=0; y<T; y++) {
@@ -216,7 +224,9 @@ template <size_t T>
 void fill_partitions(Partition<T>* partitions, bitset<T*T>& cglGrid)
 {
     for(int t=0; t<N_THREADS; t++) {
+       //cout << ">> " << t <<endl;
        partitions[t].fill(t, cglGrid);
+       //partitions[t].printGrid(true);
     }
 }
 
