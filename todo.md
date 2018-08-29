@@ -12,3 +12,4 @@ Argomenti in ordine di priorita':
 7. How do we CUDA?
 8. Documentare codice (doxygen?)
 9. Risolvere il problema dell'allocazione in memoria
+10. Fitness dentro startCgl

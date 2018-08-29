@@ -10,7 +10,7 @@
 #include <vector>
 using namespace std;
 
-#define MAX_NEIGH 8      /**<Max number of neighbour for each cell*/
+#define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
 /**
  * Convert from 2d coordinates to 1d
@@ -28,14 +28,14 @@ template<size_t T>
 class Cgl {
 
     private:
-        size_t dim;                   /**<Lenght of the grid side*/
-        unsigned int max_iteration;   /**<Number of evolution step*/
-        std::bitset<T*T> gene;             /**<The initial configuration of the grid */
+        size_t dim;                   /** Lenght of the grid side*/
+        unsigned int max_iteration;   /** Number of evolution step*/
+        std::bitset<T*T> gene;             /** The initial configuration of the grid */
 
     public:
-        std::bitset<T*T> grid;              /**<The grid*/
-        std::bitset<T*T> prev;              /**<Grid of the previous iteration*/
-        int neighbours[T*T][MAX_NEIGH];     /**<Array of neighbours assigned to each cell*/
+        std::bitset<T*T> grid;              /** The grid*/
+        std::bitset<T*T> prev;              /** Grid of the previous iteration*/
+        int neighbours[T*T][MAX_NEIGH];     /** Array of neighbours assigned to each cell*/
 
         std::vector<double> density;        /** A vector of fitness scores for each area **/
         double fitness;                     /** Fitness related to target density **/
