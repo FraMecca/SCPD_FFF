@@ -14,8 +14,9 @@ using namespace std;
 template <size_t T>
 void Cgl<T>::densityScore(int side) {
   assert(side > 0);
-  assert(!density.size() != 0);
-  density.resize(dim*dim/side);
+  assert(fitnessDone == false);
+  if(density.capacity() < dim*dim/side)
+    density.resize(dim*dim/side);
   /* print array
      for(i: density) cout << i << ' ';
      cout <<endl;
@@ -58,8 +59,7 @@ double similarity(std::vector<double> A, std::vector<double>B) {
 
 template <size_t T>
 void Cgl<T>::fitnessScore(int side, std::vector<double> target) {
-  assert(density.size() == 0);
-  assert(fitness == 0);
+  assert(fitnessDone == false);
   densityScore(side);
   /*  print arrayA
      for(i: density) cout << i << ' ';

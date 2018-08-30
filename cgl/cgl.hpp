@@ -31,6 +31,8 @@ class Cgl {
         size_t dim;                   /** Lenght of the grid side*/
         unsigned int max_iteration;   /** Number of evolution step*/
         std::bitset<T*T> gene;             /** The initial configuration of the grid */
+        short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
+        bool fitnessDone = false;            /** flags if fitness has been computed */
 
     public:
         std::bitset<T*T> grid;              /** The grid*/
@@ -109,10 +111,11 @@ class Cgl {
         /**
          * Starts the game applying the Rule of Life at each iteration.
          */
-        void startCgl() {
+        void startCgl(unsigned int n_iter = 0) {
+          if (n_iter == 0) n_iter = max_iteration;
             bitset<T*T> new_grid;
 
-            for (int i=0;i<max_iteration;++i) {
+            for (int i=0;i<n_iter;++i) {
                 for (int x=0;x<dim;++x)
                     for (int y=0;y<dim;++y)
                         updateCell(new_grid,x,y,i==0);
@@ -120,6 +123,25 @@ class Cgl {
                 copyGrid(new_grid,grid);
                 //printGrid();
             }
+        }
+
+        /**
+        * Starts the game and apply fitness at the last iterations.
+        * sets fitnessDone flag to True, it can't be called twice
+        */
+        void GameAndFitness(int side, std::vector<double> target){
+          if (fitnessDone == true)
+            throw std::logic_error("Game of Life and score has already been computed");
+
+          startCgl(max_iteration - fitnessIterations);
+          for(size_t i = 0; i < fitnessIterations; ++i){
+            startCgl(1);
+            fitnessScore(side, target);
+          }
+          fitness = fitness / fitnessIterations;
+          fitnessDone = true;
+          assert(fitness <= 1.0);
+          assert(fitness >= 0.0);
         }
 
 
@@ -167,14 +189,12 @@ class Cgl {
         /**
         * Compute the density of the grid.
         * This function has SIDEEFFECTS.
-        * Gives an assert error when called twice.
         */
         void densityScore(int side);
 
         /**
         * Compute the fitness of the object.
         * This function has SIDEEFFECTS because it calls densityScore;
-        * Gives an assert error when called twice.
         */
         void fitnessScore(int side, std::vector<double> target);
 
