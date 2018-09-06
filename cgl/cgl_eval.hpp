@@ -138,12 +138,12 @@ std::vector<Cgl<T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, do
       std::uniform_real_distribution <> sdis(0.0f, interval - parents[p1].fitness);
       auto shall_reuse = survive > uni_dist(gen);
       if(shall_reuse){
-        child_gene = parents[p1].grid;
+        child_gene = parents[p1].gene;
       } else {
         auto choice2 = sdis(gen);
         cout << "choice2: "<< choice2 << endl;
         auto p2 = retrieve_parent(parents, choice2, p1);
-        child_gene = cross_genes<T>(parents[p1].grid, parents[p2].grid);
+        child_gene = cross_genes<T>(parents[p1].gene, parents[p2].gene);
       }
       results[i] = Cgl(child_gene, max_iter);
     }
