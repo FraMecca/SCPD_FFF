@@ -36,8 +36,8 @@ class Cgl {
 
     public:
         std::bitset<T*T> grid;              /** The grid*/
-        std::bitset<T*T> prev;              /** Grid of the previous iteration*/
-        int neighbours[T*T][MAX_NEIGH];     /** Array of neighbours assigned to each cell*/
+        //std::bitset<T*T> prev;              /** Grid of the previous iteration*/
+        //int neighbours[T*T][MAX_NEIGH];     /** Array of neighbours assigned to each cell*/
 
         std::vector<double> density;        /** A vector of fitness scores for each area **/
         double fitness;                     /** Fitness related to target density **/
@@ -51,9 +51,9 @@ class Cgl {
             density = std::vector<double>();
             fitness = 0.0;
 
-            for (int x=0;x<dim;++x)
+            /*for (int x=0;x<dim;++x)
                 for (int y=0;y<dim;++y)
-                    computeNeighbours(x,y);
+                    computeNeighbours(x,y);*/
 
         }
 
@@ -68,9 +68,9 @@ class Cgl {
             density = std::vector<double>();
             fitness = 0.0;
 
-            for (int x=0;x<dim;++x)
+            /*for (int x=0;x<dim;++x)
                 for (int y=0;y<dim;++y)
-                    computeNeighbours(x,y);
+                    computeNeighbours(x,y);*/
         }
 
         /**
@@ -102,9 +102,9 @@ class Cgl {
             grid = bits;
             gene = bits;
 
-            for (int x=0;x<dim;++x)
+            /*for (int x=0;x<dim;++x)
                 for (int y=0;y<dim;++y)
-                    prev.reset(y + x * dim);
+                    prev.reset(y + x * dim);*/
         }
 
 
@@ -119,7 +119,7 @@ class Cgl {
                 for (int x=0;x<dim;++x)
                     for (int y=0;y<dim;++y)
                         updateCell(new_grid,x,y,i==0);
-                copyGrid(grid,prev);
+                //copyGrid(grid,prev);
                 copyGrid(new_grid,grid);
                 //printGrid();
             }
@@ -217,14 +217,15 @@ class Cgl {
          * Update the value in the given position according to its neighbours and the rule of life.
          */
         void updateCell(bitset<T*T>& new_grid, int x, int y, bool first) {
-            if (!first && noChanges(x,y))
-                return;
-
+            /*if (!first && noChanges(x,y))
+                return;*/
+            int neighbours[MAX_NEIGH] = {0};
+            getNeighbourhood(x,y,neighbours);
             int alive = 0;
             for (int i=0;i<MAX_NEIGH;++i) {
-                if (neighbours[y + x * dim][i] == -1)
+                if (neighbours[i] == -1)
                     continue;
-                if (grid.test(neighbours[y + x * dim][i]))
+                if (grid.test(neighbours[i]))
                     alive++;
             }
 
@@ -275,11 +276,11 @@ class Cgl {
          * by computing their positions on 1 dimension
          * and copying them into the neighbours vector
          */
-        void computeNeighbours(int x, int y) {
+        /*void computeNeighbours(int x, int y) {
             int neigh[MAX_NEIGH] = {0};
             Cgl<T>::getNeighbourhood(x,y,neigh);
             memcpy(neighbours[y + x * dim],neigh,MAX_NEIGH * sizeof(int));
-        }
+        }*/
 
         /**
          * print the bitset
@@ -300,19 +301,19 @@ class Cgl {
          * Check if cell is changed
          * during the previous iteration
          */
-        inline bool isChanged(int i) {
+        /*inline bool isChanged(int i) {
             //if (x == -1 && y == -1) return false;
             //cout << i << endl;
             //assert(i<grid.size() && i<prev.size());
             return grid.test(i) != prev.test(i);
-        }
+        }*/
 
         /**
          * return true if
          * !isChanged(cell) &&
          * !isChanged(neighbours)
          */
-        bool noChanges(int x, int y) {
+        /*bool noChanges(int x, int y) {
             if (isChanged(y + x * dim))
                 return false;
 
@@ -324,7 +325,7 @@ class Cgl {
             }
 
             return true;
-        }
+        }*/
 };
 
 template <size_t T>
