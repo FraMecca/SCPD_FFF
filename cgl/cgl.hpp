@@ -207,7 +207,7 @@ class Cgl {
       * For drawing uses a weighted interval.
       * For the cross over a 4-point non random crossover is used.
       */
-      static std::vector<Cgl<T>> crossover(std::vector<Cgl<T>> parents, size_t sz,
+      static std::vector<bitset<T*T>> crossover(std::vector<Cgl<T>> parents, size_t sz,
                                            double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
 
 
