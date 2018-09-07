@@ -74,6 +74,7 @@ void Cgl<T>::fitnessScore(int side, std::vector<double> target) {
 template <size_t T>
 size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos) {
   // possible overflow bug in pos == -1
+  auto orig_choice = choice;
   for(size_t i = 0; i < parents.size(); ++i){
     if(i == pos) continue;
     auto e = parents[i];
@@ -83,7 +84,8 @@ size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos) {
   }
   double tot = 0;
   for(auto i: parents) tot += i.fitness;
-  throw std::logic_error("Possible logic error: choice = " + std::to_string(choice) +", pos=" + std::to_string((long long)pos) +",tot=" + std::to_string(tot));
+  std::cout << choice << std::endl;
+  throw std::logic_error("Possible logic error: choice = " + std::to_string(orig_choice) +", pos=" + std::to_string((long long)pos) +",total fitness=" + std::to_string(tot));
 }
 
 template <size_t T>
@@ -104,11 +106,11 @@ std::bitset<T*T> cross_genes(const std::bitset<T*T>& p1, const std::bitset<T*T>&
 }
 
 template <size_t T>
-std::vector<Cgl<T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, double mut, double survive, bool shouldSort) {
-  assert(parents.size() > 0);
+std::vector<bitset<T*T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, double mut, double survive, bool shouldSort) {
+  assert(parents.size() > 1);
   auto max_iter = parents[0].getMaxIterations();
 
-  std::vector<Cgl<T>> results = std::vector<Cgl<T>>();
+  std::vector<bitset<T*T>> results = std::vector<bitset<T*T>>();
   results.resize(sz);
 
   if(shouldSort)
@@ -128,7 +130,7 @@ std::vector<Cgl<T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, do
       // random element
       auto c = Cgl(max_iter);
       c.prepareGrid();
-      results[i] = c;
+      results[i] = c.getGene();
     } else {
       std::bitset<T*T> child_gene;
       auto choice = dis(gen);
@@ -136,16 +138,17 @@ std::vector<Cgl<T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, do
       cout << "choice: "<< choice << " ";
       auto p1 = retrieve_parent(parents, choice, -1);
       std::uniform_real_distribution <> sdis(0.0f, interval - parents[p1].fitness);
-      auto shall_reuse = survive > uni_dist(gen);
+      auto d = uni_dist(gen);
+      auto shall_reuse = survive > d;
       if(shall_reuse){
         child_gene = parents[p1].gene;
       } else {
         auto choice2 = sdis(gen);
-        cout << "choice2: "<< choice2 << endl;
+        cout << " choice2: "<< choice2 << endl;
         auto p2 = retrieve_parent(parents, choice2, p1);
         child_gene = cross_genes<T>(parents[p1].gene, parents[p2].gene);
       }
-      results[i] = Cgl(child_gene, max_iter);
+      results[i] = child_gene;
     }
   }
   return results;

@@ -262,24 +262,17 @@ TEST_CASE("Crossover function") {
     bitset<4> init2; init2.set(2); init2.set(3);
     Cgl<2> a(init,1); a.fitness = 0.3;
     Cgl<2> b(init2,1); b.fitness = 0.7;
-    std::vector<Cgl<2>> v; v.push_back(a);
+    std::vector<Cgl<2>> v;
+    v.push_back(a);
+    v.push_back(b);
 
     // test that the only parent survived (reuse probability = 1.0)
-    auto surv = Cgl<2>::crossover(v, 2, 0.0f, 1.0f);
-    for(auto i: surv) REQUIRE(i.grid == a.grid);
-
-    // weak tests
-    v.push_back(b);
-    auto nchildren = 2;
-    auto res = Cgl<2>::crossover(v, nchildren, 0.0f, 0.0f);
-    REQUIRE(res.size() == nchildren);
-    cout << "parents: ";
-    for(auto i: v) cout<<i << " ";
-    cout << endl << "children: ";
-    for(auto i: res) cout<<i << " ";
-    cout << endl;
-    auto res2 = Cgl<2>::crossover(v, 1, 1.0f, 0.0f);
-    for(auto i: res) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
-    for(auto i: res2) REQUIRE(i.getMaxIterations() == a.getMaxIterations());
+    auto surv = Cgl<2>::crossover(v, v.size(), 0.0f, 1.0f);
+    for(auto i: surv){
+      auto testcase = i == a.getGene() || i == b.getGene();
+      REQUIRE(testcase);
+        }
+    auto res = Cgl<2>::crossover(v, v.size(), 0.0f, 0.0f);
+    REQUIRE(res.size() == v.size());
   }
 }
