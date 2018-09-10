@@ -23,7 +23,7 @@ struct Partition {
         int start;                          /** starting index of the partition */
         int end;                            /** ending index of the partition */
         bitset<T*(T/N_THREADS+2)> grid;     /** the bitset representing a partition */
-        bitset<T*(T/N_THREADS+2)> prev;     /** the bitset representing a partition */
+        //bitset<T*(T/N_THREADS+2)> prev;     [>* the bitset representing a partition <]
         size_t psize;                       /** partition size */
         const size_t size = T*T/N_THREADS;        /** partition size without neighbours */
         bool nIndex[2] = {false, false};           /** indexes of the neighbourhood rows */
@@ -42,7 +42,6 @@ struct Partition {
                     updateCell(newGrid,x,y,iter==0);
                 }
             }
-            prev = grid;
             grid = newGrid;
         }
 
@@ -147,26 +146,26 @@ struct Partition {
          * Check for changes between the previous iteration
          * and the current one
          */
-        inline bool isChanged(int i)
-        {
-            return grid.test(i) != prev.test(i);
-        }
+        //inline bool isChanged(int i)
+        //{
+            //return grid.test(i) != prev.test(i);
+        //}
 
         /***
          * Test if a cell has no changes around
          * (if so it can be excluded)
          */
-        bool noChanges(int x, int y, int* neighbours)
-        {
-            if (isChanged(y + x * T))
-                return false;
-            for (int i=0;i<MAX_NEIGH;++i) {
-                if (neighbours[i] != -1 && \
-                        isChanged(neighbours[i]))
-                    return false;
-            }
-            return true;
-        }
+        //bool noChanges(int x, int y, int* neighbours)
+        //{
+            //if (isChanged(y + x * T))
+                //return false;
+            //for (int i=0;i<MAX_NEIGH;++i) {
+                //if (neighbours[i] != -1 && \
+                        //isChanged(neighbours[i]))
+                    //return false;
+            //}
+            //return true;
+        //}
 
         /***
          * Update a cell computing its neighbours
@@ -187,8 +186,8 @@ struct Partition {
             }
 
             //cout << x << " " << y << endl;
-            if (!first && noChanges(x,y,neighbours))
-                return;
+            //if (!first && noChanges(x,y,neighbours))
+                //return;
 
             int alive = 0;
             for (int i=0;i<MAX_NEIGH;++i) {
