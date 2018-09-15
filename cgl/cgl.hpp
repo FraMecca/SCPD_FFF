@@ -10,6 +10,9 @@
 #include <vector>
 using namespace std;
 
+#define GRID std::bitset<T*T>*
+#define newGRID new std::bitset<T*T>()
+
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
 /**
@@ -26,17 +29,16 @@ inline int getPos(int x, int y, int dim){
  */
 template<size_t T>
 class Cgl {
-
     private:
         size_t dim;                   /** Lenght of the grid side*/
         unsigned int max_iteration;   /** Number of evolution step*/
-        std::bitset<T*T> gene;             /** The initial configuration of the grid */
+        GRID gene = nullptr;             /** The initial configuration of the grid */
+        GRID grid = nullptr;              /** The grid*/
         short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
 
     public:
-        std::bitset<T*T> grid;              /** The grid*/
-        //std::bitset<T*T> prev;              /** Grid of the previous iteration*/
+        //GRID prev;              /** Grid of the previous iteration*/
         //int neighbours[T*T][MAX_NEIGH];     /** Array of neighbours assigned to each cell*/
 
         std::vector<double> density;        /** A vector of fitness scores for each area **/
@@ -46,6 +48,9 @@ class Cgl {
          * Default constructor for the class.
          */
         Cgl(unsigned int max_iter = 10) {
+            grid = newGRID;
+            gene = newGRID;
+            prepareGrid();
             max_iteration = max_iter;
             dim = T;
             density = std::vector<double>();
@@ -60,11 +65,13 @@ class Cgl {
         /**
          * Prepares the grid with the given values.
          */
-        Cgl(const std::bitset<T*T> init, unsigned int max_iter = 10) {
+        Cgl(GRID init, unsigned int max_iter = 10) {
             max_iteration = max_iter;
             dim = T;
-            grid = init;
-            gene = init;
+            grid = newGRID;
+            gene = newGRID;
+            copyGrid(init, grid);
+            copyGrid(init, gene);
             density = std::vector<double>();
             fitness = 0.0;
 
@@ -73,11 +80,55 @@ class Cgl {
                     computeNeighbours(x,y);*/
         }
 
+        // disable copy constructor
+        //Cgl(const Cgl&) {
+            
+
+        //}
+
+        void release() {
+            delete gene;
+            delete grid;
+        }
+
+        /**
+         * forward to grid->test
+         */
+        bool test(size_t pos) {
+            return grid->test(pos);
+        }
+
+        /**
+         * forward to grid->set
+         */
+        void set(size_t pos) {
+            grid->set(pos);
+        }
+
+        /**
+         * Compares two grids
+         */
+        bool isEqual(GRID g) {
+            return *g == *grid;
+        }
+
+        /**
+         * Compares two grids
+         */
+        bool isEqualGene(GRID g) {
+            return *g == *gene;
+        }
+
         /**
         * read only gene getter
         */
-        const bitset<T*T> getGene() {
-            return gene;
+        GRID getGene() {
+            assert(gene != nullptr);
+            GRID ret = newGRID;
+            copyGrid(gene, ret);
+            //memcpy(ret, gene, sizeof(std::bitset<T*T>));
+            //auto ret = new bitset<T*T>(gene);
+            return std::move(ret);
         }
 
 
@@ -92,32 +143,37 @@ class Cgl {
          * Initializes the grid according to the given density using a random number generator.
          */
         void prepareGrid() {
-            std::bitset<T*T> bits;
-            std::random_device rd;
-            std::mt19937 gen(rd());
-            std::bernoulli_distribution d(0.5);
-            for(int n = 0; n < bits.size(); ++n){
-                bits[n] = d(gen);
-            }
-            grid = bits;
-            gene = bits;
+            auto bits = randomGrid();
+            copyGrid(bits,grid);
+            copyGrid(bits,gene);
 
             /*for (int x=0;x<dim;++x)
                 for (int y=0;y<dim;++y)
                     prev.reset(y + x * dim);*/
         }
 
+        static GRID randomGrid() {
+            auto bits = newGRID;
+            //cout << bits[0] << endl;
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::bernoulli_distribution d(0.5);
+            for(size_t n = 0; n < bits->size(); ++n){
+                if(d(gen) == 1) bits->set(n);
+            }
+            return std::move(bits);
+        }
 
         /**
          * Starts the game applying the Rule of Life at each iteration.
          */
         void startCgl(unsigned int n_iter = 0) {
           if (n_iter == 0) n_iter = max_iteration;
-            bitset<T*T> new_grid;
+            auto new_grid = newGRID;
 
-            for (int i=0;i<n_iter;++i) {
-                for (int x=0;x<dim;++x)
-                    for (int y=0;y<dim;++y)
+            for (size_t i=0;i<n_iter;++i) {
+                for (size_t x=0;x<dim;++x)
+                    for (size_t y=0;y<dim;++y)
                         updateCell(new_grid,x,y,i==0);
                 //copyGrid(grid,prev);
                 copyGrid(new_grid,grid);
@@ -161,7 +217,7 @@ class Cgl {
          * Returns the number of cellc in the grid
          */
         inline size_t getGridSize()  {
-            return grid.size();
+            return grid->size();
         }
 
         /**
@@ -174,7 +230,7 @@ class Cgl {
         /**
          * Returns the grid
          */
-        inline bitset<T*T>& getGrid() {
+        inline GRID getGrid() {
             return grid;
         }
 
@@ -182,8 +238,11 @@ class Cgl {
         /**
          * Copy the values in grid1 to grid2.
          */
-        static void copyGrid(bitset<T*T>& grid1, bitset<T*T>& grid2) {
-            grid2 = grid1;
+        static void copyGrid(GRID src, GRID dst) {
+            assert(src != nullptr && dst != nullptr);
+            for(size_t i=0; i<src->size(); ++i) {
+                dst->set(i,src->test(i));
+            }
         }
 
         /**
@@ -207,7 +266,7 @@ class Cgl {
       * For drawing uses a weighted interval.
       * For the cross over a 4-point non random crossover is used.
       */
-      static std::vector<bitset<T*T>> crossover(std::vector<Cgl<T>> parents, size_t sz,
+      static std::vector<GRID> crossover(std::vector<Cgl<T>>& parents, size_t sz,
                                            double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
 
 
@@ -216,16 +275,16 @@ class Cgl {
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(bitset<T*T>& new_grid, int x, int y, bool first) {
+        void updateCell(GRID new_grid, int x, int y, bool first) {
             /*if (!first && noChanges(x,y))
                 return;*/
             int neighbours[MAX_NEIGH] = {0};
             getNeighbourhood(x,y,neighbours);
             int alive = 0;
-            for (int i=0;i<MAX_NEIGH;++i) {
+            for (size_t i=0;i<MAX_NEIGH;++i) {
                 if (neighbours[i] == -1)
                     continue;
-                if (grid.test(neighbours[i]))
+                if (grid->test(neighbours[i]))
                     alive++;
             }
 
@@ -241,7 +300,7 @@ class Cgl {
         /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.
          */
-        int* getNeighbourhood(int x, int y, int* neigh) {
+        void getNeighbourhood(int x, int y, int* neigh) {
             neigh[0] = getPos(x-1,y-1, dim);
             neigh[1] = getPos(x-1,y, dim);
             neigh[2] = getPos(x-1,y+1, dim);
@@ -259,16 +318,16 @@ class Cgl {
         /**
          * Apply the rule of life to the given cell.
          */
-        void applyRuleOfLife(bitset<T*T>& new_grid, int x, int y, int alive) {
+        void applyRuleOfLife(GRID new_grid, int x, int y, int alive) {
             int pos = getPos(x,y,dim);
-            if (grid.test(pos) && (alive < 2 || alive > 3))
-                new_grid.reset(pos);
-            else if (grid.test(pos))
-                new_grid.set(pos);
+            if (grid->test(pos) && (alive < 2 || alive > 3))
+                new_grid->reset(pos);
+            else if (grid->test(pos))
+                new_grid->set(pos);
             else if (alive == 3)
-                new_grid.set(pos);
+                new_grid->set(pos);
             else
-                new_grid.reset(pos);
+                new_grid->reset(pos);
         }
 
         /**
@@ -329,4 +388,4 @@ class Cgl {
 };
 
 template <size_t T>
-size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos);
+size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos);

@@ -12,9 +12,11 @@
 using namespace std;
 
 template <size_t T>
-void Cgl<T>::densityScore(int side) {
-  assert(side > 0);
+void Cgl<T>::densityScore(int _side) {
+  assert(_side > 0);
   assert(fitnessDone == false);
+
+  auto side = (size_t)_side;
   if(density.capacity() < dim*dim/side)
     density.resize(dim*dim/side);
   /* print array
@@ -26,7 +28,7 @@ void Cgl<T>::densityScore(int side) {
       for(size_t j = 0; j < side; ++j){
         auto pos = i * side + j;
         cout << "i: " << i << " j: " << j <<  " pos: " << pos << " density_sc: " << density_sc << endl;
-        density_sc = grid.test(pos);
+        density_sc = grid->test(pos);
       }
       density_sc = density_sc / side;
     density[i] = density_sc;
@@ -72,52 +74,50 @@ void Cgl<T>::fitnessScore(int side, std::vector<double> target) {
 
 
 template <size_t T>
-size_t retrieve_parent(std::vector<Cgl<T>> parents, double choice, size_t pos) {
+size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos) {
   // possible overflow bug in pos == -1
   auto orig_choice = choice;
   for(size_t i = 0; i < parents.size(); ++i){
     if(i == pos) continue;
-    auto e = parents[i];
-    assert(e.fitness > 0);
-    choice -= e.fitness;
+    assert(parents[i].fitness > 0);
+    choice -= parents[i].fitness;
     if(choice <= 0) return i;
   }
   double tot = 0;
-  for(auto i: parents) tot += i.fitness;
+  for(size_t i = 0; i < parents.size(); ++i) tot += parents[i].fitness;
   std::cout << choice << std::endl;
   throw std::logic_error("Possible logic error: choice = " + std::to_string(orig_choice) +", pos=" + std::to_string((long long)pos) +",total fitness=" + std::to_string(tot));
 }
 
 template <size_t T>
-std::bitset<T*T> cross_genes(const std::bitset<T*T>& p1, const std::bitset<T*T>& p2) {
-  assert(p1.size() == p2.size());
-  auto sz = p1.size();
+GRID cross_genes(GRID p1, GRID p2) {
+  assert(p1->size() == p2->size());
+  auto sz = p1->size();
   auto off = sz/4;
-  auto res = std::bitset<T*T>();
+  auto res = newGRID;
   for(size_t i=0; i<off; ++i)
-    res[i] = p1[i];
+    res->set(i,p1->test(i));
   for(size_t i=off; i<off*2; ++i)
-    res[i] = p2[i];
+    res->set(i,p2->test(i));
   for(size_t i=off*2; i<off*3; ++i)
-    res[i] = p1[i];
+    res->set(i,p1->test(i));
   for(size_t i=off*3; i<sz; ++i)
-    res[i] = p2[i];
-  return res;
+    res->set(i,p2->test(i));
+  return std::move(res);
 }
 
 template <size_t T>
-std::vector<bitset<T*T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t sz, double mut, double survive, bool shouldSort) {
+std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, double mut, double survive, bool shouldSort) {
   assert(parents.size() > 1);
-  auto max_iter = parents[0].getMaxIterations();
 
-  std::vector<bitset<T*T>> results = std::vector<bitset<T*T>>();
+  std::vector<GRID> results = std::vector<GRID>();
   results.resize(sz);
 
   if(shouldSort)
     std::sort(parents.begin(), parents.end());
 
   double interval = 0.0;
-  for(auto i: parents) interval += i.fitness;
+  for(size_t i=0; i<parents.size(); ++i) interval += parents[i].fitness;
 
   // SLOW RETRIEVAL: TODO
   std::random_device rd;
@@ -128,11 +128,10 @@ std::vector<bitset<T*T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t s
     auto shall_mutate = mut > uni_dist(gen);
     if(shall_mutate){
       // random element
-      auto c = Cgl(max_iter);
-      c.prepareGrid();
-      results[i] = c.getGene();
+      auto c = Cgl<T>::randomGrid();
+      results[i] = c;
     } else {
-      std::bitset<T*T> child_gene;
+      GRID child_gene;
       auto choice = dis(gen);
       cout << "interval: "<< interval << " ";
       cout << "choice: "<< choice << " ";
@@ -141,7 +140,7 @@ std::vector<bitset<T*T>> Cgl<T>::crossover(std::vector<Cgl<T>> parents, size_t s
       auto d = uni_dist(gen);
       auto shall_reuse = survive > d;
       if(shall_reuse){
-        child_gene = parents[p1].gene;
+        child_gene = parents[p1].getGene();
       } else {
         auto choice2 = sdis(gen);
         cout << " choice2: "<< choice2 << endl;

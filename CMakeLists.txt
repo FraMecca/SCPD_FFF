@@ -13,7 +13,7 @@ message("Building configuration: " ${CMAKE_BUILD_TYPE})
 # release is optimized
 set (CMAKE_CXX_FLAGS_RELEASE "-O2")
 # debug includes gdb info
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wpedantic -g")
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wpedantic -g -ggdb")
 # profiling
 if(PROF)
     message("Profiling enabled")

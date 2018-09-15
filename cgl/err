@@ -1,0 +1,1019 @@
+==19623== Memcheck, a memory error detector
+==19623== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==19623== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==19623== Command: ./cgl_test
+==19623== 
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x16E576: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::~vector() (stl_vector.h:567)
+==19623==    by 0x146FE6: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:222)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==  Address 0x581aec0 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x146C4A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:224)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x146BB5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x16E576: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::~vector() (stl_vector.h:567)
+==19623==    by 0x146FE6: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:222)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==  Address 0x581ae70 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x146C4A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:224)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC7D: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:70)
+==19623==    by 0x146BB5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x146FF5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:221)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581af60 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x16E576: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::~vector() (stl_vector.h:567)
+==19623==    by 0x146FE6: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:222)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x146BE3: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:221)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x146FF5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:221)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581af10 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x16E576: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::~vector() (stl_vector.h:567)
+==19623==    by 0x146FE6: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:222)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC7D: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:70)
+==19623==    by 0x146BE3: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:221)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x147004: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581aec0 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x146C4A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:224)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x146BB5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x147004: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581ae70 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x146C4A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:224)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC7D: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:70)
+==19623==    by 0x146BB5: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:220)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+0
+1
+2
+3
+==19623== Invalid read of size 8
+==19623==    at 0x156536: std::_Base_bitset<1ul>::_M_is_equal(std::_Base_bitset<1ul> const&) const (bitset:465)
+==19623==    by 0x17D40E: std::bitset<4ul>::operator==(std::bitset<4ul> const&) const (bitset:1303)
+==19623==    by 0x194AB5: __gnu_cxx::char_traits<std::bitset<4ul> >::eq(std::bitset<4ul> const&, std::bitset<4ul> const&) (char_traits.h:101)
+==19623==    by 0x194A6A: __gnu_cxx::char_traits<std::bitset<4ul> >::length(std::bitset<4ul> const*) (char_traits.h:165)
+==19623==    by 0x18B11B: std::bitset<4ul>::bitset<std::bitset<4ul> >(std::bitset<4ul> const*, std::__cxx11::basic_string<std::bitset<4ul>, std::char_traits<std::bitset<4ul> >, std::allocator<std::bitset<4ul> > >::size_type, std::bitset<4ul>, std::bitset<4ul>) (bitset:952)
+==19623==    by 0x17D120: Cgl<2ul>::getGene() (cgl.hpp:125)
+==19623==    by 0x16EFE0: Cgl<2ul>::crossover(std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >, unsigned long, double, double, bool) (cgl_eval.hpp:143)
+==19623==    by 0x14973A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:274)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==  Address 0x581d660 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x1496E1: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:271)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x14964C: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid read of size 8
+==19623==    at 0x194B60: void std::bitset<4ul>::_M_copy_from_ptr<std::bitset<4ul>, std::char_traits<std::bitset<4ul> > >(std::bitset<4ul> const*, unsigned long, unsigned long, unsigned long, std::bitset<4ul>, std::bitset<4ul>) (bitset:1394)
+==19623==    by 0x18B14D: std::bitset<4ul>::bitset<std::bitset<4ul> >(std::bitset<4ul> const*, std::__cxx11::basic_string<std::bitset<4ul>, std::char_traits<std::bitset<4ul> >, std::allocator<std::bitset<4ul> > >::size_type, std::bitset<4ul>, std::bitset<4ul>) (bitset:953)
+==19623==    by 0x17D120: Cgl<2ul>::getGene() (cgl.hpp:125)
+==19623==    by 0x16EFE0: Cgl<2ul>::crossover(std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >, unsigned long, double, double, bool) (cgl_eval.hpp:143)
+==19623==    by 0x14973A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:274)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==  Address 0x581d660 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x1496E1: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:271)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x14964C: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x14ADE0: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:268)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581d700 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x1A29B7: void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Val_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Val_less_iter) (stl_algo.h:1825)
+==19623==    by 0x19B870: void std::__insertion_sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1855)
+==19623==    by 0x1949A9: void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1890)
+==19623==    by 0x18AFF4: void std::__sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1971)
+==19623==    by 0x17CDF4: void std::sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > > >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >) (stl_algo.h:4834)
+==19623==    by 0x16ECC4: Cgl<2ul>::crossover(std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >, unsigned long, double, double, bool) (cgl_eval.hpp:117)
+==19623==    by 0x14973A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:274)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x14967A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:268)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x14ADE0: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:268)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581d6b0 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x1A29B7: void std::__unguarded_linear_insert<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Val_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Val_less_iter) (stl_algo.h:1825)
+==19623==    by 0x19B870: void std::__insertion_sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1855)
+==19623==    by 0x1949A9: void std::__final_insertion_sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1890)
+==19623==    by 0x18AFF4: void std::__sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter>(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__ops::_Iter_less_iter) (stl_algo.h:1971)
+==19623==    by 0x17CDF4: void std::sort<__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > > >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, __gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >) (stl_algo.h:4834)
+==19623==    by 0x16ECC4: Cgl<2ul>::crossover(std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >, unsigned long, double, double, bool) (cgl_eval.hpp:117)
+==19623==    by 0x14973A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:274)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC7D: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:70)
+==19623==    by 0x14967A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:268)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x14ADF4: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581d660 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD74: Cgl<2ul>::~Cgl() (cgl.hpp:89)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x1496E1: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:271)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC9A: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:71)
+==19623==    by 0x14964C: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== Invalid free() / delete / delete[] / realloc()
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x14ADF4: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==  Address 0x581d610 is 0 bytes inside a block of size 8 free'd
+==19623==    at 0x40340EF: operator delete(void*) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DD89: Cgl<2ul>::~Cgl() (cgl.hpp:90)
+==19623==    by 0x19B374: void std::_Destroy<Cgl<2ul> >(Cgl<2ul>*) (stl_construct.h:98)
+==19623==    by 0x194324: void std::_Destroy_aux<false>::__destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:108)
+==19623==    by 0x18A987: void std::_Destroy<Cgl<2ul>*>(Cgl<2ul>*, Cgl<2ul>*) (stl_construct.h:137)
+==19623==    by 0x17CB5A: void std::_Destroy<Cgl<2ul>*, Cgl<2ul> >(Cgl<2ul>*, Cgl<2ul>*, std::allocator<Cgl<2ul> >&) (stl_construct.h:206)
+==19623==    by 0x18AB37: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::_M_realloc_insert<Cgl<2ul> >(__gnu_cxx::__normal_iterator<Cgl<2ul>*, std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > > >, Cgl<2ul>&&) (vector.tcc:468)
+==19623==    by 0x17CBFD: void std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::emplace_back<Cgl<2ul> >(Cgl<2ul>&&) (vector.tcc:109)
+==19623==    by 0x16E5B3: std::vector<Cgl<2ul>, std::allocator<Cgl<2ul> > >::push_back(Cgl<2ul>&&) (stl_vector.h:1091)
+==19623==    by 0x1496E1: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:271)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==  Block was alloc'd at
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16DC7D: Cgl<2ul>::Cgl(std::bitset<4ul>*, unsigned int) (cgl.hpp:70)
+==19623==    by 0x14964C: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:267)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 
+==19623== HEAP SUMMARY:
+==19623==     in use at exit: 160 bytes in 20 blocks
+==19623==   total heap usage: 2,364 allocs, 2,362 frees, 343,525 bytes allocated
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 1 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x13F0BA: ____C_A_T_C_H____T_E_S_T____0() (cgl_test.cpp:21)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 2 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x17C0F4: Cgl<4ul>::randomGrid() (cgl.hpp:151)
+==19623==    by 0x16D952: Cgl<4ul>::prepareGrid() (cgl.hpp:141)
+==19623==    by 0x140595: ____C_A_T_C_H____T_E_S_T____0() (cgl_test.cpp:51)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 3 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x141465: ____C_A_T_C_H____T_E_S_T____5() (cgl_test.cpp:60)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 4 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16D9E1: Cgl<4ul>::startCgl(unsigned int) (cgl.hpp:167)
+==19623==    by 0x141571: ____C_A_T_C_H____T_E_S_T____5() (cgl_test.cpp:70)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 5 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x142A34: ____C_A_T_C_H____T_E_S_T____5() (cgl_test.cpp:92)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 6 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16D9E1: Cgl<4ul>::startCgl(unsigned int) (cgl.hpp:167)
+==19623==    by 0x142B40: ____C_A_T_C_H____T_E_S_T____5() (cgl_test.cpp:102)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 7 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x1451D0: ____C_A_T_C_H____T_E_S_T____9() (cgl_test.cpp:154)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 8 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x145797: ____C_A_T_C_H____T_E_S_T____9() (cgl_test.cpp:167)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 9 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x14618D: ____C_A_T_C_H____T_E_S_T____13() (cgl_test.cpp:184)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 10 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x146549: ____C_A_T_C_H____T_E_S_T____13() (cgl_test.cpp:199)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 11 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x146B21: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:215)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 12 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x1470EF: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:234)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 13 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x14713D: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:237)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 14 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16EA51: std::bitset<(2ul)*(2ul)>* cross_genes<2ul>(std::bitset<(2ul)*(2ul)>*, std::bitset<(2ul)*(2ul)>*) (cgl_eval.hpp:97)
+==19623==    by 0x14719A: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:240)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 15 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x147D27: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:245)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 16 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16EA51: std::bitset<(2ul)*(2ul)>* cross_genes<2ul>(std::bitset<(2ul)*(2ul)>*, std::bitset<(2ul)*(2ul)>*) (cgl_eval.hpp:97)
+==19623==    by 0x147D52: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:246)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 17 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x1488EB: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:251)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 18 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x16EA51: std::bitset<(2ul)*(2ul)>* cross_genes<2ul>(std::bitset<(2ul)*(2ul)>*, std::bitset<(2ul)*(2ul)>*) (cgl_eval.hpp:97)
+==19623==    by 0x148916: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:252)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 19 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x14959C: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:261)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== 8 bytes in 1 blocks are definitely lost in loss record 20 of 20
+==19623==    at 0x4032ECF: operator new(unsigned long) (in /usr/lib64/valgrind/vgpreload_memcheck-amd64-linux.so)
+==19623==    by 0x1495EA: ____C_A_T_C_H____T_E_S_T____17() (cgl_test.cpp:264)
+==19623==    by 0x12E0A1: Catch::TestInvokerAsFunction::invoke() const (catch.hpp:10331)
+==19623==    by 0x12D734: Catch::TestCase::invoke() const (catch.hpp:10232)
+==19623==    by 0x12813B: Catch::RunContext::invokeActiveTestCase() (catch.hpp:9104)
+==19623==    by 0x127E5D: Catch::RunContext::runCurrentTest(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) (catch.hpp:9078)
+==19623==    by 0x126A03: Catch::RunContext::runTest(Catch::TestCase const&) (catch.hpp:8861)
+==19623==    by 0x12967C: Catch::(anonymous namespace)::runTests(std::shared_ptr<Catch::Config> const&) (catch.hpp:9394)
+==19623==    by 0x12A9FD: Catch::Session::runInternal() (catch.hpp:9592)
+==19623==    by 0x12A782: Catch::Session::run() (catch.hpp:9549)
+==19623==    by 0x12A722: Catch::Session::run(int, char**) (catch.hpp:9517)
+==19623==    by 0x13EC04: main (catch.hpp:13054)
+==19623== 
+==19623== LEAK SUMMARY:
+==19623==    definitely lost: 160 bytes in 20 blocks
+==19623==    indirectly lost: 0 bytes in 0 blocks
+==19623==      possibly lost: 0 bytes in 0 blocks
+==19623==    still reachable: 0 bytes in 0 blocks
+==19623==         suppressed: 0 bytes in 0 blocks
+==19623== 
+==19623== For counts of detected and suppressed errors, rerun with: -v
+==19623== ERROR SUMMARY: 41 errors from 32 contexts (suppressed: 0 from 0)

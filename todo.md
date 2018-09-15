@@ -1,7 +1,9 @@
 # FFF scpd
 
-1. (Galla + Ferra) Pulire cgl.hpp e partition.hpp (decidere cosa tenere delle ottimizzazioni)
-2. (tutti) ALL THE new (allocare nell'heap i bitset)
+1. (tutti) ALL THE new (allocare nell'heap i bitset) --> manual memory management
+   (Cgl.release()) rilasciando a mano la memoria dopo ogni generazione (oppure shared
+   pointer)
+<!--1. (Galla + Ferra) Pulire cgl.hpp e partition.hpp (decidere cosa tenere delle ottimizzazioni)-->
 3. Integrare l'implementazione del cgl con partitioning in openmpi
 ---
 4. crossover + processi spawnati da mpi (scambio di messaggi)
