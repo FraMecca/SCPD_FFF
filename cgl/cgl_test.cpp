@@ -48,7 +48,7 @@ TEST_CASE("The grid is initialized correctly") {
 
     SECTION("The grid is set correctly with the random distribution") {
         Cgl<4> c(2);
-        c.prepareGrid();
+        c.prepareGrid(2);
         REQUIRE(c.getGridSize() == 16);
         REQUIRE(c.getGridSide() == 4);
     }
@@ -164,17 +164,15 @@ TEST_CASE("Density function") {
       REQUIRE(f == 1.0);
   }
   SECTION("Compute density for side = 2") {
-    bitset<4>* init = new bitset<4>();
+    bitset<36>* init = new bitset<36>();
     init->set(0);
     init->set(1);
     init->set(2);
     init->set(3);
-    Cgl<2> c(init,1);
+    Cgl<6> c(init,1);
     REQUIRE(c.density.size() == 0);
     c.densityScore(2);
-    REQUIRE(c.density.size() == 2);
-    for(auto f: c.density)
-      REQUIRE(f == 0.5);
+    REQUIRE(c.density.size() == 9);
   }
 }
 
@@ -192,10 +190,10 @@ TEST_CASE("Fitness function") {
     target.push_back(1.0);
     target.push_back(1.0);
     target.push_back(1.0);
-    c.fitnessScore(1, target);
+    c.fitness = c.fitnessScore(1, target);
     REQUIRE(c.fitness == 1.0);
   }
-  SECTION("Compute fitness for side = 2") {
+  SECTION("Compute fitness for side = 1") {
     bitset<4>* init = new bitset<4>();
     init->set(0);
     init->set(1);
@@ -205,8 +203,10 @@ TEST_CASE("Fitness function") {
     std::vector<double> target = std::vector<double>();
     target.push_back(1.0);
     target.push_back(1.0);
-    c.fitnessScore(2, target);
-    REQUIRE(c.fitness == Approx(0.292893));
+    target.push_back(1.0);
+    target.push_back(1.0);
+    c.fitness = c.fitnessScore(1, target);
+    REQUIRE(c.fitness == Approx(1.0));
   }
 }
 
@@ -279,3 +279,91 @@ TEST_CASE("Crossover function") {
     REQUIRE(res.size() == v.size());
   }
 }
+
+TEST_CASE("Compute Density") {
+    SECTION("empty grid") {
+        bitset<16>* init = new bitset<16>();
+        for(size_t i = 0; i < init->size(); ++i){
+            init->set(i, 0);
+        }
+        Cgl<4> c(init, 1);
+        c.densityScore(2);
+        for(auto i: c.density){
+            REQUIRE(i == Approx(0.0));
+        }
+    }
+    SECTION("full grid") {
+        bitset<16>* init = new bitset<16>();
+        for(size_t i = 0; i < init->size(); ++i){
+            init->set(i, 1);
+        }
+        Cgl<4> c(init, 1);
+        c.densityScore(2);
+        for(auto i: c.density){
+            REQUIRE(i == Approx(1.0));
+        }
+    }
+    SECTION("0.75 grid") {
+        bitset<16>* init = new bitset<16>();
+        for(size_t i = 0; i < init->size(); ++i){
+            if(i % 4 == 0)
+                init->set(i, 0);
+            else
+                init->set(i, 1);
+        }
+        Cgl<4> c(init, 1);
+        auto target = std::vector<double>({0.75, 0.75, 0.75, 0.75});
+        cout << "TEST" << endl;
+        c.fitness = c.fitnessScore(2, target);
+        c.printGrid();
+        for(auto i:c.density) cout << i << " ";
+        cout << endl;
+        REQUIRE(c.fitness == Approx(0.875));
+    }
+    SECTION("20 iteration") {
+        bitset<16>* init = new bitset<16>();
+        for(size_t i = 0; i < init->size(); ++i){
+            if(i % 4 == 0)
+                init->set(i, 0);
+            else
+                init->set(i, 1);
+        }
+        Cgl<4> c(init, 20);
+        auto target = std::vector<double>({0.5, 0.0, 0.5, 0.0});
+        c.GameAndFitness(2, target);
+        REQUIRE(c.fitness == Approx(1.0));
+    }
+}
+
+TEST_CASE("IdensityScore iteration") {
+    SECTION("") {
+        Cgl<6> c = Cgl<6>(2);
+        c.prepareGrid(2);
+        vector<double> target = vector<double>(36);
+        for(size_t i = 0; i < target.size(); ++i){
+            target[i] = (double) c.getGrid()->test(i);
+        }
+        c.fitness = c.fitnessScore(1, target);
+        REQUIRE(Approx(c.fitness) == 1.0);
+    }
+}
+TEST_CASE("Starting fitness") {
+    SECTION(""){
+        cout << "======================================================" << endl;
+        Cgl<8> c = Cgl<8>(2);
+        c.prepareGrid(2);
+        vector<double> target = vector<double>(16);
+        for(size_t i = 0; i < target.size(); ++i){
+            target[i] = 0.0;
+        }
+        c.fitness = c.fitnessScore(2, target);
+        c.printGrid();
+        for(auto i: c.density) cout << i << " ";
+        cout << endl;
+        for(auto i: target) cout << i << " ";
+        cout << endl;
+        REQUIRE(Approx(c.fitness) == 0.0);
+    }
+}
+
+

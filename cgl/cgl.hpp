@@ -47,10 +47,10 @@ class Cgl {
         /**
          * Default constructor for the class.
          */
-        Cgl(unsigned int max_iter = 10) {
+    Cgl(int side=2, unsigned int max_iter = 10) {
             grid = newGRID;
             gene = newGRID;
-            prepareGrid();
+            prepareGrid(side);
             max_iteration = max_iter;
             dim = T;
             density = std::vector<double>();
@@ -79,12 +79,6 @@ class Cgl {
                 for (int y=0;y<dim;++y)
                     computeNeighbours(x,y);*/
         }
-
-        // disable copy constructor
-        //Cgl(const Cgl&) {
-            
-
-        //}
 
         void release() {
             delete gene;
@@ -142,24 +136,29 @@ class Cgl {
         /**
          * Initializes the grid according to the given density using a random number generator.
          */
-        void prepareGrid() {
-            auto bits = randomGrid();
+        void prepareGrid(int side) {
+            auto bits = randomGrid(side, dim);
             copyGrid(bits,grid);
             copyGrid(bits,gene);
-
-            /*for (int x=0;x<dim;++x)
-                for (int y=0;y<dim;++y)
-                    prev.reset(y + x * dim);*/
         }
 
-        static GRID randomGrid() {
+        static GRID randomGrid(int side, size_t dim) {
             auto bits = newGRID;
-            //cout << bits[0] << endl;
             std::random_device rd;
+            std::uniform_real_distribution <> uni(0.0, 1.0);
             std::mt19937 gen(rd());
-            std::bernoulli_distribution d(0.5);
-            for(size_t n = 0; n < bits->size(); ++n){
-                if(d(gen) == 1) bits->set(n);
+            for(size_t line = 0; line < dim/side; ++line){
+                for(size_t col = 0; col < dim/side; ++col){
+                    auto distribution = uni(gen);
+                    std::bernoulli_distribution bern(distribution);
+                    for(size_t x = 0; x < side; ++x){
+                        for(size_t y = 0; y < side ; ++y){
+                            auto pos = x*dim + line*(dim*side) + y + col*side;
+                            auto c =  bern(gen);
+                            if(c == 1) bits->set(pos);
+                        }
+                    }
+                }
             }
             return std::move(bits);
         }
@@ -186,18 +185,20 @@ class Cgl {
         * sets fitnessDone flag to True, it can't be called twice
         */
         void GameAndFitness(int side, std::vector<double> target){
-          if (fitnessDone == true)
-            throw std::logic_error("Game of Life and score has already been computed");
+            if (fitnessDone == true)
+                throw std::logic_error("Game of Life and score has already been computed");
+            if (max_iteration < fitnessIterations)
+                throw std::logic_error("Invalid number of iterations");
 
-          startCgl(max_iteration - fitnessIterations);
-          for(size_t i = 0; i < fitnessIterations; ++i){
-            startCgl(1);
-            fitnessScore(side, target);
-          }
-          fitness = fitness / fitnessIterations;
-          fitnessDone = true;
-          assert(fitness <= 1.0);
-          assert(fitness >= 0.0);
+            startCgl(max_iteration - fitnessIterations);
+            for(size_t i = 0; i < fitnessIterations; ++i){
+                startCgl(1);
+                fitness += fitnessScore(side, target);
+            }
+            fitness = fitness / fitnessIterations;
+            fitnessDone = true;
+            assert(fitness <= 1.0);
+            assert(fitness >= 0.0);
         }
 
 
@@ -205,9 +206,13 @@ class Cgl {
          * Prints the array visualisation of the grid, from right to left.
          */
         void printGrid() {
-            for (int x=0;x<dim;++x) {
-                for (int y=0;y<dim;++y)
-                    cout << grid[getPos(x,y,dim)];
+            assert(dim > 0);
+            for (size_t x=0; x<dim; ++x) {
+                for (size_t y=0; (long long)y<dim; ++y){
+                    assert(y>=0);
+                    auto pos = y+x*dim;
+                    cout << grid->test(pos);
+                }
                 cout << endl;
             }
             cout << endl;
@@ -255,7 +260,7 @@ class Cgl {
         * Compute the fitness of the object.
         * This function has SIDEEFFECTS because it calls densityScore;
         */
-        void fitnessScore(int side, std::vector<double> target);
+        double fitnessScore(int side, std::vector<double> target);
 
       /**
       * Computes crossover from a vector of parents.
@@ -267,7 +272,8 @@ class Cgl {
       * For the cross over a 4-point non random crossover is used.
       */
       static std::vector<GRID> crossover(std::vector<Cgl<T>>& parents, size_t sz,
-                                           double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
+                                           double mutation = 0.03f, double survive = 0.05f, bool shouldSort = true);
+
 
 
     private:

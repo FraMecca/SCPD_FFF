@@ -18,3 +18,7 @@
 2. Entro settimana prossima (entro prossimo weekend)
 Galla not avaiable from martedi
 
+
+DOCUMENTA SOLO GRIGLIE PARI
+Eccezioni quando side e` incompatibile con dimensione
+Side ora e` un parametro della classe
