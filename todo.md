@@ -21,4 +21,11 @@ Galla not avaiable from martedi
 
 DOCUMENTA SOLO GRIGLIE PARI
 Eccezioni quando side e` incompatibile con dimensione
-Side ora e` un parametro della classe
+Side ora e` un parametro della classe (si intende da fare)
+File di configurazione per parametri
+
+Possibilita\`:
+1. Ad Aldinucci va bene che non ci sia miglioramento
+2. Framework generico dove le regole sono importate da file dinamicamente
+3. Cambiamo le regole del Conway per adattarlo ai GA
+4. Parlare con Aldinucci di come risolvere
