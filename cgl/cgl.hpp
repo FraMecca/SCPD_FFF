@@ -31,11 +31,11 @@ template<size_t T>
 class Cgl {
     private:
         size_t dim;                   /** Lenght of the grid side*/
-        unsigned int max_iteration;   /** Number of evolution step*/
         GRID gene = nullptr;             /** The initial configuration of the grid */
         GRID grid = nullptr;              /** The grid*/
         short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
+
 
     public:
         //GRID prev;              /** Grid of the previous iteration*/
@@ -43,29 +43,27 @@ class Cgl {
 
         std::vector<double> density;        /** A vector of fitness scores for each area **/
         double fitness;                     /** Fitness related to target density **/
+        unsigned int max_iteration = 0;   /** Number of evolution step*/
+        size_t side = 0;
 
         /**
          * Default constructor for the class.
          */
-    Cgl(int side=2, unsigned int max_iter = 10) {
+    Cgl(size_t _side=0, unsigned int max_iter = 0) {
             grid = newGRID;
-            gene = newGRID;
-            prepareGrid(side);
+            gene = newGRID;    
             max_iteration = max_iter;
             dim = T;
             density = std::vector<double>();
             fitness = 0.0;
-
-            /*for (int x=0;x<dim;++x)
-                for (int y=0;y<dim;++y)
-                    computeNeighbours(x,y);*/
-
+            side = _side;
+            prepareGrid();
         }
 
         /**
          * Prepares the grid with the given values.
          */
-        Cgl(GRID init, unsigned int max_iter = 10) {
+        Cgl(GRID init, size_t _side=0, unsigned int max_iter = 0) {
             max_iteration = max_iter;
             dim = T;
             grid = newGRID;
@@ -74,10 +72,7 @@ class Cgl {
             copyGrid(init, gene);
             density = std::vector<double>();
             fitness = 0.0;
-
-            /*for (int x=0;x<dim;++x)
-                for (int y=0;y<dim;++y)
-                    computeNeighbours(x,y);*/
+            side = _side;
         }
 
         void release() {
@@ -136,7 +131,8 @@ class Cgl {
         /**
          * Initializes the grid according to the given density using a random number generator.
          */
-        void prepareGrid(int side) {
+        void prepareGrid() {
+            assert(side > 0);
             auto bits = randomGrid(side, dim);
             copyGrid(bits,grid);
             copyGrid(bits,gene);
@@ -167,6 +163,9 @@ class Cgl {
          * Starts the game applying the Rule of Life at each iteration.
          */
         void startCgl(unsigned int n_iter = 0) {
+          assert(side > 0);
+          assert(max_iteration > 0);
+
           if (n_iter == 0) n_iter = max_iteration;
             auto new_grid = newGRID;
 
@@ -184,7 +183,10 @@ class Cgl {
         * Starts the game and apply fitness at the last iterations.
         * sets fitnessDone flag to True, it can't be called twice
         */
-        void GameAndFitness(int side, std::vector<double> target){
+        void GameAndFitness(std::vector<double> target){
+            assert(side > 0);
+            assert(max_iteration > 0);
+
             if (fitnessDone == true)
                 throw std::logic_error("Game of Life and score has already been computed");
             if (max_iteration < fitnessIterations)
@@ -193,7 +195,7 @@ class Cgl {
             startCgl(max_iteration - fitnessIterations);
             for(size_t i = 0; i < fitnessIterations; ++i){
                 startCgl(1);
-                fitness += fitnessScore(side, target);
+                fitness += fitnessScore(target);
             }
             fitness = fitness / fitnessIterations;
             fitnessDone = true;
@@ -211,7 +213,10 @@ class Cgl {
                 for (size_t y=0; (long long)y<dim; ++y){
                     assert(y>=0);
                     auto pos = y+x*dim;
-                    cout << grid->test(pos);
+                    if (grid->test(pos) == 0)
+                      cout << "_";
+                    else
+                      cout << "X";
                 }
                 cout << endl;
             }
@@ -254,13 +259,13 @@ class Cgl {
         * Compute the density of the grid.
         * This function has SIDEEFFECTS.
         */
-        void densityScore(int side);
+        void densityScore();
 
         /**
         * Compute the fitness of the object.
         * This function has SIDEEFFECTS because it calls densityScore;
         */
-        double fitnessScore(int side, std::vector<double> target);
+        double fitnessScore(std::vector<double> target);
 
       /**
       * Computes crossover from a vector of parents.

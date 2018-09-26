@@ -13,16 +13,17 @@
 
 using namespace std;
 template <size_t T>
-void Cgl<T>::densityScore(int _side) {
-    assert(_side > 0);
+void Cgl<T>::densityScore() {
+    assert(side > 0);
     assert(fitnessDone == false);
 
-    auto side = (size_t)_side;
     int cap = dim*dim/(side*side);
     if(density.capacity() < cap)
         density.resize(cap);
 
     size_t cnt = 0;
+
+    //To be parallelised?
     for(size_t line = 0; line < dim/side; ++line){
         for(size_t col = 0; col < dim/side; ++col){
             long density_sc = 0;
@@ -62,13 +63,13 @@ double similarity(std::vector<double> A, std::vector<double>B) {
         auto d = *B_iter - *A_iter;
         res += abs(d);
     }
-    auto r = 1.0f - res/A.size(); 
+    auto r = 1.0f - res/A.size();
     return r;
 }
 
 template <size_t T>
-double Cgl<T>::fitnessScore(int side, std::vector<double> target) {
-  densityScore(side);
+double Cgl<T>::fitnessScore(std::vector<double> target) {
+  densityScore();
   assert(density.size() > 0);
   return similarity(density, target);
   // cout << "Fitness: "<< fitness << endl;
@@ -117,7 +118,7 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
 
     if(shouldSort){
         std::sort(parents.begin(), parents.end());
-        cout << parents[sz-1].fitness << " " 
+        cout << parents[sz-1].fitness << " "
              << parents[sz-2].fitness << " "
              << parents[sz-3].fitness << " "
              << parents[sz-4].fitness << " "
@@ -158,4 +159,3 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     }
     return results;
 }
-

@@ -3,7 +3,9 @@
 1. (tutti) ALL THE new (allocare nell'heap i bitset) --> manual memory management
    (Cgl.release()) rilasciando a mano la memoria dopo ogni generazione (oppure shared
    pointer)
-<!--1. (Galla + Ferra) Pulire cgl.hpp e partition.hpp (decidere cosa tenere delle ottimizzazioni)-->
+
+   1.1. partition.hpp still ALL THE NEW
+
 3. Integrare l'implementazione del cgl con partitioning in openmpi
 ---
 4. crossover + processi spawnati da mpi (scambio di messaggi)
@@ -12,20 +14,20 @@
 6. Cominciare relazione su progetto
 7. Documentare codice (doxygen?)
 
-## Deadlines
+## Updates 20/09/2018 (FerraMecca)
 
-1. Questo weekend (sabato)
-2. Entro settimana prossima (entro prossimo weekend)
-Galla not avaiable from martedi
-
-
-DOCUMENTA SOLO GRIGLIE PARI
-Eccezioni quando side e` incompatibile con dimensione
-Side ora e` un parametro della classe (si intende da fare)
-File di configurazione per parametri
+1. DOCUMENTA SOLO GRIGLIE PARI
+2. Eccezioni quando side e' incompatibile con dimensione
+3. Side ora e' un parametro della classe (si intende da fare)
+4. File di configurazione per parametri
 
 Possibilita\`:
 1. Ad Aldinucci va bene che non ci sia miglioramento
 2. Framework generico dove le regole sono importate da file dinamicamente
 3. Cambiamo le regole del Conway per adattarlo ai GA
 4. Parlare con Aldinucci di come risolvere
+
+
+## Deadlines
+
+To be continued...
