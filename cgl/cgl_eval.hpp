@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <math.h>
 
+#include "../include/settings.hpp"
+
 using namespace std;
 template <size_t T>
 void Cgl<T>::densityScore() {
@@ -148,7 +150,7 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
         auto shall_mutate = mut > uni_dist(gen);
         if(shall_mutate){
             // random element
-            auto c = Cgl<T>::randomGrid(2, bestParents[0].dim);
+            auto c = Cgl<T>::randomGrid(SIDE, bestParents[0].dim);
             results[i] = c;
         } else {
             GRID child_gene;

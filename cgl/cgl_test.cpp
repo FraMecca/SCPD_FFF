@@ -6,6 +6,7 @@
 #include "cgl.hpp"
 #include "cgl_eval.hpp"
 #include "../include/catch.hpp"
+#include "../include/settings.hpp"
 
 /**
  * Test build for public methods of Cgl class

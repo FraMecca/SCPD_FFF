@@ -8,6 +8,9 @@
 #include <cstring>
 #include <bitset>
 #include <vector>
+
+#include "../include/settings.hpp"
+
 using namespace std;
 
 #define GRID std::bitset<T*T>*
@@ -44,12 +47,12 @@ class Cgl {
         std::vector<double> density;        /** A vector of fitness scores for each area **/
         double fitness;                     /** Fitness related to target density **/
         unsigned int max_iteration = 0;   /** Number of evolution step*/
-        size_t side = 0;
+        size_t side = SIDE;
 
         /**
          * Default constructor for the class.
          */
-    Cgl(size_t _side=0, unsigned int max_iter = 0) {
+    Cgl(size_t _side=SIDE, unsigned int max_iter = N_ITERATIONS) {
             grid = newGRID;
             gene = newGRID;
             max_iteration = max_iter;
@@ -63,7 +66,7 @@ class Cgl {
         /**
          * Prepares the grid with the given values.
          */
-        Cgl(GRID init, size_t _side=0, unsigned int max_iter = 0) {
+        Cgl(GRID init, size_t _side=SIDE, unsigned int max_iter = N_ITERATIONS) {
             max_iteration = max_iter;
             dim = T;
             grid = newGRID;
@@ -277,7 +280,7 @@ class Cgl {
       * For the cross over a 4-point non random crossover is used.
       */
       static std::vector<GRID> crossover(std::vector<Cgl<T>>& parents, size_t sz,
-                                           double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
+                                           double mutation = _mutation, double survive = _survive, bool shouldSort = true);
 
 
 
