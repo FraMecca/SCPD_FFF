@@ -18,8 +18,8 @@
 
 1. DOCUMENTA SOLO GRIGLIE PARI
 2. Eccezioni quando side e' incompatibile con dimensione
-3. Side ora e' un parametro della classe (si intende da fare)
 4. File di configurazione per parametri
+5. Estrazione target da griglia casuale evoluta con Cgl
 
 Possibilita\`:
 1. Ad Aldinucci va bene che non ci sia miglioramento

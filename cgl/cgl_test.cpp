@@ -261,9 +261,6 @@ TEST_CASE("Crossover function") {
     std::vector<Cgl<2>> v = std::vector<Cgl<2>>(2,Cgl<2>(2));
     v[0].fitness = 0.3;
     v[1].fitness = 0.7;
-    //std::vector<Cgl<2>> v;
-    //v.push_back(std::move(a));
-    //v.push_back(std::move(b));
 
     // test that the only parent survived (reuse probability = 1.0)
     auto surv = Cgl<2>::crossover(v, v.size(), 0.0f, 1.0f);

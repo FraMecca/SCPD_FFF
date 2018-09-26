@@ -8,7 +8,7 @@ using namespace std;
 
 std::vector<Cgl<DIM>> first_generation(unsigned int n_people, unsigned int maxiter)
 {
-    std::vector<Cgl<DIM>> people = std::vector<Cgl<DIM>>(n_people);
+    std::vector<Cgl<DIM>> people = std::vector<Cgl<DIM>>(n_people,Cgl<DIM>(SIDE,maxiter));
     for(size_t i = 0; i < people.size(); ++i){
         people[i].side = SIDE;
         people[i].max_iteration = maxiter;

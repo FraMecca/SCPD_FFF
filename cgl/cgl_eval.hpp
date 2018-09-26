@@ -78,6 +78,7 @@ double Cgl<T>::fitnessScore(std::vector<double> target) {
 
 template <size_t T>
 size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos) {
+   assert(parents.size() >0);
     // possible overflow bug in pos == -1
     auto orig_choice = choice;
     for(size_t i = 0; i < parents.size(); ++i){
@@ -114,20 +115,29 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     assert(parents.size() > 1);
 
     std::vector<GRID> results = std::vector<GRID>();
+    //A vector of children of the same size as parents, thi is gonna be the new generation
     results.resize(sz);
 
+    //Order pparents, best at the end
     if(shouldSort){
         std::sort(parents.begin(), parents.end());
-        cout << parents[sz-1].fitness << " "
-             << parents[sz-2].fitness << " "
-             << parents[sz-3].fitness << " "
-             << parents[sz-4].fitness << " "
-             << parents[sz-5].fitness << " " << endl;
+        cout << parents[1].fitness << " "
+             << parents[2].fitness << " "
+             << parents[3].fitness << " "
+             << parents[4].fitness << " "
+             << parents[sz-1].fitness << " " << endl;
     }
 
+    //Take the top X parents
+    size_t top_n = (size_t)ceil(((double)parents.size())/100*25);
+    //cout <<"top_N: " << top_n <<" par size: "<<parents.size() <<endl;
+    //when testing on small vectors
+    if (top_n < 2)
+      top_n = 2;
+    std::vector<Cgl<T>> bestParents = std::vector<Cgl<T>>(parents.begin(),parents.begin() + top_n);
 
     double interval = 0.0;
-    for(size_t i=0; i<parents.size(); ++i) interval += parents[i].fitness;
+    for(size_t i=0; i<bestParents.size(); ++i) interval += bestParents[i].fitness;
 
     // SLOW RETRIEVAL: TODO
     std::random_device rd;
@@ -138,21 +148,21 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
         auto shall_mutate = mut > uni_dist(gen);
         if(shall_mutate){
             // random element
-            auto c = Cgl<T>::randomGrid(2, parents[0].dim);
+            auto c = Cgl<T>::randomGrid(2, bestParents[0].dim);
             results[i] = c;
         } else {
             GRID child_gene;
             auto choice = dis(gen);
-            auto p1 = retrieve_parent(parents, choice, -1);
-            std::uniform_real_distribution <> sdis(0.0f, interval - parents[p1].fitness);
+            auto p1 = retrieve_parent(bestParents, choice, -1);
+            std::uniform_real_distribution <> sdis(0.0f, interval - bestParents[p1].fitness);
             auto d = uni_dist(gen);
             auto shall_reuse = survive > d;
             if(shall_reuse){
-                child_gene = parents[p1].getGene();
+                child_gene = bestParents[p1].getGene();
             } else {
                 auto choice2 = sdis(gen);
-                auto p2 = retrieve_parent(parents, choice2, p1);
-                child_gene = cross_genes<T>(parents[p1].gene, parents[p2].gene);
+                auto p2 = retrieve_parent(bestParents, choice2, p1);
+                child_gene = cross_genes<T>(bestParents[p1].gene, bestParents[p2].gene);
             }
             results[i] = child_gene;
         }

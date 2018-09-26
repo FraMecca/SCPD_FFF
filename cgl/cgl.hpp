@@ -51,7 +51,7 @@ class Cgl {
          */
     Cgl(size_t _side=0, unsigned int max_iter = 0) {
             grid = newGRID;
-            gene = newGRID;    
+            gene = newGRID;
             max_iteration = max_iter;
             dim = T;
             density = std::vector<double>();
@@ -277,7 +277,7 @@ class Cgl {
       * For the cross over a 4-point non random crossover is used.
       */
       static std::vector<GRID> crossover(std::vector<Cgl<T>>& parents, size_t sz,
-                                           double mutation = 0.03f, double survive = 0.05f, bool shouldSort = true);
+                                           double mutation = 0.08f, double survive = 0.05f, bool shouldSort = true);
 
 
 
@@ -364,7 +364,7 @@ class Cgl {
         * overload of the < operator, used for sorting a vector of objs
         */
         friend bool operator<(const Cgl& l, const Cgl& r){
-          return l.fitness < r.fitness;
+          return l.fitness > r.fitness;
         }
 
         /**
