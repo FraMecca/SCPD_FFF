@@ -5,17 +5,18 @@
 #include <cstdio>
 #include <omp.h>
 #include "../cgl/cgl.hpp"
+#include "../include/settings.hpp"
 #include "partition.hpp"
 
 using namespace std;
 /***
  * Run using openmp
- * the number of threads is defined as N_THREADS
+ * the number of threads is defined as N_PARTITIONS
  */
 template <size_t T>
-void run_parallel(Partition<T>* parts, unsigned int maxiter)
+void run_parallel(Partition<T>* parts, unsigned int maxiter = N_ITERATIONS)
 {
-    bitset<T*T> stepGrid;
+    GRID stepGrid = newGRID;
     dump_partitions(parts, stepGrid);
 #ifdef DEBUG
     print_partitions(partitions, false);
@@ -27,13 +28,14 @@ void run_parallel(Partition<T>* parts, unsigned int maxiter)
         #pragma omp parallel
         {
             // set thread number dynamically
-            omp_set_num_threads(N_THREADS);
+            omp_set_num_threads(N_PARTITIONS);
             // distribute partitions between threads
             #pragma omp for
-            for (int p=0; p<N_THREADS; p++) {
+            for (int p=0; p<N_PARTITIONS; p++) {
                 parts[p].computeCells(i);
             }
         }
+        print_partitions(parts);
         dump_partitions(parts, stepGrid);
         fill_partitions(parts, stepGrid);
 #ifdef DEBUG
@@ -42,4 +44,5 @@ void run_parallel(Partition<T>* parts, unsigned int maxiter)
 #endif
         // end debugging
     }
+    delete stepGrid;
 }
