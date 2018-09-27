@@ -7,6 +7,11 @@
  * Set the chosen values, then go compile.
  */
 
+#define SEQUENTIAL
+//#define PARTITION
+
+#define N_PARTITIONS 8
+
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
@@ -16,7 +21,7 @@
 #define SIDE 4
 
 // Maximum number of CGL iterations
-#define N_ITERATIONS 500
+#define N_ITERATIONS 100
 
 
 // --- GA PARAMETERS

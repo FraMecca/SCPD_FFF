@@ -26,7 +26,7 @@ set (CGL_VERSION_MINOR 1)
 
 add_subdirectory(cgl)
 add_subdirectory(cgl_seq)
-#add_subdirectory(cgl_mp)
+add_subdirectory(cgl_mp)
 
 set_target_properties(cgl PROPERTIES LINKER_LANGUAGE CXX)
 

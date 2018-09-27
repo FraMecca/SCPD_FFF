@@ -13,11 +13,23 @@
 
 using namespace std;
 
+#if defined(PARTITION) && defined(SEQUENTIAL)
+#error "Choose a parallelization method"
+#endif
+
 #define GRID std::bitset<T*T>*
 #define newGRID new std::bitset<T*T>()
 
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
+#ifdef PARTITION
+#include "../cgl_mp/partition.hpp"
+#include <omp.h>
+#endif
+
+#if (DIM % SIDE != 0)
+#error "Grid dimension must be compatible with area of submatrix"
+#endif
 /**
  * Convert from 2d coordinates to 1d
  */
@@ -34,11 +46,13 @@ template<size_t T>
 class Cgl {
     private:
         size_t dim;                   /** Lenght of the grid side*/
-        GRID gene = nullptr;             /** The initial configuration of the grid */
-        GRID grid = nullptr;              /** The grid*/
         short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
-
+        GRID gene = nullptr;             /** The initial configuration of the grid */
+        GRID grid = nullptr;              /** The grid*/
+#ifdef PARTITION
+        Partition<T> partitions[N_PARTITIONS]; 
+#endif
 
     public:
         //GRID prev;              /** Grid of the previous iteration*/
@@ -61,6 +75,9 @@ class Cgl {
             fitness = 0.0;
             side = _side;
             prepareGrid();
+#ifdef PARTITION
+            fill_partitions();
+#endif
         }
 
         /**
@@ -76,6 +93,9 @@ class Cgl {
             density = std::vector<double>();
             fitness = 0.0;
             side = _side;
+#ifdef PARTITION
+            fill_partitions();
+#endif
         }
 
         void release() {
@@ -85,6 +105,7 @@ class Cgl {
 
         /**
          * forward to grid->test
+         * TODO are we using this
          */
         bool test(size_t pos) {
             return grid->test(pos);
@@ -92,6 +113,7 @@ class Cgl {
 
         /**
          * forward to grid->set
+         * TODO are we using this
          */
         void set(size_t pos) {
             grid->set(pos);
@@ -121,14 +143,6 @@ class Cgl {
             //memcpy(ret, gene, sizeof(std::bitset<T*T>));
             //auto ret = new bitset<T*T>(gene);
             return std::move(ret);
-        }
-
-
-        /**
-        * read only getter for max_iterations.
-        */
-        const unsigned int getMaxIterations() {
-            return max_iteration;
         }
 
         /**
@@ -165,7 +179,8 @@ class Cgl {
         /**
          * Starts the game applying the Rule of Life at each iteration.
          */
-        void startCgl(unsigned int n_iter = 0) {
+#ifdef SEQUENTIAL
+        void startCgl(unsigned int n_iter = N_ITERATIONS) {
           assert(side > 0);
           assert(max_iteration > 0);
 
@@ -181,7 +196,53 @@ class Cgl {
                 //printGrid();
             }
         }
+#endif
 
+#ifdef PARTITION
+
+        void startCgl(unsigned int n_iter = N_ITERATIONS) 
+        {
+            fill_partitions();
+            GRID stepGrid = newGRID;
+            for(int i=0; i<n_iter; i++) {
+                // spawn a thread pool
+                #pragma omp parallel
+                {
+                    // set thread number dynamically
+                    omp_set_num_threads(N_PARTITIONS);
+                    // distribute partitions between threads
+                    #pragma omp for
+                    for (int p=0; p<N_PARTITIONS; p++) {
+                        partitions[p].computeCells(i);
+                    }
+                }
+            }
+            dump_partitions(stepGrid);
+            copyGrid(stepGrid, grid);
+        }
+#endif
+#ifdef PARTITION
+        /***
+         * Helper function to fill all partitions based on their index
+         */
+        void fill_partitions()
+        {
+            for(int t=0; t<N_PARTITIONS; t++) {
+                //cout << ">> " << t <<endl;
+                partitions[t].fill(t, grid);
+                //partitions[t].printGrid(true);
+            }
+        }
+
+
+        void dump_partitions(GRID stepGrid)
+        {
+            for(int p=0; p<N_PARTITIONS; p++) {
+                partitions[p].dumpGrid(stepGrid);
+            }
+        }
+
+#endif
         /**
         * Starts the game and apply fitness at the last iterations.
         * sets fitnessDone flag to True, it can't be called twice
@@ -210,6 +271,7 @@ class Cgl {
         /**
          * Prints the array visualisation of the grid, from right to left.
          */
+#ifdef SEQUENTIAL
         void printGrid() {
             assert(dim > 0);
             for (size_t x=0; x<dim; ++x) {
@@ -225,7 +287,18 @@ class Cgl {
             }
             cout << endl;
         }
-
+#endif
+        /***
+         * debugging (print partition grids)
+         */
+#ifdef PARTITION
+        void printGrid(bool full=false)
+        {
+            for(int t=0; t<N_PARTITIONS; t++) {
+                partitions[t].printGrid(full);
+            }
+        }
+#endif
         /**
          * Returns the number of cellc in the grid
          */
@@ -332,6 +405,7 @@ class Cgl {
         /**
          * Apply the rule of life to the given cell.
          */
+#ifdef SEQUENTIAL
         void applyRuleOfLife(GRID new_grid, int x, int y, int alive) {
             int pos = getPos(x,y,dim);
             if (grid->test(pos) && (alive < 2 || alive > 3))
@@ -343,17 +417,7 @@ class Cgl {
             else
                 new_grid->reset(pos);
         }
-
-        /**
-         * Compute neighbours to a cell
-         * by computing their positions on 1 dimension
-         * and copying them into the neighbours vector
-         */
-        /*void computeNeighbours(int x, int y) {
-            int neigh[MAX_NEIGH] = {0};
-            Cgl<T>::getNeighbourhood(x,y,neigh);
-            memcpy(neighbours[y + x * dim],neigh,MAX_NEIGH * sizeof(int));
-        }*/
+#endif
 
         /**
          * print the bitset
@@ -399,6 +463,8 @@ class Cgl {
 
             return true;
         }*/
+//#ifdef PARTITION
+
 };
 
 template <size_t T>

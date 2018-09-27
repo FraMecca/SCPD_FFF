@@ -18,27 +18,27 @@ TEST_CASE("Partitioning") {
         unsigned int maxiter = 20;
         cout << "Testing partition filling on size " << TSIZE << \
             " and " << maxiter << " iterations." << endl;
-        Cgl<TSIZE>* c = new Cgl<TSIZE>(maxiter);
-        c->prepareGrid();
-        c->printGrid();
+        Cgl<TSIZE> c = Cgl<TSIZE>(2, maxiter); // side == 2
+        c.prepareGrid();
+        c.printGrid();
+        const auto cgrid = c.getGrid();
 
-        Partition<TSIZE> partitions[N_THREADS];
-        fill_partitions(partitions, c->grid);
+        Partition<TSIZE> partitions[N_PARTITIONS];
+        fill_partitions(partitions, cgrid);
         cout << endl;
         print_partitions(partitions, false);
         cout << endl;
 
         int j;
-        for(int t=0; t<N_THREADS; t++) {
+        for(int t=0; t<N_PARTITIONS; t++) {
             //cout << "--- " << t << endl;
             j = 0;
             //cout << "psize " << partitions[t].psize << ", thread " << t << endl;
             for(int i=partitions[t].start; i<partitions[t].end; i++) {
-                //cout << i << " - " << partitions[t].grid.test(j) << ":" << c->grid.test(i) << endl;
-                REQUIRE(partitions[t].grid.test(j++) == c->grid.test(i));
+                //cout << i << " - " << partitions[t].grid->test(j) << ":" << c.grid->test(i) << endl;
+                REQUIRE(partitions[t].grid->test(j++) == c.getGrid()->test(i));
             }
         }
-        delete c;
     }
 
     SECTION("Dumping: the two grids should be equal. (compared element by element)") {
@@ -46,23 +46,23 @@ TEST_CASE("Partitioning") {
 
         cout << "Testing partition dumping on size " << TSIZE << \
             " and " << maxiter << " iterations." << endl;
-        Cgl<TSIZE>* c = new Cgl<TSIZE>(maxiter);
-        c->prepareGrid();
+        Cgl<TSIZE> c = Cgl<TSIZE>(2, maxiter); // side == 2
+        c.prepareGrid();
+        const auto cgrid = c.getGrid();
 
-        Partition<TSIZE> partitions[N_THREADS];
-        fill_partitions(partitions, c->grid);
-        delete c;
+        Partition<TSIZE> partitions[N_PARTITIONS];
+        fill_partitions(partitions, cgrid);
         cout << endl;
 
         // dumping
-        bitset<TSIZE*TSIZE> stepGrid;
+        bitset<TSIZE*TSIZE>* stepGrid = new bitset<TSIZE*TSIZE>();
         dump_partitions(partitions, stepGrid);
 
         int j;
-        for(int t=0; t<N_THREADS; t++) {
+        for(int t=0; t<N_PARTITIONS; t++) {
             j = 0;
             for(int i=partitions[t].start; i<partitions[t].end; i++) {
-                REQUIRE(partitions[t].grid.test(j++) == stepGrid.test(i));
+                REQUIRE(partitions[t].grid->test(j++) == stepGrid->test(i));
             }
         }
     }
