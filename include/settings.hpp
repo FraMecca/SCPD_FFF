@@ -22,10 +22,13 @@
 // --- GA PARAMETERS
 
 // Population size (num. individuals)
-#define POPSIZE 200
+#define POPSIZE 500
 
 // Number of generations
 #define N_GENERATIONS 100
+
+//Number of grids which the fitness is computed on after N_ITERATIONS iterations (N_FITGRIDS <= N_ITERATIONS)
+#define N_FITGRIDS 10
 
 // Survival probability of an individual
 const double _survive = 0.5;

@@ -27,6 +27,9 @@ Possibilita\`:
 3. Cambiamo le regole del Conway per adattarlo ai GA
 4. Parlare con Aldinucci di come risolvere
 
+## Performance review
+1. Le dimensioni della griglia e delle popolazione influenzano in modo critico la durata dell'esecuzione
+
 
 ## Deadlines
 

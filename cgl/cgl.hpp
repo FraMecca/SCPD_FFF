@@ -36,7 +36,7 @@ class Cgl {
         size_t dim;                   /** Lenght of the grid side*/
         GRID gene = nullptr;             /** The initial configuration of the grid */
         GRID grid = nullptr;              /** The grid*/
-        short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
+        short fitnessIterations = N_FITGRIDS;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
 
 
