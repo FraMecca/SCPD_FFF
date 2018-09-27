@@ -46,18 +46,13 @@ template<size_t T>
 class Cgl {
     private:
         size_t dim;                   /** Lenght of the grid side*/
-<<<<<<< HEAD
         GRID gene = nullptr;             /** The initial configuration of the grid */
         GRID grid = nullptr;              /** The grid*/
         short fitnessIterations = N_FITGRIDS;       /** Number of iterations in which fitness is computed */
-=======
-        short fitnessIterations = 10;       /** Number of iterations in which fitness is computed */
->>>>>>> e6a110f5d3640db40b75ed0c914733c605fb806a
         bool fitnessDone = false;            /** flags if fitness has been computed */
-        GRID gene = nullptr;             /** The initial configuration of the grid */
-        GRID grid = nullptr;              /** The grid*/
+
 #ifdef PARTITION
-        Partition<T> partitions[N_PARTITIONS]; 
+        Partition<T> partitions[N_PARTITIONS];
 #endif
 
     public:
@@ -206,7 +201,7 @@ class Cgl {
 
 #ifdef PARTITION
 
-        void startCgl(unsigned int n_iter = N_ITERATIONS) 
+        void startCgl(unsigned int n_iter = N_ITERATIONS)
         {
             fill_partitions();
             GRID stepGrid = newGRID;

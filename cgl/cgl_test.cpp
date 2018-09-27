@@ -68,7 +68,7 @@ TEST_CASE("Iterations are computed correctly") {
         init->set(14);
         init->set(15);
         Cgl<4> c(init,1,1);
-        c.startCgl();
+        c.startCgl(1);
         REQUIRE(c.test(0) == 0);
         REQUIRE(c.test(1) == 1);
         REQUIRE(c.test(2) == 1);
@@ -100,7 +100,7 @@ TEST_CASE("Iterations are computed correctly") {
         init->set(14);
         init->set(15);
         Cgl<4> c(init,2,2);
-        c.startCgl();
+        c.startCgl(2);
         REQUIRE(c.test(0) == 0);
         REQUIRE(c.test(1) == 1);
         REQUIRE(c.test(2) == 1);
@@ -118,6 +118,43 @@ TEST_CASE("Iterations are computed correctly") {
         REQUIRE(c.test(14) == 1);
         REQUIRE(c.test(15) == 1);
         REQUIRE(c.isEqualGene(init));
+    }
+}
+
+TEST_CASE("the rule of life is applied correctly") {
+    bitset<16>* init = new bitset<16>();
+    init->set(1);
+    init->set(3);
+    init->set(5);
+    init->set(7);
+    init->set(8);
+    init->set(9);
+    init->set(10);
+    init->set(12);
+    init->set(13);
+    Cgl<4> c(init,1,1);
+    c.startCgl(1);
+
+    SECTION("Testing dying for underpopulation") {
+        REQUIRE(c.test(1) == 0);
+        REQUIRE(c.test(3) == 0);
+    }
+
+    SECTION ("Testing survival") {
+        REQUIRE(c.test(7) == 1);
+        REQUIRE(c.test(12) == 1);
+    }
+
+    SECTION ("Testing dying for overpopulation") {
+        REQUIRE(c.test(5) == 0);
+        REQUIRE(c.test(8) == 0);
+        REQUIRE(c.test(9) == 0);
+        REQUIRE(c.test(10) == 0);
+        REQUIRE(c.test(13) == 0);
+    }
+
+    SECTION ("Testing birth") {
+        REQUIRE(c.test(14) == 1);
     }
 }
 
