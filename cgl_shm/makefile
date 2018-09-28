@@ -6,6 +6,8 @@ SOURCES=shm_main.cpp
 
 default:
 	$(CC) $(SOURCES) -o shm $(CFLAGS)
+opt:
+	$(CC) $(SOURCES) -o shm $(CFLAGS) -O2
 debug:
 	$(CC) $(SOURCES) -o shm_dbg $(CFLAGS) $(DEBUG)
 prof:

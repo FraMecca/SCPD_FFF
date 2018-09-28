@@ -34,12 +34,14 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 * Perche\` parallelizzare
 * Tecniche di parallelizzazione
 * Strumenti utilizzati (hardware / software)
+* Considerazioni sulle strutture dati (copyGrid)
 
 ## L'algoritmo sequenziale
 
 * Struttura del programma (linguaggio, struttura, tecniche, discorso introduttivo)
 * Descrizione dell'algoritmo (step / pseudocodice)
 * Profilazione
+* Hotpath con -O0 / -O2
 * Grafici
 
 ## Shared memory (Partitioning)
@@ -55,6 +57,9 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 * Descrizione dell'algoritmo (step / pseudocodice)
 * Profilazione
 * Grafici
+
+## Sequenziale ottimizzato
+
 
 ## Performance Analysis (Considerazioni)
 

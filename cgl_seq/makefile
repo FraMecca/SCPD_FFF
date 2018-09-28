@@ -6,6 +6,8 @@ SOURCES=seq_main.cpp
 
 default:
 	$(CC) $(SOURCES) -o seq $(CFLAGS)
+opt:
+	$(CC) $(SOURCES) -o seq $(CFLAGS) -O2
 debug:
 	$(CC) $(SOURCES) -o seq_dbg $(CFLAGS) $(DEBUG)
 prof:
