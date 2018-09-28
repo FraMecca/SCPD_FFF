@@ -4,7 +4,7 @@
 #include <bitset>
 #include <cstdlib>
 #include "cgl.hpp"
-#include "cgl_eval.hpp"
+#include "ga.hpp"
 #include "../include/catch.hpp"
 #include "../include/settings.hpp"
 

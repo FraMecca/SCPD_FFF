@@ -7,8 +7,8 @@
  * Set the chosen values, then go compile.
  */
 
-#define SEQUENTIAL
-//#define PARTITION
+//#define SEQUENTIAL
+#define PARTITION
 
 #define N_PARTITIONS 8
 
@@ -21,7 +21,7 @@
 #define SIDE 4
 
 // Maximum number of CGL iterations
-#define N_ITERATIONS 100
+#define N_ITERATIONS 500
 
 
 // --- GA PARAMETERS
@@ -36,10 +36,10 @@
 #define N_FITGRIDS 10
 
 // Survival probability of an individual
-const double _survive = 0.5;
+const double _survive = 0.05;
 
 // Mutation probability of an individual
-const double _mutation = 0.1;
+const double _mutation = 0.08;
 
 // Percentage of (BEST) individuals which are used for the crossover
 const double _crossover = 0.25;

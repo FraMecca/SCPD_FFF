@@ -8,7 +8,6 @@
 #include <cstring>
 #include <bitset>
 #include <vector>
-
 #include "../include/settings.hpp"
 
 using namespace std;
@@ -30,6 +29,7 @@ using namespace std;
 #if (DIM % SIDE != 0)
 #error "Grid dimension must be compatible with area of submatrix"
 #endif
+
 /**
  * Convert from 2d coordinates to 1d
  */

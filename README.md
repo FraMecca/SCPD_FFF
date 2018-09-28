@@ -27,7 +27,7 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 * Campo di utilizzo
 * Come vengono utilizzati da noi
 
-## Il nostro problema (che titolo brutto)
+## Metodologia (che titolo brutto)
 
 * Definizione dello stato iniziale
 * Definizione dello stato finale
