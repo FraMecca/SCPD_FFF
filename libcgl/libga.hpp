@@ -7,11 +7,10 @@
 #include <functional>
 #include <algorithm>
 #include <cstring>
-#include "cgl.hpp"
 #include <cstdlib>
 #include <math.h>
 
-#include "../include/settings.hpp"
+#include "libcgl.hpp"
 
 using namespace std;
 template <size_t T>

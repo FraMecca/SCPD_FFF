@@ -6,10 +6,11 @@
 #include <cstdlib>
 #include <cstdio>
 #include <omp.h>
-#include "../cgl/cgl.hpp"
+#include "settings.h"
+#include "../libcgl/libcgl.hpp"
 #include "partition.hpp"
-#include "cgl_mp.hpp"
 #include "../include/catch.hpp"
+
 
 #define TSIZE 16 // small enough but partitionable in 8 sub-matrices
 

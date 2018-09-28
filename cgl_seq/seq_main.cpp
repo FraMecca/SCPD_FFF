@@ -1,7 +1,7 @@
 #include <assert.h>
-#include "../cgl/cgl.hpp"
-#include "../cgl/ga.hpp"
-#include "../include/settings.hpp"
+#include "settings.hpp"
+#include "../libcgl/libcgl.hpp"
+#include "../libcgl/libga.hpp"
 
 using namespace std;
 

@@ -3,10 +3,10 @@
 #include <iostream>
 #include <bitset>
 #include <cstdlib>
-#include "cgl.hpp"
-#include "ga.hpp"
+#include "settings.hpp"
+#include "libcgl.hpp"
+#include "libga.hpp"
 #include "../include/catch.hpp"
-#include "../include/settings.hpp"
 
 /**
  * Test build for public methods of Cgl class

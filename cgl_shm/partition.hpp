@@ -1,8 +1,8 @@
 #pragma once
 #include <bitset>
 #include <vector>
-#include "../cgl/cgl.hpp"
-#include "../include/settings.hpp"
+#include "settings.hpp"
+#include "../libcgl/libcgl.hpp"
 using namespace std;
 
 #define PGRID bitset<T*(T/N_PARTITIONS+2)>*

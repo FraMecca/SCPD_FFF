@@ -8,7 +8,6 @@
 #include <cstring>
 #include <bitset>
 #include <vector>
-#include "../include/settings.hpp"
 
 using namespace std;
 
@@ -22,7 +21,7 @@ using namespace std;
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
 #ifdef PARTITION
-#include "../cgl_mp/partition.hpp"
+#include "../cgl_shm/partition.hpp"
 #include <omp.h>
 #endif
 
