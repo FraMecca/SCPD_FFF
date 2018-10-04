@@ -17,6 +17,7 @@ using namespace std;
 
 #define GRID std::bitset<T*T>*
 #define newGRID new std::bitset<T*T>()
+#define strGRID(st) new std::bitset<T*T>(st)
 
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
@@ -75,6 +76,20 @@ class Cgl {
             fitness = 0.0;
             side = _side;
             prepareGrid();
+#ifdef PARTITION
+            fill_partitions();
+#endif
+        }
+
+        // stringz
+        Cgl(string bitstr, size_t _side=SIDE, unsigned int max_iter = N_ITERATIONS) {
+            max_iteration = max_iter;
+            dim = T;
+            grid = strGRID(bitstr);
+            gene = strGRID(bitstr);
+            density = std::vector<double>();
+            fitness = 0.0;
+            side = _side;
 #ifdef PARTITION
             fill_partitions();
 #endif
