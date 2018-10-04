@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 {
     int side = SIDE;
 
+    // create target
     vector<double> target = vector<double>(DIM*DIM/(side*side)); //DIM*DIM / side^2;
     for(size_t i = 0; i < target.size()/2; ++i){
         target[i] = 0.2;
