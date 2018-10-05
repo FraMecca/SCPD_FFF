@@ -14,10 +14,10 @@
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
-#define DIM 32
+#define DIM 16
 
 // CGL grid area dimension (N -> NxN)
-#define SIDE 4
+#define SIDE 2
 
 // Maximum number of CGL iterations
 #define N_ITERATIONS 100
@@ -26,7 +26,7 @@
 // --- GA PARAMETERS
 
 // Population size (num. individuals)
-#define POPSIZE 10
+#define POPSIZE 4
 
 // Number of generations
 #define N_GENERATIONS 20

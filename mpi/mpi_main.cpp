@@ -16,16 +16,16 @@ int next_rank(size_t i)
     return i % (world_size - 1) + 1;
 }
 
-void send_grid(Cgl<DIM> c, MPI_Request* req, int index)
+void send_grid(Cgl<DIM> c, int index)
 {
     auto gene = c.getGene()->to_string();
-    MPI_Isend(gene.c_str(), gene.size(), MPI_CHAR, next_rank(index), 0, MPI_COMM_WORLD, req);
+    MPI_Send(gene.c_str(), gene.size(), MPI_CHAR, next_rank(index), 0, MPI_COMM_WORLD);
 }
 
-tuple<std::vector<Cgl<DIM>>, std::vector<MPI_Request*>> first_generation()
+//tuple<std::vector<Cgl<DIM>>, std::vector<MPI_Request*>> first_generation()
+std::vector<Cgl<DIM>> first_generation()
 {
     auto people = std::vector<Cgl<DIM>>();
-    auto requests = std::vector<MPI_Request*>();
 
     for(size_t i = 0; i < POPSIZE; ++i){
         auto c = Cgl<DIM>(SIDE,N_ITERATIONS);
@@ -34,33 +34,39 @@ tuple<std::vector<Cgl<DIM>>, std::vector<MPI_Request*>> first_generation()
         c.prepareGrid();
         people.push_back(c);
         // SEND TO SLAVES here
-        MPI_Request* req = (MPI_Request*)malloc(sizeof(MPI_Request));
-        send_grid(c, req, i);
-        requests.push_back(req);
+        send_grid(c, i);
     }
+	cout << "master: sent first" << endl;
+	MPI_Barrier(MPI_COMM_WORLD);
+
     assert(people.size() == POPSIZE);
-    return make_tuple(people, requests);
+	return people;
 }
 
 std::vector<double> recv_fitness()
 {
-    auto fitness = std::vector<double>(-1,POPSIZE);
-    auto requests = std::vector<MPI_Request>();
+	// len = popsize, init a -1 tutti i campi
+    auto fitness = std::vector<double>(POPSIZE, -1);
+    //auto requests = std::vector<MPI_Request>(POPSIZE);
+	MPI_Request requests[POPSIZE];
 
     for(int i=0; i<POPSIZE; ++i) {
-        MPI_Irecv(&fitness[i], sizeof(double), MPI_DOUBLE, next_rank(i), 0, MPI_COMM_WORLD, &requests[i]);
+        //MPI_Irecv(&fitness[i], sizeof(double), MPI_DOUBLE, next_rank(i), 0, MPI_COMM_WORLD, &requests[i]);
+        MPI_Recv(&fitness[i], sizeof(double), MPI_DOUBLE, next_rank(i), 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
+	MPI_Barrier(MPI_COMM_WORLD);
+	cout << "master: received" << endl;
 
-    MPI_Request* vr = &requests[0]; // halp
-    MPI_Waitall(requests.size(), vr, MPI_STATUSES_IGNORE);
+    //MPI_Request* vr = &requests[0]; // from vector to array
+    //MPI_Waitall(POPSIZE, requests, MPI_STATUSES_IGNORE);
     return fitness;
 }
 
-void master()
+void master(int rank)
 {
-    auto tup = first_generation();
-    auto people = std::get<0>(tup);
-    auto requests = std::get<1>(tup);
+    //auto tup = first_generation();
+    //auto people = std::get<0>(tup);
+    auto people = first_generation();
 
     for(size_t g = 0; g < N_GENERATIONS; ++g){
         auto fitness = recv_fitness();
@@ -68,22 +74,25 @@ void master()
         for (int i; i<POPSIZE; i++) {
             people[i].fitness = fitness[i];
         }
+        assert(POPSIZE == people.size());
+		for (int i; i<POPSIZE; i++) {
+			cout << fitness[i] << endl;
+			cout << people[i].fitness << endl;
+			//people[i].fitness = fitness[i];
+		}
         auto grids = Cgl<DIM>::crossover(people, people.size());
         // replace every person with a new person
-        for(size_t i = 0; i < POPSIZE; ++i){
-            auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
-            // free and reassign
-            people[i].release();
-            people[i] = c;
-            MPI_Request* req = (MPI_Request*)malloc(sizeof(MPI_Request));
-            // SEND TO SLAVES here
-            send_grid(c, req, i);
-            // free and reassign
-            free(requests[i]);
-            requests[i] = req;
-
-        }
-        assert(POPSIZE == people.size());
+		for(size_t i = 0; i < POPSIZE; ++i){
+			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
+			// free and reassign
+			people[i].release();
+			people[i] = c;
+			//MPI_Request* req = (MPI_Request*)malloc(sizeof(MPI_Request));
+			// SEND TO SLAVES here
+			send_grid(c, i);
+		}
+		MPI_Barrier(MPI_COMM_WORLD);
+		cout << rank << ": sent" << endl;
     }
     string end = "end";
     MPI_Bcast((void*)end.c_str(), end.size(), MPI_CHAR, 0, MPI_COMM_WORLD);
@@ -101,9 +110,8 @@ void routine(int rank)
         target[i] = 0.8;
     }
 
-    cout << rank << endl;
     if(rank == 0){
-        master();
+        master(rank);
         return;
     }
     // slave here
@@ -112,6 +120,8 @@ void routine(int rank)
 
     while(true) {
         MPI_Recv(buf, DIM*DIM, MPI_CHAR, 0, 0, MPI_COMM_WORLD, NULL);
+		MPI_Barrier(MPI_COMM_WORLD);
+		cout << rank << ": received" << endl;
         string stbuf = string(buf);
         if (stbuf == "end") {
             return;
@@ -119,7 +129,8 @@ void routine(int rank)
         auto person = Cgl<DIM>(stbuf, SIDE, N_ITERATIONS);
         assert(person.max_iteration > 0);
         person.GameAndFitness(target);
-        MPI_Send((void*)&person.fitness, sizeof(person.fitness), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(&person.fitness, sizeof(person.fitness), MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+		MPI_Barrier(MPI_COMM_WORLD);
     }
 }
 
