@@ -1,5 +1,5 @@
 CC = mpic++
-CFLAGS=-std=c++11 -I. -I../libcgl 
+CFLAGS=-std=c++17 -I. -I../libcgl -lboost_mpi -lboost_serialization
 SOURCES = mpi_main.cpp
 DEBUG=-g -Wall -Wpedantic -Wextra
 PROF=-pg
