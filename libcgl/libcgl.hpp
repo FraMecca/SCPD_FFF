@@ -179,8 +179,8 @@ class Cgl {
                 for(size_t col = 0; col < dim/side; ++col){
                     auto distribution = uni(gen);
                     std::bernoulli_distribution bern(distribution);
-                    for(size_t x = 0; x < side; ++x){
-                        for(size_t y = 0; y < side ; ++y){
+                    for(size_t x = 0; x < static_cast<size_t>(side); ++x){
+                        for(size_t y = 0; y < static_cast<size_t>(side); ++y){
                             auto pos = x*dim + line*(dim*side) + y + col*side;
                             auto c =  bern(gen);
                             if(c == 1) bits->set(pos);
@@ -268,11 +268,11 @@ class Cgl {
 
             if (fitnessDone == true)
                 throw std::logic_error("Game of Life and score has already been computed");
-            if (max_iteration < fitnessIterations)
+            if (max_iteration < static_cast<size_t>(fitnessIterations))
                 throw std::logic_error("Invalid number of iterations");
 
             startCgl(max_iteration - fitnessIterations);
-            for(size_t i = 0; i < fitnessIterations; ++i){
+            for(size_t i = 0; i < static_cast<size_t>(fitnessIterations); ++i){
                 startCgl(1);
                 fitness += fitnessScore(target);
             }

@@ -7,17 +7,17 @@
  * Set the chosen values, then go compile.
  */
 
-#define SEQUENTIAL
+#define PARTITION
 
-#define N_PARTITIONS 8
+#define N_PARTITIONS 4
 
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
-#define DIM 16
+#define DIM 128
 
 // CGL grid area dimension (N -> NxN)
-#define SIDE 2
+#define SIDE 8
 
 // Maximum number of CGL iterations
 #define N_ITERATIONS 100
@@ -26,7 +26,7 @@
 // --- GA PARAMETERS
 
 // Population size (num. individuals)
-#define POPSIZE 4
+#define POPSIZE 50
 
 // Number of generations
 #define N_GENERATIONS 20

@@ -18,7 +18,7 @@ void Cgl<T>::densityScore() {
     assert(side > 0);
     assert(fitnessDone == false);
 
-    int cap = dim*dim/(side*side);
+    size_t cap = dim*dim/(side*side);
     if(density.capacity() < cap)
         density.resize(cap);
 

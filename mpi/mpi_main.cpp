@@ -19,16 +19,10 @@ int next_rank(size_t i, mpi::communicator& world)
     return i % (world.size() - 1) + 1;
 }
 
-void send_grid(Cgl<DIM> c, int index, mpi::communicator& world)
-{
-    auto gene = c.getGene()->to_string();
-	world.send(next_rank(index, world), 0, gene);
-}
 
 std::vector<Cgl<DIM>> first_generation(mpi::communicator& world)
 {
     auto people = std::vector<Cgl<DIM>>();
-	auto grids = std::vector<std::string>();
 
     for(size_t i = 0; i < POPSIZE; ++i){
         auto c = Cgl<DIM>(SIDE,N_ITERATIONS);
@@ -36,18 +30,7 @@ std::vector<Cgl<DIM>> first_generation(mpi::communicator& world)
         c.max_iteration = N_ITERATIONS;
         c.prepareGrid();
         people.push_back(c);
-		grids.push_back(c.getGene()->to_string());
     }
-	auto outg = std::vector<std::string>(people.size(),"");
-	cout << "scatter" << endl;
-	cout << world.size() << endl;
-	auto sizes = std::vector<int>(world.size(), 1);
-	cout << sizes[3] << endl;
-	//sizes[0] = 0;
-	mpi::scatterv(world, &grids, sizes, &outg, 0);
-	cout << "scatter_" << endl;
-	cout << "master: sent first" << endl;
-
     assert(people.size() == POPSIZE);
 	return people;
 }
@@ -60,10 +43,44 @@ std::vector<double> recv_fitness(mpi::communicator& world)
 		// TODO gather
 		world.recv(next_rank(i,world), 0, fitness[i]);
     }
-	world.barrier();
 	cout << "master: received" << endl;
 
     return fitness;
+}
+
+int get_next_slave(std::vector<bool>& jobs)
+{
+	for(size_t i=0; i<jobs.size(); ++i) {
+		if(jobs[i] == false) {
+			jobs[i] = true; // set to busy
+			return i+1;
+		}
+	}
+	return -1;
+}
+
+void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
+{
+	int nrecv = 0;
+	int njobs = 0;
+	double f = 0.0f;
+	auto jobs = std::vector<bool>(world.size()-1, false);
+
+	while(true) {
+		int slave;
+		if(nrecv == POPSIZE) break;
+
+		while(njobs < POPSIZE && (slave = get_next_slave(jobs)) != -1) {
+			world.send(slave, njobs, people[njobs].getGene()->to_string());
+			njobs++;
+		}
+		auto status = world.recv(mpi::any_source, mpi::any_tag, f);
+		cout << status.source() << " " << status.tag() << " " << f << endl;
+		people[status.tag()].fitness = f;
+		jobs[status.source()-1] = false; // keep track of free slaves
+
+		nrecv++;
+	}
 }
 
 void master(mpi::communicator& world)
@@ -71,19 +88,15 @@ void master(mpi::communicator& world)
     //auto tup = first_generation();
     //auto people = std::get<0>(tup);
     auto people = first_generation(world);
-	auto rank = world.rank();
+	int cnt = 0;
 
-    for(size_t g = 0; g < N_GENERATIONS; ++g){
-        auto fitness = recv_fitness(world);
-        // update population vector with fitness
-        for (int i; i<POPSIZE; i++) {
-            people[i].fitness = fitness[i];
-        }
-        assert(POPSIZE == people.size());
-		for (int i; i<POPSIZE; i++) {
-			cout << fitness[i] << endl;
-			cout << people[i].fitness << endl;
-			//people[i].fitness = fitness[i];
+	while(true) {
+		manage_slaves(world, people);
+		if (cnt == N_GENERATIONS) break;
+		else cnt++;
+
+		for(auto c: people) {
+			cout << c.fitness << endl;
 		}
         auto grids = Cgl<DIM>::crossover(people, people.size());
         // replace every person with a new person
@@ -92,14 +105,11 @@ void master(mpi::communicator& world)
 			// free and reassign
 			people[i].release();
 			people[i] = c;
-			// SEND TO SLAVES here
-			send_grid(c, i, world);
 		}
-		world.barrier();
-		cout << rank << ": sent" << endl;
-    }
+	}
+
     string end = "end";
-	mpi::broadcast(world, end, rank);
+	mpi::broadcast(world, end, 0);
 }
 
 
@@ -123,22 +133,19 @@ void routine(mpi::communicator& world)
     // slave here
 
     while(true) {
-		//string buf;
-		auto buf = std::vector<std::string>();
+		std::string buf;
 		// recv from master
-		mpi::scatterv(world, &buf, 1, 0);
-		cout << buf[rank] << endl;
+		auto status = world.recv(0, mpi::any_tag, buf);
 
 		cout << rank << ": received" << endl;
-        if (buf[rank] == "end") {
+        if (buf == "end") {
             return;
         }
-        auto person = Cgl<DIM>(buf[rank], SIDE, N_ITERATIONS);
+        auto person = Cgl<DIM>(buf, SIDE, N_ITERATIONS);
         assert(person.max_iteration > 0);
         person.GameAndFitness(target);
 		// send to master
-        world.send(0, 0, person.fitness);
-		world.barrier();
+        world.send(0, status.tag(), person.fitness);
     }
 }
 
@@ -148,7 +155,6 @@ void routine(mpi::communicator& world)
 int
 main(int argc, char* argv[])
 {
-    int rank, poolSize;
 
 	mpi::environment env(argc, argv);
 	mpi::communicator world;
