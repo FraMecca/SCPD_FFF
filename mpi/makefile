@@ -1,6 +1,6 @@
 CC = mpic++
 CFLAGS=-std=c++17 -I. -I../libcgl -lboost_mpi -lboost_serialization -fopenmp
-SOURCES = mpi_main.cpp
+SOURCES = mpi_scat.cpp
 DEBUG=-g -Wall 
 PROF=-pg
 OUT = mpi_cgl
