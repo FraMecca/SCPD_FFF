@@ -14,22 +14,22 @@
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
-#define DIM 128
+#define DIM 256
 
 // CGL grid area dimension (N -> NxN)
 #define SIDE 8
 
 // Maximum number of CGL iterations
-#define N_ITERATIONS 20
+#define N_ITERATIONS 200
 
 
 // --- GA PARAMETERS
 
 // Population size (num. individuals)
-#define POPSIZE 13
+#define POPSIZE 50
 
 // Number of generations
-#define N_GENERATIONS 3
+#define N_GENERATIONS 5
 
 //Number of grids which the fitness is computed on after N_ITERATIONS iterations (N_FITGRIDS <= N_ITERATIONS)
 #define N_FITGRIDS 10

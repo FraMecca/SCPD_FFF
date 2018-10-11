@@ -27,17 +27,25 @@ std::vector<Cgl<DIM>> first_generation()
 	return people;
 }
 
-
-void routine(mpi::communicator& world)
+std::vector<double> create_target()
 {
-	int nproc = world.size();
-	auto rank = world.rank();
-	int popPerProc = POPSIZE / (nproc-1);
-	int popLeft = POPSIZE % (nproc-1);
-	auto sizes = std::vector<int>(world.size());
-	auto recv = std::vector<string>(1);
+	auto target = vector<double>(DIM*DIM/(SIDE*SIDE)); //DIM*DIM / side^2;
+	for(size_t i = 0; i < target.size()/2; ++i) {
+		target[i] = 0.2;
+	}
+	for(size_t i = target.size()/2; i < target.size(); ++i) {
+		target[i] = 0.8;
+	}
 
-	// Initialize sizes
+	return target;
+}
+
+std::vector<int> init_sizes(int nproc)
+{
+	int popPerProc = POPSIZE / (nproc-1); // number of indivuals per slave (lower bound)
+	int popLeft = POPSIZE % (nproc-1); // remained individuals to distribute among slaves
+	auto sizes = std::vector<int>(nproc);
+
 	sizes[0] = 0;
 	for(int i=1;i<sizes.size();++i) {
 		sizes[i] = popPerProc;
@@ -46,98 +54,128 @@ void routine(mpi::communicator& world)
 			popLeft--;
 		}
 	}
+	return sizes;
+}
 
-	// create target
-	vector<double> target = vector<double>(DIM*DIM/(SIDE*SIDE)); //DIM*DIM / side^2;
-	for(size_t i = 0; i < target.size()/2; ++i) {
-		target[i] = 0.2;
+std::vector<string> create_snd_grid(std::vector<Cgl<DIM>> people)
+{
+	auto snd = std::vector<string>();
+
+	for (auto el : people)
+		snd.push_back(el.getGene()->to_string());
+
+	return snd;
+}
+
+std::vector<double> compute_fitness(std::vector<string> recv, std::vector<double> target)
+{
+	auto fitnessValue = std::vector<double>();
+	for (auto el : recv) {
+		auto person = Cgl<DIM>(el, SIDE, N_ITERATIONS);
+		assert(person.max_iteration > 0);
+		person.GameAndFitness(target);
+		fitnessValue.push_back(person.fitness);
+		person.release();
 	}
-	for(size_t i = target.size()/2; i < target.size(); ++i) {
-		target[i] = 0.8;
-	}
-	
-	// master here
-	if (rank == 0) {
-		//master(world);
-		auto people = first_generation();
-		auto snd = std::vector<string>();
-		auto fitnessSnd = std::vector<double>(1);
-		auto fitnessRecv = std::vector<double>(people.size());
-		assert(POPSIZE == fitnessRecv.size());
+	return fitnessValue;
+}
 
-		for (auto el : people)
-			snd.push_back(el.getGene()->to_string());
-		
-		// send to slave
-		mpi::scatterv(world, snd, sizes, &recv[0], 0);
-		cout << "Master: " << "sent" << endl;
-		for (size_t g = 0;g <= N_GENERATIONS;++g) {
-			// receive from slaves
-			mpi::gatherv(world, fitnessSnd, &fitnessRecv[0], sizes , 0);
-			cout << "Master: " << "received" << endl;
-			//cout << "fitness: ";
-			for (int i=0;i<people.size();++i)
-				people[i].fitness = fitnessRecv[i];
-			
-			// last iteration
-			if (g == N_GENERATIONS)
-				break;
+void master(mpi::communicator& world, std::vector<int> sizes)
+{
+	auto people = first_generation();
+	auto snd = create_snd_grid(people);
+	auto recv = std::vector<string>(1);
+	auto fitnessSnd = std::vector<double>(1);
+	auto fitnessRecv = std::vector<double>(people.size());
+	assert(POPSIZE == fitnessRecv.size());
 
-			// crossover
-			auto grids = Cgl<DIM>::crossover(people, people.size());
-			for(size_t i = 0; i < POPSIZE; ++i) {
-				auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
-				// free and reassign
-				people[i].release();
-				people[i] = c;
-			}
-			
-			// send to slave
-			snd.clear();
-			recv.clear();
-			recv.resize(1);
-			for (auto el : people)
-				snd.push_back(el.getGene()->to_string());
-			assert(snd.size() == POPSIZE);
-			mpi::scatterv(world, snd, sizes, &recv[0], 0);
-			cout << "Master: " << "sent" << endl;
+	// send first gen to slaves
+	mpi::scatterv(world, snd, sizes, &recv[0], 0);
+	cout << "Master: " << "first gen sent" << endl;
+
+	for (size_t g = 0;g <= N_GENERATIONS;++g) {
+		mpi::gatherv(world, fitnessSnd, &fitnessRecv[0], sizes , 0);
+		cout << "Master: " << "received fitness" << endl;
+		if (g == 0) {
+			cout << "FIRST FITNESS: ";
+			for (double el : fitnessRecv)
+				cout << el << " ";
+			cout << endl;
 		}
-		cout <<  "Master finito" << endl;
-		auto end = std::vector<string>(POPSIZE,"end");
-		recv.clear();
-		recv.resize(1);
-		mpi::scatterv(world, end, sizes, &recv[0], 0);
-		return;
+
+		// update grid with fitness
+		for (int i=0;i<people.size();++i)
+			people[i].fitness = fitnessRecv[i];
+
+		// last iteration
+		if (g == N_GENERATIONS)
+			break;
+
+		// crossover
+		auto grids = Cgl<DIM>::crossover(people, people.size());
+		for(size_t i = 0; i < POPSIZE; ++i) {
+			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
+			// free and reassign
+			people[i].release();
+			people[i] = c;
+		}
+
+		// send grids to slaves
+		snd = create_snd_grid(people);
+		assert(snd.size() == POPSIZE);
+		mpi::scatterv(world, snd, sizes, &recv[0], 0);
+		cout << "Master: " << "sent grids" << endl;
 	}
 
-	// slave here
+	// iterations finished
+	cout <<  "Master finito" << endl;
+	auto end = std::vector<string>(POPSIZE,"end");
+	mpi::scatterv(world, end, sizes, &recv[0], 0);
+	cout << "FITNESS: ";
+	for (auto el : people)
+		cout << el.fitness << " ";
+	cout << endl;
+}
+
+void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double> target)
+{
+	int rank = world.rank();
 	while(true) {
-		recv.resize(sizes[rank]);
+		auto recv = std::vector<string>(sizes[rank]);
+		auto fitnessRecv = std::vector<double>(1);
 
 		// recv from master
 		mpi::scatterv(world, &recv[0], sizes[rank], 0);
 		cout << rank << ": received" << endl;
-		
+		// finished iteration
 		if (recv[0] == "end")  {
 			cout << rank << " slave finished" << endl;
 			return;
 		}
 
-		auto fitnessValue = std::vector<double>();
-		for (auto el : recv) {
-			auto person = Cgl<DIM>(el, SIDE, N_ITERATIONS);
-			assert(person.max_iteration > 0);
-			person.GameAndFitness(target);
-			fitnessValue.push_back(person.fitness);
-			person.release();
-		}
+		auto fitnessValue = compute_fitness(recv,target);
 		assert(fitnessValue.size() == sizes[rank]);
-		
-		// send to master
-		auto fitnessRecv = std::vector<double>(1);
+
+		// send fitness to master
 		mpi::gatherv(world, fitnessValue, &fitnessRecv[0], sizes , 0);
-		cout << rank << ": sent" << endl;
+		cout << rank << ": sent fitness" << endl;
 	}
+}
+
+
+void routine(mpi::communicator& world)
+{
+	auto rank = world.rank();
+	// create target
+	auto target = create_target(); //DIM*DIM / side^2;
+	// init sizes
+	auto sizes = init_sizes(world.size());
+
+
+	if (rank == 0) // master here
+		master(world,sizes);
+	else // slave here
+		slave(world,sizes,target);
 }
 
 /***
