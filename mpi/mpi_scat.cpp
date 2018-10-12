@@ -12,6 +12,7 @@
 
 namespace mpi = boost::mpi;
 
+GRID targetGrid = NULL;
 std::vector<Cgl<DIM>> first_generation()
 {
 	auto people = std::vector<Cgl<DIM>>();
@@ -31,10 +32,10 @@ std::vector<double> create_target()
 {
 	auto target = vector<double>(DIM*DIM/(SIDE*SIDE)); //DIM*DIM / side^2;
 	for(size_t i = 0; i < target.size()/2; ++i) {
-		target[i] = 0.2;
+		target[i] = 0.8;
 	}
 	for(size_t i = target.size()/2; i < target.size(); ++i) {
-		target[i] = 0.8;
+		target[i] = 0.2;
 	}
 
 	return target;
@@ -47,7 +48,7 @@ std::vector<int> init_sizes(int nproc)
 	auto sizes = std::vector<int>(nproc);
 
 	sizes[0] = 0;
-	for(int i=1;i<sizes.size();++i) {
+	for(size_t i=1;i<sizes.size();++i) {
 		sizes[i] = popPerProc;
 		if (popLeft > 0) {
 			sizes[i]++;
@@ -80,7 +81,7 @@ std::vector<double> compute_fitness(std::vector<string> recv, std::vector<double
 	return fitnessValue;
 }
 
-void master(mpi::communicator& world, std::vector<int> sizes)
+void master(mpi::communicator& world, std::vector<int> sizes, std::vector<double> target)
 {
 	auto people = first_generation();
 	auto snd = create_snd_grid(people);
@@ -89,13 +90,14 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 	auto fitnessRecv = std::vector<double>(people.size());
 	assert(POPSIZE == fitnessRecv.size());
 
+	if(targetGrid == NULL) targetGrid = people[0].getGene();
+
+
 	// send first gen to slaves
 	mpi::scatterv(world, snd, sizes, &recv[0], 0);
-	cout << "Master: " << "first gen sent" << endl;
 
 	for (size_t g = 0;g <= N_GENERATIONS;++g) {
 		mpi::gatherv(world, fitnessSnd, &fitnessRecv[0], sizes , 0);
-		cout << "Master: " << "received fitness" << endl;
 		if (g == 0) {
 			cout << "FIRST FITNESS: ";
 			for (double el : fitnessRecv)
@@ -104,7 +106,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 		}
 
 		// update grid with fitness
-		for (int i=0;i<people.size();++i)
+		for (size_t i=0;i<people.size();++i)
 			people[i].fitness = fitnessRecv[i];
 
 		// last iteration
@@ -124,7 +126,6 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 		snd = create_snd_grid(people);
 		assert(snd.size() == POPSIZE);
 		mpi::scatterv(world, snd, sizes, &recv[0], 0);
-		cout << "Master: " << "sent grids" << endl;
 	}
 
 	// iterations finished
@@ -146,19 +147,16 @@ void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>
 
 		// recv from master
 		mpi::scatterv(world, &recv[0], sizes[rank], 0);
-		cout << rank << ": received" << endl;
 		// finished iteration
 		if (recv[0] == "end")  {
-			cout << rank << " slave finished" << endl;
 			return;
 		}
 
 		auto fitnessValue = compute_fitness(recv,target);
-		assert(fitnessValue.size() == sizes[rank]);
+		assert(fitnessValue.size() == (size_t)sizes[rank]);
 
 		// send fitness to master
 		mpi::gatherv(world, fitnessValue, &fitnessRecv[0], sizes , 0);
-		cout << rank << ": sent fitness" << endl;
 	}
 }
 
@@ -173,7 +171,7 @@ void routine(mpi::communicator& world)
 
 
 	if (rank == 0) // master here
-		master(world,sizes);
+		master(world,sizes,target);
 	else // slave here
 		slave(world,sizes,target);
 }
