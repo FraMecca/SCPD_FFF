@@ -31,13 +31,9 @@ void Cgl<T>::densityScore() {
             for(size_t x = 0; x < side; ++x){
                 for(size_t y = 0; y < side ; ++y){
                     auto pos = x*dim + line*(dim*side) + y + col*side;
-                    // cout << grid->test(pos);
-                    // std::cout << "Pos: " << pos << " y: " << y << " x: " << x << " line:" << line <<" col: " << col<< endl;
                     density_sc += grid->test(pos);
                 }
             }
-            // cout <<"Density: " << density_sc << endl;
-            // cout << endl;
             density[cnt] = (double) density_sc / (side*side);
             ++cnt;
         }
@@ -73,7 +69,6 @@ double Cgl<T>::fitnessScore(std::vector<double> target) {
   densityScore();
   assert(density.size() > 0);
   return similarity(density, target);
-  // cout << "Fitness: "<< fitness << endl;
 }
 
 
@@ -90,7 +85,6 @@ size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos) 
     }
     double tot = 0;
     for(size_t i = 0; i < parents.size(); ++i) tot += parents[i].fitness;
-    std::cout << choice << std::endl;
     throw std::logic_error("Possible logic error: choice = " + std::to_string(orig_choice) +", pos=" + std::to_string((long long)pos) +",total fitness=" + std::to_string(tot));
 }
 
@@ -122,16 +116,10 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     //Order pparents, best at the end
     if(shouldSort){
         std::sort(parents.begin(), parents.end());
-        cout << parents[1].fitness << " "
-             << parents[2].fitness << " "
-             << parents[3].fitness << " "
-             << parents[4].fitness << " "
-             << parents[sz-1].fitness << " " << endl;
     }
 
     //Take the top X parents
     size_t top_n = (size_t)ceil(((double)parents.size())/100*25);
-    //cout <<"top_N: " << top_n <<" par size: "<<parents.size() <<endl;
     //when testing on small vectors
     if (top_n < 2)
       top_n = 2;

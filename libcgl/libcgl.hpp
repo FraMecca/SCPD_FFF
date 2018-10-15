@@ -191,6 +191,13 @@ class Cgl {
             return std::move(bits);
         }
 
+		static std::vector<double> generate_target() {
+			auto cgl = Cgl();
+			cgl.startCgl();
+			cgl.densityScore();
+			return cgl.density;
+		}
+
         /**
          * Starts the game applying the Rule of Life at each iteration.
          */

@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <iostream>
+#include <fstream>
 #include <tuple>
 //#include <mpi.h>
 #include "settings.hpp"
@@ -8,7 +9,10 @@
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/string.hpp>
+#include <boost/serialization/vector.hpp>
 
 namespace mpi = boost::mpi;
 
@@ -43,7 +47,6 @@ std::vector<double> recv_fitness(mpi::communicator& world)
 		// TODO gather
 		world.recv(next_rank(i,world), 0, fitness[i]);
     }
-	cout << "master: received" << endl;
 
     return fitness;
 }
@@ -75,7 +78,6 @@ void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 			njobs++;
 		}
 		auto status = world.recv(mpi::any_source, mpi::any_tag, f);
-		cout << status.source() << " " << status.tag() << " " << f << endl;
 		people[status.tag()].fitness = f;
 		jobs[status.source()-1] = false; // keep track of free slaves
 
@@ -95,10 +97,15 @@ void master(mpi::communicator& world)
 		if (cnt == N_GENERATIONS) break;
 		else cnt++;
 
-		for(auto c: people) {
-			cout << c.fitness << endl;
-		}
+		// crossover sorts in place according to fitness
         auto grids = Cgl<DIM>::crossover(people, people.size());
+
+		// print the best 5 fitnesses
+		cout << cnt << ":\t";
+		for(size_t i=0; i<5; i++) {
+			cout << people[i].fitness << "\t| ";
+		}
+		cout << people[POPSIZE-1].fitness << endl;
         // replace every person with a new person
 		for(size_t i = 0; i < POPSIZE; ++i){
 			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
@@ -113,18 +120,10 @@ void master(mpi::communicator& world)
 }
 
 
-void routine(mpi::communicator& world)
+void routine(mpi::communicator& world, std::vector<double> target)
 {
 	auto rank = world.rank();
 
-    // create target
-    vector<double> target = vector<double>(DIM*DIM/(SIDE*SIDE)); //DIM*DIM / side^2;
-    for(size_t i = 0; i < target.size()/2; ++i){
-        target[i] = 0.2;
-    }
-    for(size_t i = target.size()/2; i < target.size(); ++i){
-        target[i] = 0.8;
-    }
 
     if(rank == 0){
         master(world);
@@ -137,7 +136,6 @@ void routine(mpi::communicator& world)
 		// recv from master
 		auto status = world.recv(0, mpi::any_tag, buf);
 
-		cout << rank << ": received" << endl;
         if (buf == "end") {
             return;
         }
@@ -155,11 +153,29 @@ void routine(mpi::communicator& world)
 int
 main(int argc, char* argv[])
 {
+	if(argc > 1 && std::string(argv[1]) == "--target") {
+		// dump to file
+		auto density = Cgl<DIM>::generate_target();
+		std::ofstream outfile("./target.bin");
+		boost::archive::text_oarchive oa(outfile);
+		oa & density;
+		return 0;
+	}
+	// load from file
+	std::vector<double> target;
+	try {
+		std::ifstream infile("./target.bin");
+		boost::archive::text_iarchive ia(infile);
+		ia & target;
+	} catch (const::exception &e) {
+		cout << "Cannot find target file." << endl;
+		return 1;
+	}
 
 	mpi::environment env(argc, argv);
 	mpi::communicator world;
 
-    routine(world);
+    routine(world, target);
 
     return 0;
 }
