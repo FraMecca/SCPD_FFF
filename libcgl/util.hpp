@@ -69,36 +69,3 @@ void print_best(std::vector<Cgl<DIM>>& people, int cnt)
     std::cout << people[POPSIZE-1].fitness << endl;
 }
 
-
-// TIMING FUNCTIONS
-#include <chrono>
-#include <utility>
-
-class Timer {
-private:
-    std::chrono::high_resolution_clock::time_point start;
-    std::string funName = "";
-    std::string logFile = "time.prof";
-public:
-    Timer(std::string f){
-        start = std::chrono::high_resolution_clock::now();
-        funName = f;
-    }
-    Timer(std::string f, int r){
-        start = std::chrono::high_resolution_clock::now();
-        funName = f;
-        logFile = "time."+std::to_string(r)+".prof";
-    }
-    ~Timer(){
-        auto end = std::chrono::high_resolution_clock::now();
-        assert(end > start);
-        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
-            .count();
-        //write to log
-        std::ofstream out;
-        out.open(logFile, std::ios_base::app);
-        out << "[" << funName << "]: " << elapsed << std::endl;
-    }
-};
-#define TIMER Timer(__FUNCTION__)
-#define MPI_TIMER Timer(__FUNCTION__, world.rank())

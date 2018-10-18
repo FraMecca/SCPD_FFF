@@ -8,6 +8,7 @@
 #include <cstring>
 #include <bitset>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -29,6 +30,39 @@ using namespace std;
 #if (DIM % SIDE != 0)
 #error "Grid dimension must be compatible with area of submatrix"
 #endif
+
+// TIMING FUNCTIONS
+#include <chrono>
+#include <utility>
+
+class Timer {
+private:
+    std::chrono::high_resolution_clock::time_point start;
+    std::string funName = "";
+    std::string logFile = "time.prof";
+public:
+    Timer(std::string f){
+        start = std::chrono::high_resolution_clock::now();
+        funName = f;
+    }
+    Timer(std::string f, int r){
+        start = std::chrono::high_resolution_clock::now();
+        funName = f;
+        logFile = "time."+std::to_string(r)+".prof";
+    }
+    ~Timer(){
+        auto end = std::chrono::high_resolution_clock::now();
+        assert(end > start);
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
+            .count();
+        //write to log
+        std::ofstream out;
+        out.open(logFile, std::ios_base::app);
+        out << "[" << funName << "]: " << elapsed << std::endl;
+    }
+};
+#define TIMER Timer(__FUNCTION__)
+#define MPI_TIMER Timer(__FUNCTION__, world.rank())
 
 /**
  * Convert from 2d coordinates to 1d
@@ -202,21 +236,23 @@ class Cgl {
          * Starts the game applying the Rule of Life at each iteration.
          */
 #ifdef SEQUENTIAL
-        void startCgl(unsigned int n_iter = N_ITERATIONS) {
-          assert(side > 0);
-          assert(max_iteration > 0);
+        void startCgl(unsigned int n_iter = N_ITERATIONS)
+		{
+			TIMER;
+			assert(side > 0);
+			assert(max_iteration > 0);
 
-          if (n_iter == 0) n_iter = max_iteration;
-            auto new_grid = newGRID;
+			if (n_iter == 0) n_iter = max_iteration;
+			auto new_grid = newGRID;
 
-            for (size_t i=0;i<n_iter;++i) {
-                for (size_t x=0;x<dim;++x)
-                    for (size_t y=0;y<dim;++y)
-                        updateCell(new_grid,x,y,i==0);
-                //copyGrid(grid,prev);
-                copyGrid(new_grid,grid);
-                //printGrid();
-            }
+			for (size_t i=0;i<n_iter;++i) {
+				for (size_t x=0;x<dim;++x)
+					for (size_t y=0;y<dim;++y)
+						updateCell(new_grid,x,y,i==0);
+				//copyGrid(grid,prev);
+				copyGrid(new_grid,grid);
+				//printGrid();
+			}
         }
 #endif
 
@@ -224,6 +260,7 @@ class Cgl {
 
         void startCgl(unsigned int n_iter = N_ITERATIONS)
         {
+			TIMER;
             fill_partitions();
             GRID stepGrid = newGRID;
             for(int i=0; i<n_iter; i++) {
@@ -455,39 +492,8 @@ class Cgl {
         friend bool operator<(const Cgl& l, const Cgl& r){
           return l.fitness > r.fitness;
         }
-
-        /**
-         * Check if cell is changed
-         * during the previous iteration
-         */
-        /*inline bool isChanged(int i) {
-            //if (x == -1 && y == -1) return false;
-            //cout << i << endl;
-            //assert(i<grid.size() && i<prev.size());
-            return grid.test(i) != prev.test(i);
-        }*/
-
-        /**
-         * return true if
-         * !isChanged(cell) &&
-         * !isChanged(neighbours)
-         */
-        /*bool noChanges(int x, int y) {
-            if (isChanged(y + x * dim))
-                return false;
-
-            for (int i=0;i<MAX_NEIGH;++i) {
-                if (neighbours[y + x * dim][i] == -1)
-                    continue;
-                if (isChanged(neighbours[y + x * dim][i]))
-                    return false;
-            }
-
-            return true;
-        }*/
-//#ifdef STENCIL
-
 };
 
 template <size_t T>
 size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos);
+

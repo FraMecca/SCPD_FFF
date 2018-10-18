@@ -84,7 +84,7 @@ int get_next_slave(std::vector<bool>& jobs)
 
 void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 {
-    TIMER;
+    MPI_TIMER;
 	int nrecv = 0;
 	int njobs = 0;
 	double f = 0.0f;
@@ -109,6 +109,7 @@ void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 #ifdef SCATTER
 void master(mpi::communicator& world, std::vector<int> sizes)
 {
+	MPI_TIMER;
 	auto people = first_generation();
 	auto snd = create_snd_grid(people);
 	auto recv = std::vector<string>(1);
@@ -212,6 +213,7 @@ void master(mpi::communicator& world)
 
 void slave(mpi::communicator& world, std::vector<double> target)
 {
+	MPI_TIMER;
     while(true) {
 		std::string buf;
 		// recv from master
