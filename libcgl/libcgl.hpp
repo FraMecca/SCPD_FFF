@@ -10,15 +10,17 @@
 #include <vector>
 #include <fstream>
 
+#include <memory>
+
 using namespace std;
 
 #if defined(STENCIL) && defined(SEQUENTIAL)
 #error "Choose a parallelization method"
 #endif
 
-#define GRID std::bitset<T*T>*
-#define newGRID new std::bitset<T*T>()
-#define strGRID(st) new std::bitset<T*T>(st)
+#define GRID std::unique_ptr<std::bitset<T*T>>
+#define newGRID GRID(new std::bitset<T*T>())
+#define strGRID(st) GRID(new std::bitset<T*T>(st))
 
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
@@ -146,15 +148,6 @@ class Cgl {
             fill_partitions();
 #endif
         }
-		
-		/** Copy constructor
-		 */
-		//Cgl(const Cgl<T>& c) = default;
-
-        void release() {
-            delete gene;
-            delete grid;
-        }
 
         /**
          * forward to grid->test
@@ -188,13 +181,21 @@ class Cgl {
 
         /**
         * read only gene getter
+        * makes a copy
         */
         GRID getGene() {
-            //assert(gene != nullptr);
-            //GRID ret = newGRID;
-            //copyGrid(gene, ret);
-            //return std::move(ret);
-			return gene;
+            assert(gene != nullptr);
+            GRID ret = newGRID;
+            copyGrid(gene, ret);
+            return std::move(ret);
+        }
+
+        /**
+        * read only gene getter to string
+        */
+        const std::string getGeneString() {
+            assert(gene != nullptr);
+            return gene->to_string();
         }
 
         /**
@@ -205,7 +206,7 @@ class Cgl {
             auto bits = randomGrid(side, dim);
             copyGrid(bits,grid);
             copyGrid(bits,gene);
-			delete bits;
+			// delete bits;
         }
 
         static GRID randomGrid(int side, size_t dim) {
@@ -257,7 +258,7 @@ class Cgl {
 				copyGrid(new_grid,grid);
 				//printGrid();
 			}
-			delete new_grid;
+			// delete new_grid;
         }
 #endif
 
@@ -299,7 +300,7 @@ class Cgl {
         }
 
 
-        void dump_partitions(GRID stepGrid)
+        void dump_partitions(GRID& stepGrid)
         {
             for(int p=0; p<N_PARTITIONS; p++) {
                 partitions[p].dumpGrid(stepGrid);
@@ -388,7 +389,7 @@ class Cgl {
         /**
          * Copy the values in grid1 to grid2.
          */
-        static void copyGrid(GRID src, GRID dst) {
+        static void copyGrid(const GRID& src, GRID& dst) {
             assert(src != nullptr && dst != nullptr);
             for(size_t i=0; i<src->size(); ++i) {
                 dst->set(i,src->test(i));
@@ -426,7 +427,7 @@ class Cgl {
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(GRID new_grid, int x, int y) {
+        void updateCell(GRID& new_grid, int x, int y) {
             int neighbours[MAX_NEIGH] = {0};
             getNeighbourhood(x,y,neighbours);
             int alive = 0;
@@ -468,7 +469,7 @@ class Cgl {
          * Apply the rule of life to the given cell.
          */
 #ifdef SEQUENTIAL
-        void applyRuleOfLife(GRID new_grid, int x, int y, int alive) {
+        void applyRuleOfLife(GRID& new_grid, int x, int y, int alive) {
             int pos = getPos(x,y,dim);
             if (grid->test(pos) && (alive < 2 || alive > 3))
                 new_grid->reset(pos);

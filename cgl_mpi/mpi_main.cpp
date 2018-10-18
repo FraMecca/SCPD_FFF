@@ -30,17 +30,17 @@ std::vector<int> init_sizes(int nproc)
 	return sizes;
 }
 
-std::vector<string> create_snd_grid(std::vector<Cgl<DIM>> people)
+std::vector<string> create_snd_grid(std::vector<Cgl<DIM>>& people)
 {
 	auto snd = std::vector<string>();
 
-	for (auto el : people)
-		snd.push_back(el.getGene()->to_string());
+	for (size_t i = 0; i < people.size(); ++i)
+        snd.push_back(people[i].getGeneString());
 
 	return snd;
 }
 
-std::vector<double> compute_fitness(std::vector<string> recv, std::vector<double> target)
+std::vector<double> compute_fitness(const std::vector<string>& recv, const std::vector<double>& target)
 {
 	auto fitnessValue = std::vector<double>();
 	for (auto el : recv) {
@@ -48,7 +48,6 @@ std::vector<double> compute_fitness(std::vector<string> recv, std::vector<double
 		assert(person.max_iteration > 0);
 		person.GameAndFitness(target);
 		fitnessValue.push_back(person.fitness);
-		person.release();
 	}
 	return fitnessValue;
 }
@@ -139,9 +138,8 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 
         // generate new population
 		for(size_t i = 0; i < POPSIZE; ++i) {
-			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
+			auto c = Cgl<DIM>(std::move(grids[i]), SIDE, N_ITERATIONS);
 			// free and reassign
-			people[i].release();
 			people[i] = c;
 		}
 
@@ -157,7 +155,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 }
 
 
-void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double> target)
+void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>& target)
 {
     MPI_TIMER;
 	int rank = world.rank();
@@ -200,10 +198,7 @@ void master(mpi::communicator& world)
 
         // replace every person with a new person
 		for(size_t i = 0; i < POPSIZE; ++i){
-			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
-			// free and reassign
-			people[i].release();
-			people[i] = c;
+			people[i] = std::move(Cgl<DIM>(std::move(grids[i]),SIDE,N_ITERATIONS));
 		}
 	}
 
@@ -211,7 +206,7 @@ void master(mpi::communicator& world)
 	mpi::broadcast(world, end, 0);
 }
 
-void slave(mpi::communicator& world, std::vector<double> target)
+void slave(mpi::communicator& world, std::vector<double>& target)
 {
 	MPI_TIMER;
     while(true) {
@@ -225,14 +220,13 @@ void slave(mpi::communicator& world, std::vector<double> target)
         auto person = Cgl<DIM>(buf, SIDE, N_ITERATIONS);
         assert(person.max_iteration > 0);
         person.GameAndFitness(target);
-        person.release();
 		// send to master
         world.send(0, status.tag(), person.fitness);
     }
 }
 #endif
 
-void routine(mpi::communicator& world, std::vector<double> target)
+void routine(mpi::communicator& world, std::vector<double>& target)
 {
 	auto rank = world.rank();
 

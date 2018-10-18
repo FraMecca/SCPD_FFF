@@ -25,21 +25,9 @@ int main(int argc, char* argv[])
 		    print_best(people, g);
         // replace every person with a new person
         for(size_t i = 0; i < people.size(); ++i){
-			      people[i].release();
-            people[i] = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
+            people[i] = Cgl<DIM>(std::move(grids[i]),SIDE,N_ITERATIONS);
         }
-        //people[0].printGrid();
-        // FREEING MEMORY
-        for (std::vector<std::bitset<DIM*DIM>*>::iterator i = grids.begin(); i != grids.end(); ++i)
-            delete (*i);
-        grids.clear();
-        //people[0].printGrid();
     }
-
-	// free memory allocated by grids and genes
-	for(size_t i = 0; i < people.size(); ++i){
-		people[i].release();
-	}
 
     return 0;
 }

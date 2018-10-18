@@ -74,11 +74,11 @@ double Cgl<T>::fitnessScore(std::vector<double> target) {
 
 
 template <size_t T>
-size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos) {
+size_t retrieve_parent(std::vector<Cgl<T>>& parents, size_t topn, double choice, size_t pos) {
    assert(parents.size() >0);
     // possible overflow bug in pos == -1
     auto orig_choice = choice;
-    for(size_t i = 0; i < parents.size(); ++i){
+    for(size_t i = 0; i <= topn; ++i){
         if(i == pos) continue;
         assert(parents[i].fitness > 0);
         choice -= parents[i].fitness;
@@ -90,7 +90,7 @@ size_t retrieve_parent(std::vector<Cgl<T>>& parents, double choice, size_t pos) 
 }
 
 template <size_t T>
-GRID cross_genes(GRID p1, GRID p2) {
+GRID cross_genes(const GRID& p1, const GRID& p2) {
     assert(p1->size() == p2->size());
     auto sz = p1->size();
     auto off = sz/4;
@@ -103,7 +103,7 @@ GRID cross_genes(GRID p1, GRID p2) {
         res->set(i,p1->test(i));
     for(size_t i=off*3; i<sz; ++i)
         res->set(i,p2->test(i));
-    return res;
+    return std::move(res);
 }
 
 template <size_t T>
@@ -116,14 +116,13 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     }
 
     //Take the top X parents
-    size_t top_n = (size_t)ceil(((double)parents.size())/100*25);
+    size_t topn = (size_t)ceil(((double)parents.size())/100*25);
     //when testing on small vectors
-    if (top_n < 2)
-      top_n = 2;
-    auto bestParents = std::vector<Cgl<T>>(parents.begin(),parents.begin() + top_n);
+    if (topn < 2)
+      topn = 2;
 
     double interval = 0.0;
-    for(size_t i=0; i<bestParents.size(); ++i) interval += bestParents[i].fitness;
+    for(size_t i=0; i<topn; ++i) interval += parents[i].fitness;
 
     // SLOW RETRIEVAL: TODO
     std::random_device rd;
@@ -131,7 +130,7 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     std::uniform_real_distribution <> uni_dist(0.0f, 1.0f);
     std::uniform_real_distribution <> dis(0.0f, interval);
 
-	//A vector of children of the same size as parents, thi is gonna be the new generation
+	// A vector of children of the same size as parents, thi is gonna be the new generation
 	auto results = std::vector<GRID>(sz);
     GRID child_gene;
 
@@ -139,22 +138,22 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
         auto shall_mutate = mut > uni_dist(gen);
         if(shall_mutate){
             // random element
-            results[i] = Cgl<T>::randomGrid(SIDE, bestParents[0].dim);
+            results[i] = Cgl<T>::randomGrid(SIDE, DIM);
         } else {
 			// cross genes of best parents
             auto choice = dis(gen);
-            auto p1 = retrieve_parent(bestParents, choice, -1);
-            std::uniform_real_distribution <> sdis(0.0f, interval - bestParents[p1].fitness);
+            auto p1 = retrieve_parent(parents, topn, choice, -1);
+            std::uniform_real_distribution <> sdis(0.0f, interval - parents[p1].fitness);
             auto d = uni_dist(gen);
             auto shall_reuse = survive > d;
             if(shall_reuse){
-                child_gene = bestParents[p1].getGene();
+                child_gene = parents[p1].getGene();
             } else {
                 auto choice2 = sdis(gen);
-                auto p2 = retrieve_parent(bestParents, choice2, p1);
-                child_gene = cross_genes<T>(bestParents[p1].gene, bestParents[p2].gene);
+                auto p2 = retrieve_parent(parents, topn, choice2, p1);
+                child_gene = cross_genes<T>(parents[p1].gene, parents[p2].gene);
             }
-            results[i] = child_gene;
+            results[i] = std::move(child_gene);
         }
     }
     return results;

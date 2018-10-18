@@ -49,7 +49,7 @@ std::vector<Cgl<DIM>> first_generation()
         c.side = SIDE;
         c.max_iteration = N_ITERATIONS;
         c.prepareGrid();
-        people.push_back(c);
+        people.push_back(std::move(c));
     }
     assert(people.size() == POPSIZE);
 	return std::move(people);

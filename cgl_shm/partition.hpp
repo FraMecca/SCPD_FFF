@@ -1,12 +1,13 @@
 #pragma once
 #include <bitset>
 #include <vector>
+#include <memory>
 #include "settings.hpp"
 #include "../libcgl/libcgl.hpp"
 using namespace std;
 
-#define PGRID bitset<T*(T/N_PARTITIONS+2)>*
-#define newPGRID new bitset<T*(T/N_PARTITIONS+2)>()
+#define PGRID std::unique_ptr<bitset<T*(T/N_PARTITIONS+2)>>
+#define newPGRID PGRID(new bitset<T*(T/N_PARTITIONS+2)>())
 
 #if (DIM % N_PARTITIONS != 0)
 #error "Grid dimension must be compatible with number of partitions"
@@ -49,15 +50,14 @@ struct Partition {
                     updateCell(newGrid,x,y,iter==0);
                 }
             }
-            delete grid;
-            grid = newGrid;
+            grid = std::move(newGrid);
         }
 
         /***
          * Compute a single partition by filling the grid in Partition
          * with the corresponding values in Cgl.grid
          */
-        void fill(int t, const GRID cglGrid)
+        void fill(int t, const GRID& cglGrid)
         {
             int p = 0;
             psize = T*(T/N_PARTITIONS+2);
@@ -133,9 +133,9 @@ struct Partition {
         }
 
         /***
-         * Dump the grid into a biteset, corresponding rows
+         * Dump the grid into a bitset, corresponding rows
          */
-        void dumpGrid(GRID dump)
+    void dumpGrid(GRID& dump) // attento, portato a referenza
         {
             int nrows = psize/T;
             int pos = 0, dumpPos = 0;
@@ -191,7 +191,7 @@ struct Partition {
          * A cell is updated only if changes occourred
          * during the previous iteration
          */
-        void updateCell(PGRID new_grid, int x, int y, bool first)
+        void updateCell(PGRID& new_grid, int x, int y, bool first)
         {
             // compute neighbours
             // since computation is cheap
@@ -220,7 +220,7 @@ struct Partition {
         /***
          * Apply rule of life to the given cell (x,y)
          */
-        void applyRuleOfLife(PGRID new_grid, int x, int y, int alive)
+        void applyRuleOfLife(PGRID& new_grid, int x, int y, int alive)
         {
             int pos = getPos(x,y,T);
             if (grid->test(pos) && (alive < 2 || alive > 3))
