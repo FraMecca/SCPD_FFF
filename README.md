@@ -1,3 +1,8 @@
+Griglia: 256, 512
+Pop: 500
+Iterazioni: 100
+side: 16
+
 # Relazione
 
 ## Abstract
@@ -44,7 +49,7 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 * Hotpath con -O0 / -O2
 * Grafici
 
-## Shared memory (Partitioning)
+## Shared memory (Stencil)
 
 * Motivazione
 * Descrizione dell'algoritmo (step / pseudocodice)
@@ -55,15 +60,15 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 
 * Motivazione
 * Descrizione dell'algoritmo (step / pseudocodice)
+* primitive di openmpi / due varianti algoritmo
+* Parallellizzazione interna esterna
 * Profilazione
 * Grafici
-
-## Sequenziale ottimizzato
-
 
 ## Performance Analysis (Considerazioni)
 
 * quello che ci capita
+* possibili ottimizzazioni ulteriori
 
 ## Conclusioni
 
