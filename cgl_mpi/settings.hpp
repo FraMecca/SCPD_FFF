@@ -12,13 +12,13 @@
 
 #define N_PARTITIONS 4
 
-#define SCATTER // use mpi_scatterv/gatherv instead of send/recv
+// #define SCATTER // use mpi_scatterv/gatherv instead of send/recv
 
 
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
-#define DIM 128
+#define DIM 32
 
 // CGL grid area dimension (N -> NxN)
 #define SIDE 4
