@@ -8,8 +8,12 @@
  */
 
 #define SEQUENTIAL
+//#define STENCIL
 
-#define N_PARTITIONS 8
+#define N_PARTITIONS 4
+
+// #define SCATTER // use mpi_scatterv/gatherv instead of send/recv
+
 
 // --- CGL
 
@@ -17,22 +21,22 @@
 #define DIM 32
 
 // CGL grid area dimension (N -> NxN)
-#define SIDE 4
+#define SIDE 8
 
 // Maximum number of CGL iterations
-#define N_ITERATIONS 100
+#define N_ITERATIONS 20
 
 
 // --- GA PARAMETERS
 
 // Population size (num. individuals)
-#define POPSIZE 10
+#define POPSIZE 50
 
 // Number of generations
-#define N_GENERATIONS 20
+#define N_GENERATIONS 5
 
 //Number of grids which the fitness is computed on after N_ITERATIONS iterations (N_FITGRIDS <= N_ITERATIONS)
-#define N_FITGRIDS 10
+#define N_FITGRIDS 5
 
 // Survival probability of an individual
 const double _survive = 0.05;

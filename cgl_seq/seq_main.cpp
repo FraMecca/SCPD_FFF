@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    vector<Cgl<DIM>> people = first_generation();
+    auto people = first_generation();
     for(size_t g = 0; g < N_GENERATIONS; ++g){
         for(size_t i = 0; i < people.size(); ++i){
             people[i].GameAndFitness(target);
@@ -25,9 +25,15 @@ int main(int argc, char* argv[])
 		print_best(people, g);
         // replace every person with a new person
         for(size_t i = 0; i < people.size(); ++i){
+			people[i].release();
             people[i] = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
         }
     }
+
+	// free memory allocated by grids and genes
+	for(size_t i = 0; i < people.size(); ++i){
+		people[i].release();
+	}
 
     return 0;
 }

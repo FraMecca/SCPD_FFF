@@ -52,7 +52,7 @@ std::vector<Cgl<DIM>> first_generation()
         people.push_back(c);
     }
     assert(people.size() == POPSIZE);
-	return people;
+	return std::move(people);
 }
 
 

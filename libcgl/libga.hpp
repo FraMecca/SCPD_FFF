@@ -94,7 +94,7 @@ GRID cross_genes(GRID p1, GRID p2) {
     assert(p1->size() == p2->size());
     auto sz = p1->size();
     auto off = sz/4;
-    auto res = newGRID;
+    GRID res = newGRID;
     for(size_t i=0; i<off; ++i)
         res->set(i,p1->test(i));
     for(size_t i=off; i<off*2; ++i)
@@ -103,18 +103,14 @@ GRID cross_genes(GRID p1, GRID p2) {
         res->set(i,p1->test(i));
     for(size_t i=off*3; i<sz; ++i)
         res->set(i,p2->test(i));
-    return std::move(res);
+    return res;
 }
 
 template <size_t T>
 std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, double mut, double survive, bool shouldSort) {
     assert(parents.size() > 1);
 
-    std::vector<GRID> results = std::vector<GRID>();
-    //A vector of children of the same size as parents, thi is gonna be the new generation
-    results.resize(sz);
-
-    //Order pparents, best at the end
+    //Order parents, best at the end
     if(shouldSort){
         std::sort(parents.begin(), parents.end());
     }
@@ -124,7 +120,7 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     //when testing on small vectors
     if (top_n < 2)
       top_n = 2;
-    std::vector<Cgl<T>> bestParents = std::vector<Cgl<T>>(parents.begin(),parents.begin() + top_n);
+    auto bestParents = std::vector<Cgl<T>>(parents.begin(),parents.begin() + top_n);
 
     double interval = 0.0;
     for(size_t i=0; i<bestParents.size(); ++i) interval += bestParents[i].fitness;
@@ -134,14 +130,18 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
     std::mt19937 gen(rd());
     std::uniform_real_distribution <> uni_dist(0.0f, 1.0f);
     std::uniform_real_distribution <> dis(0.0f, interval);
+
+	//A vector of children of the same size as parents, thi is gonna be the new generation
+	auto results = std::vector<GRID>(sz);
+    GRID child_gene;
+
     for(size_t i = 0; i < sz; ++i){
         auto shall_mutate = mut > uni_dist(gen);
         if(shall_mutate){
             // random element
-            auto c = Cgl<T>::randomGrid(SIDE, bestParents[0].dim);
-            results[i] = c;
+            results[i] = Cgl<T>::randomGrid(SIDE, bestParents[0].dim);
         } else {
-            GRID child_gene;
+			// cross genes of best parents
             auto choice = dis(gen);
             auto p1 = retrieve_parent(bestParents, choice, -1);
             std::uniform_real_distribution <> sdis(0.0f, interval - bestParents[p1].fitness);

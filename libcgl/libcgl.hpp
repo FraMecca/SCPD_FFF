@@ -80,8 +80,8 @@ template<size_t T>
 class Cgl {
     private:
         size_t dim;                   /** Lenght of the grid side*/
-        GRID gene = nullptr;             /** The initial configuration of the grid */
-        GRID grid = nullptr;              /** The grid*/
+        GRID gene;             		  /** The initial configuration of the grid */
+        GRID grid;              	  /** The grid*/
         short fitnessIterations = N_FITGRIDS;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
 
@@ -146,6 +146,10 @@ class Cgl {
             fill_partitions();
 #endif
         }
+		
+		/** Copy constructor
+		 */
+		//Cgl(const Cgl<T>& c) = default;
 
         void release() {
             delete gene;
@@ -186,12 +190,11 @@ class Cgl {
         * read only gene getter
         */
         GRID getGene() {
-            assert(gene != nullptr);
-            GRID ret = newGRID;
-            copyGrid(gene, ret);
-            //memcpy(ret, gene, sizeof(std::bitset<T*T>));
-            //auto ret = new bitset<T*T>(gene);
-            return std::move(ret);
+            //assert(gene != nullptr);
+            //GRID ret = newGRID;
+            //copyGrid(gene, ret);
+            //return std::move(ret);
+			return gene;
         }
 
         /**
@@ -202,10 +205,11 @@ class Cgl {
             auto bits = randomGrid(side, dim);
             copyGrid(bits,grid);
             copyGrid(bits,gene);
+			delete bits;
         }
 
         static GRID randomGrid(int side, size_t dim) {
-            auto bits = newGRID;
+            GRID bits = newGRID;
             std::random_device rd;
             std::uniform_real_distribution <> uni(0.0, 1.0);
             std::mt19937 gen(rd());
@@ -222,7 +226,7 @@ class Cgl {
                     }
                 }
             }
-            return std::move(bits);
+            return bits;
         }
 
 		static std::vector<double> generate_target() {
@@ -238,7 +242,7 @@ class Cgl {
 #ifdef SEQUENTIAL
         void startCgl(unsigned int n_iter = N_ITERATIONS)
 		{
-			TIMER;
+			//TIMER;
 			assert(side > 0);
 			assert(max_iteration > 0);
 
@@ -248,11 +252,12 @@ class Cgl {
 			for (size_t i=0;i<n_iter;++i) {
 				for (size_t x=0;x<dim;++x)
 					for (size_t y=0;y<dim;++y)
-						updateCell(new_grid,x,y,i==0);
+						updateCell(new_grid,x,y);
 				//copyGrid(grid,prev);
 				copyGrid(new_grid,grid);
 				//printGrid();
 			}
+			delete new_grid;
         }
 #endif
 
@@ -260,7 +265,7 @@ class Cgl {
 
         void startCgl(unsigned int n_iter = N_ITERATIONS)
         {
-			TIMER;
+			//TIMER;
             fill_partitions();
             GRID stepGrid = newGRID;
             for(int i=0; i<n_iter; i++) {
@@ -421,9 +426,7 @@ class Cgl {
         /**
          * Update the value in the given position according to its neighbours and the rule of life.
          */
-        void updateCell(GRID new_grid, int x, int y, bool first) {
-            /*if (!first && noChanges(x,y))
-                return;*/
+        void updateCell(GRID new_grid, int x, int y) {
             int neighbours[MAX_NEIGH] = {0};
             getNeighbourhood(x,y,neighbours);
             int alive = 0;
