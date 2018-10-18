@@ -6,9 +6,9 @@
 
 int main(int argc, char* argv[])
 {
-    auto target = std::vector<double>(POPSIZE);
+    auto target = std::vector<double>(DIM*DIM/(SIDE*SIDE));
     try{
-        auto res = init_target(argc, argv, target);
+        auto res = init_target(argc, argv, target, 0);
         if(res == STORED) // target was generated and stored in file
             return 0;
     } catch (std::exception& e) {

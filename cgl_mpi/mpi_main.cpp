@@ -188,6 +188,7 @@ void master(mpi::communicator& world)
 		else cnt++;
 
 		// crossover sorts in place according to fitness
+        assert(people.size() == POPSIZE);
         auto grids = Cgl<DIM>::crossover(people, people.size());
 
 		// print the best 5 fitnesses
@@ -219,6 +220,7 @@ void slave(mpi::communicator& world, std::vector<double> target)
         auto person = Cgl<DIM>(buf, SIDE, N_ITERATIONS);
         assert(person.max_iteration > 0);
         person.GameAndFitness(target);
+        person.release();
 		// send to master
         world.send(0, status.tag(), person.fitness);
     }
@@ -245,18 +247,18 @@ void routine(mpi::communicator& world, std::vector<double> target)
 int
 main(int argc, char* argv[])
 {
-    auto target = std::vector<double>(POPSIZE);
+	mpi::environment env(argc, argv);
+	mpi::communicator world;
+
+    auto target = std::vector<double>(DIM*DIM/(SIDE*SIDE));
     try{
-        auto res = init_target(argc, argv, target);
+        auto res = init_target(argc, argv, target, world.rank());
         if(res == STORED) // target was generated and stored in file
             return 0;
     } catch (std::exception& e) {
         std::cerr << "Error loading target from file" << std::endl;
         return 1;
     }
-
-	mpi::environment env(argc, argv);
-	mpi::communicator world;
 
     routine(world, target);
 
