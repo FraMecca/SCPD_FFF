@@ -9,19 +9,9 @@
 #include "settings.hpp"
 #include "libcgl.hpp"
 #include "libga.hpp"
-#include "../libcgl/util.hpp"
+#include "util.hpp"
 
 namespace mpi = boost::mpi;
-
-void print_best(std::vector<Cgl<DIM>>& people, int cnt)
-{
-    cout << cnt << ":\t";
-    for(size_t i=0; i<5; i++) {
-        cout << people[i].fitness << "\t| ";
-    }
-    cout << people[POPSIZE-1].fitness << endl;
-}
-
 
 std::vector<int> init_sizes(int nproc)
 {
@@ -130,12 +120,6 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 
 	for (size_t g = 0;g <= N_GENERATIONS;++g) {
 		mpi::gatherv(world, fitnessSnd, &fitnessRecv[0], sizes , 0);
-		if (g == 0) {
-			cout << "FIRST FITNESS: ";
-			for (double el : fitnessRecv)
-				cout << el << " ";
-			cout << endl;
-		}
 
 		// update grid with fitness
 		for (size_t i=0;i<people.size();++i)
@@ -147,6 +131,11 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 
 		// crossover
 		auto grids = Cgl<DIM>::crossover(people, people.size());
+
+		// print the best 5 fitnesses
+        print_best(people, g);
+
+        // generate new population
 		for(size_t i = 0; i < POPSIZE; ++i) {
 			auto c = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
 			// free and reassign
@@ -161,14 +150,10 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 	}
 
 	// iterations finished
-	cout <<  "Master finito" << endl;
 	auto end = std::vector<string>(POPSIZE,"end");
 	mpi::scatterv(world, end, sizes, &recv[0], 0);
-	cout << "FITNESS: ";
-	for (auto el : people)
-		cout << el.fitness << " ";
-	cout << endl;
 }
+
 
 void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double> target)
 {
