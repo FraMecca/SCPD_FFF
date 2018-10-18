@@ -40,5 +40,16 @@ bin/*
 *.exe
 *.out
 *.app
-cgl_mp/cgl_mp
 cgl_seq/cgl_seq
+cgl_mpi/cgl_mpi
+cgl_seq/cgl_shm
+cgl_seq/cgl_seq_dbg
+cgl_mpi/cgl_mpi_dbg
+cgl_seq/cgl_shm_dbg
+cgl_seq/seq
+cgl_mpi/mpi
+cgl_seq/shm
+cgl_seq/seq_dbg
+cgl_mpi/mpi_dbg
+cgl_seq/shm_dbg
+*.valg

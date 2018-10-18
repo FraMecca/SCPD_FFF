@@ -1,7 +1,7 @@
 DEBUG=-g -Wall -Wpedantic -Wextra
 PROF=-pg
 CC=g++
-CFLAGS=-std=c++11 -fopenmp
+CFLAGS=-std=c++17 -I. -I../libcgl -lboost_serialization -fopenmp
 SOURCES=shm_main.cpp
 
 default:

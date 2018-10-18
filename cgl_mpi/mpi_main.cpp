@@ -1,42 +1,22 @@
 #include <assert.h>
 #include <iostream>
-#include <fstream>
 #include <tuple>
-//#include <mpi.h>
-#include "settings.hpp"
-#include "libcgl.hpp"
-#include "libga.hpp"
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/vector.hpp>
+#include "settings.hpp"
+#include "libcgl.hpp"
+#include "libga.hpp"
+#include "../libcgl/util.hpp"
 
 namespace mpi = boost::mpi;
-
 
 int next_rank(size_t i, mpi::communicator& world)
 {
     assert(world.size() > 0);
     return i % (world.size() - 1) + 1;
-}
-
-
-std::vector<Cgl<DIM>> first_generation(mpi::communicator& world)
-{
-    auto people = std::vector<Cgl<DIM>>();
-
-    for(size_t i = 0; i < POPSIZE; ++i){
-        auto c = Cgl<DIM>(SIDE,N_ITERATIONS);
-        c.side = SIDE;
-        c.max_iteration = N_ITERATIONS;
-        c.prepareGrid();
-        people.push_back(c);
-    }
-    assert(people.size() == POPSIZE);
-	return people;
 }
 
 std::vector<double> recv_fitness(mpi::communicator& world)
@@ -87,9 +67,7 @@ void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 
 void master(mpi::communicator& world)
 {
-    //auto tup = first_generation();
-    //auto people = std::get<0>(tup);
-    auto people = first_generation(world);
+    auto people = first_generation();
 	int cnt = 0;
 
 	while(true) {
@@ -118,7 +96,6 @@ void master(mpi::communicator& world)
     string end = "end";
 	mpi::broadcast(world, end, 0);
 }
-
 
 void routine(mpi::communicator& world, std::vector<double> target)
 {
@@ -153,24 +130,15 @@ void routine(mpi::communicator& world, std::vector<double> target)
 int
 main(int argc, char* argv[])
 {
-	if(argc > 1 && std::string(argv[1]) == "--target") {
-		// dump to file
-		auto density = Cgl<DIM>::generate_target();
-		std::ofstream outfile("./target.bin");
-		boost::archive::text_oarchive oa(outfile);
-		oa & density;
-		return 0;
-	}
-	// load from file
-	std::vector<double> target;
-	try {
-		std::ifstream infile("./target.bin");
-		boost::archive::text_iarchive ia(infile);
-		ia & target;
-	} catch (const::exception &e) {
-		cout << "Cannot find target file." << endl;
-		return 1;
-	}
+    auto target = std::vector<double>(POPSIZE);
+    try{
+        auto res = init_target(argc, argv, target);
+        if(res == STORED) // target was generated and stored in file
+            return 0;
+    } catch (std::exception& e) {
+        std::cerr << "Error loading target from file" << std::endl;
+        return 1;
+    }
 
 	mpi::environment env(argc, argv);
 	mpi::communicator world;

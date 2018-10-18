@@ -1,8 +1,8 @@
 DEBUG=-g -Wall -Wpedantic -Wextra
 PROF=-pg
 CC=g++
-CFLAGS=-std=c++11
 SOURCES=seq_main.cpp
+CFLAGS=-std=c++17 -I. -I../libcgl -lboost_serialization
 
 default:
 	$(CC) $(SOURCES) -o seq $(CFLAGS)
