@@ -12,6 +12,9 @@
 
 #define N_PARTITIONS 4
 
+#define SCATTER // use mpi_scatterv/gatherv instead of send/recv
+
+
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
