@@ -22,12 +22,18 @@ int main(int argc, char* argv[])
             people[i].GameAndFitness(target);
         }
         auto grids = Cgl<DIM>::crossover(people, people.size());
-		print_best(people, g);
+		    print_best(people, g);
         // replace every person with a new person
         for(size_t i = 0; i < people.size(); ++i){
-			people[i].release();
+			      people[i].release();
             people[i] = Cgl<DIM>(grids[i],SIDE,N_ITERATIONS);
         }
+        //people[0].printGrid();
+        // FREEING MEMORY
+        for (std::vector<std::bitset<DIM*DIM>*>::iterator i = grids.begin(); i != grids.end(); ++i)
+            delete (*i);
+        grids.clear();
+        //people[0].printGrid();
     }
 
 	// free memory allocated by grids and genes
