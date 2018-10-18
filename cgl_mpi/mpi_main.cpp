@@ -84,6 +84,7 @@ int get_next_slave(std::vector<bool>& jobs)
 
 void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 {
+    TIMER;
 	int nrecv = 0;
 	int njobs = 0;
 	double f = 0.0f;
@@ -157,6 +158,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 
 void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double> target)
 {
+    MPI_TIMER;
 	int rank = world.rank();
 	while(true) {
 		auto recv = std::vector<string>(sizes[rank]);
@@ -179,6 +181,7 @@ void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>
 #else
 void master(mpi::communicator& world)
 {
+    MPI_TIMER;
     auto people = first_generation();
 	int cnt = 0;
 

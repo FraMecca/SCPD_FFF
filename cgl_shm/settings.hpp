@@ -7,7 +7,7 @@
  * Set the chosen values, then go compile.
  */
 
-#define PARTITION
+#define STENCIL
 
 #define N_PARTITIONS 8
 

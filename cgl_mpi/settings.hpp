@@ -8,7 +8,7 @@
  */
 
 #define SEQUENTIAL
-//#define PARTITION
+//#define STENCIL
 
 #define N_PARTITIONS 4
 

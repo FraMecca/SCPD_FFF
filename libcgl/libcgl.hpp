@@ -11,7 +11,7 @@
 
 using namespace std;
 
-#if defined(PARTITION) && defined(SEQUENTIAL)
+#if defined(STENCIL) && defined(SEQUENTIAL)
 #error "Choose a parallelization method"
 #endif
 
@@ -21,7 +21,7 @@ using namespace std;
 
 #define MAX_NEIGH 8      /** Max number of neighbour for each cell*/
 
-#ifdef PARTITION
+#ifdef STENCIL
 #include "../cgl_shm/partition.hpp"
 #include <omp.h>
 #endif
@@ -51,7 +51,7 @@ class Cgl {
         short fitnessIterations = N_FITGRIDS;       /** Number of iterations in which fitness is computed */
         bool fitnessDone = false;            /** flags if fitness has been computed */
 
-#ifdef PARTITION
+#ifdef STENCIL
         Partition<T> partitions[N_PARTITIONS];
 #endif
 
@@ -76,7 +76,7 @@ class Cgl {
             fitness = 0.0;
             side = _side;
             prepareGrid();
-#ifdef PARTITION
+#ifdef STENCIL
             fill_partitions();
 #endif
         }
@@ -90,7 +90,7 @@ class Cgl {
             density = std::vector<double>();
             fitness = 0.0;
             side = _side;
-#ifdef PARTITION
+#ifdef STENCIL
             fill_partitions();
 #endif
         }
@@ -108,7 +108,7 @@ class Cgl {
             density = std::vector<double>();
             fitness = 0.0;
             side = _side;
-#ifdef PARTITION
+#ifdef STENCIL
             fill_partitions();
 #endif
         }
@@ -220,7 +220,7 @@ class Cgl {
         }
 #endif
 
-#ifdef PARTITION
+#ifdef STENCIL
 
         void startCgl(unsigned int n_iter = N_ITERATIONS)
         {
@@ -243,7 +243,7 @@ class Cgl {
             copyGrid(stepGrid, grid);
         }
 #endif
-#ifdef PARTITION
+#ifdef STENCIL
         /***
          * Helper function to fill all partitions based on their index
          */
@@ -313,7 +313,7 @@ class Cgl {
         /***
          * debugging (print partition grids)
          */
-#ifdef PARTITION
+#ifdef STENCIL
         void printGrid(bool full=false)
         {
             for(int t=0; t<N_PARTITIONS; t++) {
@@ -485,7 +485,7 @@ class Cgl {
 
             return true;
         }*/
-//#ifdef PARTITION
+//#ifdef STENCIL
 
 };
 
