@@ -140,7 +140,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
 		for(size_t i = 0; i < POPSIZE; ++i) {
 			auto c = Cgl<DIM>(std::move(grids[i]), SIDE, N_ITERATIONS);
 			// free and reassign
-			people[i] = c;
+			people[i] = std::move(c);
 		}
 
 		// send grids to slaves
