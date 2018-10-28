@@ -141,7 +141,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
         for (size_t i = 0; i < POPSIZE; ++i) {
             auto c = Cgl<DIM>(std::move(grids[i]), SIDE, N_ITERATIONS);
             // free and reassign
-            people[i] = c;
+            people[i] = std::move(c);
         }
 
         // send grids to slaves
@@ -153,6 +153,11 @@ void master(mpi::communicator& world, std::vector<int> sizes)
     // iterations finished
     auto end = std::vector<string>(POPSIZE, "end");
     mpi::scatterv(world, end, sizes, &recv[0], 0);
+}
+
+// iterations finished
+auto end = std::vector<string>(POPSIZE, "end");
+mpi::scatterv(world, end, sizes, &recv[0], 0);
 }
 
 void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>& target)
