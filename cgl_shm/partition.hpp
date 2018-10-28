@@ -30,7 +30,6 @@ public:
     int start; /** starting index of the partition */
     int end; /** ending index of the partition */
     PGRID grid = newPGRID; /** the bitset representing a partition */
-    //bitset<T*(T/N_PARTITIONS+2)> prev;     [>* the bitset representing a partition <]
     size_t psize; /** partition size */
     size_t size = T * T / N_PARTITIONS; /** partition size without neighbours */
     bool nIndex[2] = { false, false }; /** indexes of the neighbourhood rows */
@@ -89,15 +88,10 @@ public:
         }
         assert(start >= 0 && end <= T * T);
 
-        //cout << start << ":" << end << endl;
-        //cout << indexes[0] << ":" << indexes[1] << endl;
         grid->reset();
         for (int i = start; i < end; i++) {
-            //cout << p << ":" << i << endl;
             grid->set(p++, cglGrid->test(i));
         }
-        //printGrid(true);
-        //cout << endl;
     }
 
     /***
@@ -160,31 +154,6 @@ private:
         else
             return y + x * dim;
     }
-
-    /***
-         * Check for changes between the previous iteration
-         * and the current one
-         */
-    //inline bool isChanged(int i)
-    //{
-    //return grid->test(i) != prev.test(i);
-    //}
-
-    /***
-         * Test if a cell has no changes around
-         * (if so it can be excluded)
-         */
-    //bool noChanges(int x, int y, int* neighbours)
-    //{
-    //if (isChanged(y + x * T))
-    //return false;
-    //for (int i=0;i<MAX_NEIGH;++i) {
-    //if (neighbours[i] != -1 && \
-                        //isChanged(neighbours[i]))
-    //return false;
-    //}
-    //return true;
-    //}
 
     /***
          * Update a cell computing its neighbours

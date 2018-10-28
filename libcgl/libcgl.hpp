@@ -99,8 +99,6 @@ private:
 #endif
 
 public:
-    //GRID prev;              /** Grid of the previous iteration*/
-    //int neighbours[T*T][MAX_NEIGH];     /** Array of neighbours assigned to each cell*/
 
     std::vector<double> density; /** A vector of fitness scores for each area **/
     double fitness; /** Fitness related to target density **/
@@ -125,7 +123,7 @@ public:
 #endif
     }
 
-    // stringz
+    /// Constructor for strings
     Cgl(string bitstr, size_t _side = SIDE, unsigned int max_iter = N_ITERATIONS)
     {
         max_iteration = max_iter;
@@ -223,7 +221,6 @@ public:
         auto bits = randomGrid(side, dim);
         copyGrid(bits, grid);
         copyGrid(bits, gene);
-        // delete bits;
     }
 
     static GRID randomGrid(int side, size_t dim)
@@ -275,11 +272,8 @@ public:
             for (size_t x = 0; x < dim; ++x)
                 for (size_t y = 0; y < dim; ++y)
                     updateCell(new_grid, x, y);
-            //copyGrid(grid,prev);
             copyGrid(new_grid, grid);
-            //printGrid();
         }
-        // delete new_grid;
     }
 #endif
 
@@ -314,9 +308,7 @@ public:
     void fill_partitions()
     {
         for (int t = 0; t < N_PARTITIONS; t++) {
-            //cout << ">> " << t <<endl;
             partitions[t].fill(t, grid);
-            //partitions[t].printGrid(true);
         }
     }
 
@@ -462,11 +454,6 @@ private:
 
         applyRuleOfLife(new_grid, x, y, alive);
     }
-
-    /**
-         * Convert the 2D index on the grid to the 1D bitarray index according to row order transformation.
-         */
-    //inline int getPos(int x, int y);
 
     /**
          * Return an array of 1D indexes corresponding to the neighbours of the given cell.

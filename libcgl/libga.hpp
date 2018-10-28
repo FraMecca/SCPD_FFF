@@ -25,7 +25,6 @@ void Cgl<T>::densityScore()
 
     size_t cnt = 0;
 
-    //To be parallelised?
     for (size_t line = 0; line < dim / side; ++line) {
         for (size_t col = 0; col < dim / side; ++col) {
             long density_sc = 0;
@@ -78,7 +77,7 @@ template <size_t T>
 size_t retrieve_parent(std::vector<Cgl<T>>& parents, size_t topn, double choice, size_t pos)
 {
     assert(parents.size() > 0);
-    // possible overflow bug in pos == -1
+    // possible overflow
     auto orig_choice = choice;
     for (size_t i = 0; i <= topn; ++i) {
         if (i == pos)
