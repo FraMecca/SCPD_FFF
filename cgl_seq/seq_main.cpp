@@ -1,7 +1,7 @@
+#include "settings.hpp"
 #include "../libcgl/libcgl.hpp"
 #include "../libcgl/libga.hpp"
 #include "../libcgl/util.hpp"
-#include "settings.hpp"
 #include <assert.h>
 
 int main(int argc, char* argv[])

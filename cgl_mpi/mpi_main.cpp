@@ -1,6 +1,6 @@
+#include "settings.hpp"
 #include "libcgl.hpp"
 #include "libga.hpp"
-#include "settings.hpp"
 #include "util.hpp"
 #include <assert.h>
 #include <boost/mpi/collectives.hpp>

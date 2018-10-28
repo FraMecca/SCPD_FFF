@@ -284,7 +284,7 @@ public:
         //TIMER;
         fill_partitions();
         GRID stepGrid = newGRID;
-        for (int i = 0; i < n_iter; i++) {
+        for (size_t i = 0; i < n_iter; i++) {
 // spawn a thread pool
 #pragma omp parallel
             {
@@ -293,7 +293,7 @@ public:
 // distribute partitions between threads
 #pragma omp for
                 for (int p = 0; p < N_PARTITIONS; p++) {
-                    partitions[p].computeCells(i);
+                    partitions[p].computeCells();
                 }
             }
         }

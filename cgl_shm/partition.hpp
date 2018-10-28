@@ -39,13 +39,13 @@ public:
          * Compute Cgl iteration for the partition grid
          * Defined in 'cgl_mp.cpp'
          */
-    void computeCells(int iter)
+    void computeCells()
     {
         int nrows = psize / T;
         PGRID newGrid = newPGRID;
         for (int x = nIndex[0]; x < nrows - nIndex[1]; x++) {
-            for (int y = 0; y < T; y++) {
-                updateCell(newGrid, x, y, iter == 0);
+            for (size_t y = 0; y < T; y++) {
+                updateCell(newGrid, x, y);
             }
         }
         grid = std::move(newGrid);
@@ -86,7 +86,7 @@ public:
             indexes[0] = start / T + 1;
             indexes[1] = end / T - 1;
         }
-        assert(start >= 0 && end <= T * T);
+        assert(start >= 0 && (long unsigned int)end <= T * T);
 
         grid->reset();
         for (int i = start; i < end; i++) {
@@ -133,7 +133,7 @@ public:
         int nrows = psize / T;
         int pos = 0, dumpPos = 0;
         for (int x = nIndex[0]; x < nrows - nIndex[1]; x++) {
-            for (int y = 0; y < T; y++) {
+            for (size_t y = 0; y < T; y++) {
                 // pos describes the position on the grid
                 pos = getPos(x, y, T);
                 // dumpPos maps the position on the grid to the one of the full grid
@@ -160,7 +160,7 @@ private:
          * A cell is updated only if changes occourred
          * during the previous iteration
          */
-    void updateCell(PGRID& new_grid, int x, int y, bool first)
+    void updateCell(PGRID& new_grid, int x, int y)
     {
         // compute neighbours
         // since computation is cheap
@@ -172,10 +172,6 @@ private:
         for (size_t i = 0; i < MAX_NEIGH; ++i) {
             assert(neighbours[i] >= -1);
         }
-
-        //cout << x << " " << y << endl;
-        //if (!first && noChanges(x,y,neighbours))
-        //return;
 
         int alive = 0;
         for (int i = 0; i < MAX_NEIGH; ++i) {
