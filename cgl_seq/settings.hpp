@@ -14,7 +14,6 @@
 
 // #define SCATTER // use mpi_scatterv/gatherv instead of send/recv
 
-
 // --- CGL
 
 // CGL grid dimension (N -> NxN)
@@ -25,7 +24,6 @@
 
 // Maximum number of CGL iterations
 #define N_ITERATIONS 20
-
 
 // --- GA PARAMETERS
 
