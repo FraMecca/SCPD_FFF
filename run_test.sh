@@ -1,72 +1,50 @@
 #!/bin/bash
-
-if [[ $1 == "-s" || $1 == "--save" ]]; then
-	SAVE=true
-else
-	SAVE=false
-fi
+set -e
 
 DIR=$(pwd)
-RES=$DIR/results
-SEQ=$DIR/test/cgl_seq
-SHM=$DIR/test/cgl_shm
-MPI=$DIR/test/cgl_mpi
+RES=$DIR/bench/results
+SEQ=$DIR/cgl_seq
+SHM=$DIR/cgl_shm
+MPI=$DIR/cgl_mpi
+BIN=$DIR/bench/bin
 
 ### Tests:
 # cgl_seq with -O2
-SET1=$DIR/settings/settings1.hpp
+SET1=$DIR/bench/settings/bench/settings1.hpp
 
 # cgl_shm with -O2 (stencil)
-SET2=$DIR/settings/settings2.hpp
+SET2=$DIR/bench/settings/bench/settings2.hpp
 
 # cgl_mpi with -O2 and:
 ## seq no scatter
-SETM1=$DIR/settings/settingsm1.hpp
+SETM1=$DIR/bench/settings/bench/settingsm1.hpp
 ## seq with scatter
-SETM2=$DIR/settings/settingsm2.hpp
+SETM2=$DIR/bench/settings/bench/settingsm2.hpp
 ## stencil no scatter
-SETM3=$DIR/settings/settingsm3.hpp
+SETM3=$DIR/bench/settings/bench/settingsm3.hpp
 ## stencil with scatter
-SETM4=$DIR/settings/settingsm4.hpp
+SETM4=$DIR/bench/settings/bench/settingsm4.hpp
 
 ## hostfile
-HOST=$DIR/settings/hostfile
+HOST=$DIR/bench/settings/hostfile
 
 # results directory
 mkdir -p $RES
+mkdir -p $BIN
 
 # sequential
 cd $SEQ
 cp $SET1 $SEQ/settings.hpp
-make -j12 opt
-echo "--- Creating target with $SEQ"
-$SEQ/seq --target
-echo "--- Running $SEQ"
-$SEQ/seq
-# save results
-if [[ $SAVE ]]; then
-	rm -r $RES/seq
-	mkdir -p $RES/seq
-	cp $SEQ/time* $RES/seq
-fi
-
- set target
-TARGET=$SEQ/target.bin
+make opt
+mv $SEQ/seq $BIN/seq
 
 # shared memory (stencil)
 mkdir -p $RES/shm
 cd $SHM
 cp $TARGET .
 cp $SET2 $SHM/settings.hpp
-make -j12 opt
-echo "--- Running $SHM"
-$SHM/shm
-# save results
-if [[ $SAVE ]]; then
-	rm -r $RES/shm
-	mkdir -p $RES/shm
-	cp $SHM/time* $RES/shm
-fi
+make  opt
+mv $SHM/shm $BIN/shm
 
 ## MPI + seq / shm (all the possibilities)
 mkdir -p $RES/mpi
@@ -75,45 +53,43 @@ cp $TARGET .
 cp $HOST .
 
 cp $SETM1 $MPI/settings.hpp
-make -j12 opt
-echo "--- Running $MPI (seq, no scatter)"
-mpirun --hostfile $MPI/hostfile -np 12 $MPI/mpi
-## save results
-if [[ $SAVE ]]; then
-	rm -r $RES/mpi/1/
-	mkdir -p $RES/mpi/1/
-	cp $MPI/time* $RES/mpi/1/
-fi
+make  opt
+mv $MPI/mpi $BIN/mpi_seq
 
 cp $SETM2 $MPI/settings.hpp
-make -j12 opt
-echo "--- Running $MPI (seq, with scatter)"
-mpirun --hostfile $MPI/hostfile -np 12 $MPI/mpi
-## save results
-if [[ $SAVE ]]; then
-	rm -r $RES/mpi/2/
-	mkdir -p $RES/mpi/2/
-	cp $MPI/time* $RES/mpi/2/
-fi
+make  opt
+mv $MPI/mpi $BIN/mpi_seq_sc
 
 cp $SETM3 $MPI/settings.hpp
-make -j12 opt
-echo "--- Running $MPI (shm, no scatter)"
-mpirun --hostfile $MPI/hostfile -np 4 $MPI/mpi
-## save results
-if [[ $SAVE ]]; then
-	rm -r $RES/mpi/3/
-	mkdir -p $RES/mpi/3/
-	cp $MPI/time* $RES/mpi/3/
-fi
+make  opt
+mv $MPI/mpi $BIN/mpi_st
 
 cp $SETM4 $MPI/settings.hpp
-make -j12 opt
-echo "--- Running $MPI (shm, with scatter)"
-mpirun --hostfile $MPI/hostfile -np 4 $MPI/mpi
-## save results
-if [[ $SAVE ]]; then
-	rm -r $RES/mpi/4/
-	mkdir -p $RES/mpi/4/
-	cp $MPI/time* $RES/mpi/4/
-fi
+make  opt
+mv $MPI/mpi $BIN/mpi_st_sc
+
+cd $BIN
+./seq --target
+./seq
+mkdir -p $RES/seq
+mv $BIN/time* $RES/seq/
+
+./shm
+mkdir -p $RES/shm
+mv $BIN/time* $RES/shm/
+
+mpirun --hostfile $HOST $MPI/mpi_seq
+mkdir -p $RES/mpi/seq/
+mv $BIN/time* $RES/mpi/seq/
+
+mpirun --hostfile $HOST $MPI/mpi_seq_sc
+mkdir -p $RES/mpi/seq_sc/
+mv $BIN/time* $RES/mpi/seq_sc/
+
+mpirun --hostfile $HOST $MPI/mpi_st
+mkdir -p $RES/mpi/st/
+mv $BIN/time* $RES/mpi/st/
+
+mpirun --hostfile $HOST $MPI/mpi_st_sc
+mkdir -p $RES/mpi/st_sc/
+mv $BIN/time* $RES/mpi/st_sc/
