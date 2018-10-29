@@ -1,24 +1,24 @@
 #define CATCH_CONFIG_MAIN
-#include <assert.h>
-#include <iostream>
-#include <bitset>
-#include <vector>
-#include <cstdlib>
-#include <cstdio>
-#include <omp.h>
-#include "settings.h"
+#include "../include/catch.hpp"
 #include "../libcgl/libcgl.hpp"
 #include "partition.hpp"
-#include "../include/catch.hpp"
-
+#include "settings.h"
+#include <assert.h>
+#include <bitset>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <omp.h>
+#include <vector>
 
 #define TSIZE 16 // small enough but partitionable in 8 sub-matrices
 
-TEST_CASE("Partitioning") {
-    SECTION("Filling: the two grids should be equal. (compared element by element)") {
+TEST_CASE("Partitioning")
+{
+    SECTION("Filling: the two grids should be equal. (compared element by element)")
+    {
         unsigned int maxiter = 20;
-        cout << "Testing partition filling on size " << TSIZE << \
-            " and " << maxiter << " iterations." << endl;
+        cout << "Testing partition filling on size " << TSIZE << " and " << maxiter << " iterations." << endl;
         Cgl<TSIZE> c = Cgl<TSIZE>(2, maxiter); // side == 2
         c.prepareGrid();
         c.printGrid();
@@ -31,22 +31,22 @@ TEST_CASE("Partitioning") {
         cout << endl;
 
         int j;
-        for(int t=0; t<N_PARTITIONS; t++) {
+        for (int t = 0; t < N_PARTITIONS; t++) {
             //cout << "--- " << t << endl;
             j = 0;
             //cout << "psize " << partitions[t].psize << ", thread " << t << endl;
-            for(int i=partitions[t].start; i<partitions[t].end; i++) {
+            for (int i = partitions[t].start; i < partitions[t].end; i++) {
                 //cout << i << " - " << partitions[t].grid->test(j) << ":" << c.grid->test(i) << endl;
                 REQUIRE(partitions[t].grid->test(j++) == c.getGrid()->test(i));
             }
         }
     }
 
-    SECTION("Dumping: the two grids should be equal. (compared element by element)") {
+    SECTION("Dumping: the two grids should be equal. (compared element by element)")
+    {
         unsigned int maxiter = 20;
 
-        cout << "Testing partition dumping on size " << TSIZE << \
-            " and " << maxiter << " iterations." << endl;
+        cout << "Testing partition dumping on size " << TSIZE << " and " << maxiter << " iterations." << endl;
         Cgl<TSIZE> c = Cgl<TSIZE>(2, maxiter); // side == 2
         c.prepareGrid();
         const auto cgrid = c.getGrid();
@@ -56,16 +56,15 @@ TEST_CASE("Partitioning") {
         cout << endl;
 
         // dumping
-        bitset<TSIZE*TSIZE>* stepGrid = new bitset<TSIZE*TSIZE>();
+        bitset<TSIZE* TSIZE>* stepGrid = new bitset<TSIZE * TSIZE>();
         dump_partitions(partitions, stepGrid);
 
         int j;
-        for(int t=0; t<N_PARTITIONS; t++) {
+        for (int t = 0; t < N_PARTITIONS; t++) {
             j = 0;
-            for(int i=partitions[t].start; i<partitions[t].end; i++) {
+            for (int i = partitions[t].start; i < partitions[t].end; i++) {
                 REQUIRE(partitions[t].grid->test(j++) == stepGrid->test(i));
             }
         }
     }
-
 }
