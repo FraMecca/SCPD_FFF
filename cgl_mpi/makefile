@@ -1,5 +1,5 @@
-CC = mpic++
-CFLAGS=-std=c++17 -I. -I../libcgl -lboost_mpi -lboost_serialization -fopenmp
+CC = mpicxx
+CFLAGS=-std=c++17 -I. -I../libcgl -L/usr/lib64/mpich/lib/ -lboost_mpi-mt -lboost_serialization -fopenmp
 SOURCES = mpi_main.cpp
 DEBUG=-g -Wall 
 PROF=-pg
