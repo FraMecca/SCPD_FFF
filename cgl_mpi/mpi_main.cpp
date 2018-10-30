@@ -256,6 +256,7 @@ void routine(mpi::communicator& world, std::vector<double>& target)
  */
 int main(int argc, char* argv[])
 {
+    MPI_TIMER;
     mpi::environment env(argc, argv);
     mpi::communicator world;
 
