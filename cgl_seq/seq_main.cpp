@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[])
 {
-    MPI_TIMER;
+    TIMER;
     auto target = std::vector<double>(DIM * DIM / (SIDE * SIDE));
     try {
         auto res = init_target(argc, argv, target, 0);
