@@ -1,1 +1,4 @@
-localhost slots=12
+localhost slots=8
+paradigm2 slots=8
+paradigm4 slots=8
+

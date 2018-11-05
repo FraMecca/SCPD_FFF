@@ -3,7 +3,7 @@ set -e
 alias mpirun=/home/ferraris/openmpi/bin/mpirun
 alias mpicc=/home/ferraris/openmpi/bin/mpicc
 
-DIR=$(pwd)
+DIR=/home/ferraris/scpd_fff
 RES=$DIR/bench/results
 SEQ=$DIR/cgl_seq
 SHM=$DIR/cgl_shm
