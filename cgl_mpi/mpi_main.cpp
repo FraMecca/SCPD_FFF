@@ -260,7 +260,6 @@ int main(int argc, char* argv[])
 {
     mpi::environment env(argc, argv);
     mpi::communicator world;
-    MPI_TIMER;
 
     auto target = std::vector<double>(DIM * DIM / (SIDE * SIDE));
     try {

@@ -28,3 +28,6 @@ clean:
 	rm -f graph.svg
 	rm -f gmon.out
 	rm -f mpi mpi_dbg mpi_prof mpi_profdbg
+
+aldinuc:
+	/home/ferraris/openmpi/bin/mpic++ -std=c++17 -I. -I../libcgl -L/home/ferraris/openmpi/lib/ -L/home/ferraris/boosto/lib/ -lboost_mpi  -lboost_serialization -fopenmp -I/home/ferraris/boosto/include/ mpi_main.cpp -o mpi

@@ -1,3 +1,3 @@
 Set LD_LIBRARY_PATH before launching the program:
-export LD_LIBRARY_PATH=/usr/lib64/mpich/lib:$LD_LIBRARY_PATH
-mpirun --hostfile hostfile ./mpi
+export LD_LIBRARY_PATH=/home/ferraris/boosto/lib/:$LD_LIBRARY_PATH
+~/openmpi/bin/mpic++ -std=c++17 -I. -I../libcgl -L/home/ferraris/openmpi/lib/ -L/home/ferraris/boosto/lib/ -lboost_mpi  -lboost_serialization -fopenmp -I/home/ferraris/boosto/include/ mpi_main.cpp
