@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
             return 0;
     } catch (std::exception& e) {
         std::cerr << "Error loading target from file" << std::endl;
+        std::cerr << e.what() << std::endl;
         return 1;
     }
 
