@@ -155,11 +155,6 @@ void master(mpi::communicator& world, std::vector<int> sizes)
     mpi::scatterv(world, end, sizes, &recv[0], 0);
 }
 
-// iterations finished
-auto end = std::vector<string>(POPSIZE, "end");
-mpi::scatterv(world, end, sizes, &recv[0], 0);
-}
-
 void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>& target)
 {
     MPI_TIMER;
