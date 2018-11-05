@@ -114,6 +114,7 @@ GRID cross_genes(const GRID& p1, const GRID& p2)
 template <size_t T>
 std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, double mut, double survive, bool shouldSort)
 {
+    TIMER;
     assert(parents.size() > 1);
 
     //Order parents, best at the end

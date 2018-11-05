@@ -326,6 +326,7 @@ public:
         */
     void GameAndFitness(std::vector<double> target)
     {
+        TIMER;
         assert(side > 0);
         assert(max_iteration > 0);
 
