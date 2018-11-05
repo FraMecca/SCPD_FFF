@@ -10,20 +10,20 @@ BIN=$DIR/bench/bin
 
 ### Tests:
 # cgl_seq with -O2
-SET1=$DIR/settings/settings/bench/settings1.hpp
+SET1=$DIR/bench/settings/settings1.hpp
 
-# cgl_shm with -O2 (stencil)
-SET2=$DIR/settings/settings/bench/settings2.hpp
+# cgl_shm with -O2 (stenc
+SET2=$DIR/bench/settings/settings2.hpp
 
 # cgl_mpi with -O2 and:
 ## seq no scatter
-SETM1=$DIR/settings/settings/bench/settingsm1.hpp
+SETM1=$DIR/bench/settings/settingsm1.hpp
 ## seq with scatter
-SETM2=$DIR/settings/settings/bench/settingsm2.hpp
+SETM2=$DIR/bench/settings/settingsm2.hpp
 ## stencil no scatter
-SETM3=$DIR/settings/settings/bench/settingsm3.hpp
+SETM3=$DIR/bench/settings/settingsm3.hpp
 ## stencil with scatter
-SETM4=$DIR/settings/settings/bench/settingsm4.hpp
+SETM4=$DIR/bench/settings/settingsm4.hpp
 
 ## hostfile
 HOST=$DIR/bench/settings/hostfile
