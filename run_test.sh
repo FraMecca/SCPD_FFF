@@ -1,5 +1,4 @@
 #!/bin/bash
-export LD_LIBRARY_PATH=/usr/lib64/mpich/lib:$LD_LIBRARY_PATH
 set -e
 
 DIR=$(pwd)
@@ -54,19 +53,19 @@ cp $TARGET .
 cp $HOST .
 
 cp $SETM1 $MPI/settings.hpp
-make  opt
+make  aldinuc
 mv $MPI/mpi $BIN/mpi_seq
 
 cp $SETM2 $MPI/settings.hpp
-make  opt
+make  aldinuc
 mv $MPI/mpi $BIN/mpi_seq_sc
 
 cp $SETM3 $MPI/settings.hpp
-make  opt
+make  aldinuc
 mv $MPI/mpi $BIN/mpi_st
 
 cp $SETM4 $MPI/settings.hpp
-make  opt
+make  aldinuc
 mv $MPI/mpi $BIN/mpi_st_sc
 
 cd $BIN
