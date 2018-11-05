@@ -193,8 +193,10 @@ void master(mpi::communicator& world)
         manage_slaves(world, people);
         if (cnt == N_GENERATIONS)
             break;
-        else
+        else {
             cnt++;
+            std::cout << "Generation: " << cnt << std::endl;
+        }
 
         // crossover sorts in place according to fitness
         assert(people.size() == POPSIZE);

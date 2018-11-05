@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
         for (size_t i = 0; i < people.size(); ++i) {
             people[i] = Cgl<DIM>(std::move(grids[i]), SIDE, N_ITERATIONS);
         }
+        std::cout << "Generation: " << g << std::endl;
     }
 
     return 0;
