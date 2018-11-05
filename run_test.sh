@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+alias mpirun=/home/ferraris/openmpi/bin/mpirun
+alias mpicc=/home/ferraris/openmpi/bin/mpicc
 
 DIR=$(pwd)
 RES=$DIR/bench/results
@@ -69,19 +71,19 @@ mv $MPI/mpi $BIN/mpi_st_sc
 cd $BIN
 ./seq --target
 
-mpirun --hostfile $HOST $MPI/mpi_seq
+mpirun --hostfile $HOST $BIN/mpi_seq
 mkdir -p $RES/mpi/seq/
 mv $BIN/time* $RES/mpi/seq/
 
-mpirun --hostfile $HOST $MPI/mpi_seq_sc
+mpirun --hostfile $HOST $BIN/mpi_seq_sc
 mkdir -p $RES/mpi/seq_sc/
 mv $BIN/time* $RES/mpi/seq_sc/
 
-mpirun --hostfile $HOST $MPI/mpi_st
+mpirun --hostfile $HOST $BIN/mpi_st
 mkdir -p $RES/mpi/st/
 mv $BIN/time* $RES/mpi/st/
 
-mpirun --hostfile $HOST $MPI/mpi_st_sc
+mpirun --hostfile $HOST $BIN/mpi_st_sc
 mkdir -p $RES/mpi/st_sc/
 mv $BIN/time* $RES/mpi/st_sc/
 
