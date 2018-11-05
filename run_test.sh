@@ -41,7 +41,6 @@ mv $SEQ/seq $BIN/seq
 # shared memory (stencil)
 mkdir -p $RES/shm
 cd $SHM
-cp $TARGET .
 cp $SET2 $SHM/settings.hpp
 make  opt
 mv $SHM/shm $BIN/shm
@@ -49,7 +48,6 @@ mv $SHM/shm $BIN/shm
 ## MPI + seq / shm (all the possibilities)
 mkdir -p $RES/mpi
 cd $MPI
-cp $TARGET .
 cp $HOST .
 
 cp $SETM1 $MPI/settings.hpp
@@ -70,13 +68,6 @@ mv $MPI/mpi $BIN/mpi_st_sc
 
 cd $BIN
 ./seq --target
-./seq
-mkdir -p $RES/seq
-mv $BIN/time* $RES/seq/
-
-./shm
-mkdir -p $RES/shm
-mv $BIN/time* $RES/shm/
 
 mpirun --hostfile $HOST $MPI/mpi_seq
 mkdir -p $RES/mpi/seq/
@@ -93,3 +84,11 @@ mv $BIN/time* $RES/mpi/st/
 mpirun --hostfile $HOST $MPI/mpi_st_sc
 mkdir -p $RES/mpi/st_sc/
 mv $BIN/time* $RES/mpi/st_sc/
+
+./seq
+mkdir -p $RES/seq
+mv $BIN/time* $RES/seq/
+
+./shm
+mkdir -p $RES/shm
+mv $BIN/time* $RES/shm/
