@@ -285,13 +285,14 @@ public:
         fill_partitions();
         GRID stepGrid = newGRID;
         for (size_t i = 0; i < n_iter; i++) {
-// spawn a thread pool
-#pragma omp parallel
+			// spawn a thread pool
+			// set thread number dynamically
+			omp_set_dynamic(0);
+			omp_set_num_threads(N_PARTITIONS+1);
+			#pragma omp parallel
             {
-                // set thread number dynamically
-                omp_set_num_threads(N_PARTITIONS);
-// distribute partitions between threads
-#pragma omp for
+				// distribute partitions between threads
+				#pragma omp for
                 for (int p = 0; p < N_PARTITIONS; p++) {
                     partitions[p].computeCells();
                 }
