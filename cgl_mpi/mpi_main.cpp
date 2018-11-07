@@ -206,8 +206,11 @@ void master(mpi::communicator& world)
         }
     }
 
-    string end = "end";
-    mpi::broadcast(world, end, 0);
+    std::string end = "end";
+    // broadcast is a collective, we use send
+    for(size_t i=1; i<world.size(); ++i) {
+    	world.send(i, 0, end);
+    }
 }
 
 void slave(mpi::communicator& world, std::vector<double>& target)
