@@ -1,3 +1,4 @@
+#include "settings.hpp"
 #include "libcgl.hpp"
 #include "libga.hpp"
 #include "util.hpp"

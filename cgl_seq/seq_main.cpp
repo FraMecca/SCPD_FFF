@@ -6,7 +6,6 @@
 
 int main(int argc, char* argv[])
 {
-    TIMER;
     auto target = std::vector<double>(DIM * DIM / (SIDE * SIDE));
     try {
         auto res = init_target(argc, argv, target, 0);
@@ -17,7 +16,7 @@ int main(int argc, char* argv[])
         std::cerr << e.what() << std::endl;
         return 1;
     }
-
+    TIMER;
     auto people = first_generation();
     for (size_t g = 0; g < N_GENERATIONS; ++g) {
         for (size_t i = 0; i < people.size(); ++i) {
