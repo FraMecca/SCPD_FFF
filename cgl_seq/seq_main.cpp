@@ -31,6 +31,6 @@ int main(int argc, char* argv[])
         }
         std::cout << "Generation: " << g << std::endl;
     }
-
+    END_TIMER;
     return 0;
 }

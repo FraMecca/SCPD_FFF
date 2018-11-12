@@ -42,6 +42,7 @@ private:
     std::chrono::high_resolution_clock::time_point start;
     std::string funName = "";
     std::string logFile = "time.prof";
+    bool released = false;
 
 public:
     Timer(std::string f)
@@ -55,8 +56,10 @@ public:
         funName = f;
         logFile = "time." + std::to_string(r) + ".prof";
     }
-    ~Timer()
+
+    void endTimer()
     {
+        released = true;
         auto end = std::chrono::high_resolution_clock::now();
         assert(end > start);
         auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
@@ -65,10 +68,18 @@ public:
         std::ofstream out;
         out.open(logFile, std::ios_base::app);
         out << "[" << funName << "]: " << elapsed << std::endl;
+        std::cout << "fine" << std::endl;
+    }
+
+    ~Timer()
+    {
+        assert("endTimer was not called" && released);
     }
 };
-#define TIMER Timer(__FUNCTION__)
-#define MPI_TIMER Timer(__FUNCTION__, world.rank())
+
+#define TIMER auto __timer = Timer(__FUNCTION__)
+#define END_TIMER __timer.endTimer()
+#define MPI_TIMER auto __timer = Timer(__FUNCTION__, world.rank())
 
 /**
  * Convert from 2d coordinates to 1d
@@ -345,6 +356,7 @@ public:
         fitnessDone = true;
         assert(fitness <= 1.0);
         assert(fitness >= 0.0);
+        END_TIMER;
     }
 
     /**

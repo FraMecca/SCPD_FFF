@@ -164,5 +164,6 @@ std::vector<GRID> Cgl<T>::crossover(std::vector<Cgl<T>>& parents, size_t sz, dou
             results[i] = std::move(child_gene);
         }
     }
+    END_TIMER;
     return results;
 }

@@ -1,4 +1,3 @@
-#include "settings.hpp"
 #include "libcgl.hpp"
 #include "libga.hpp"
 #include "util.hpp"
@@ -104,6 +103,7 @@ void manage_slaves(mpi::communicator& world, std::vector<Cgl<DIM>>& people)
 
         nrecv++;
     }
+    END_TIMER;
 }
 
 #ifdef SCATTER
@@ -153,6 +153,7 @@ void master(mpi::communicator& world, std::vector<int> sizes)
     // iterations finished
     auto end = std::vector<string>(POPSIZE, "end");
     mpi::scatterv(world, end, sizes, &recv[0], 0);
+    END_TIMER;
 }
 
 void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>& target)
@@ -176,6 +177,7 @@ void slave(mpi::communicator& world, std::vector<int> sizes, std::vector<double>
         // send fitness to master
         mpi::gatherv(world, fitnessValue, &fitnessRecv[0], sizes, 0);
     }
+    END_TIMER;
 }
 #else
 void master(mpi::communicator& world)
@@ -211,6 +213,7 @@ void master(mpi::communicator& world)
     for(size_t i=1; i<world.size(); ++i) {
     	world.send(i, 0, end);
     }
+    END_TIMER;
 }
 
 void slave(mpi::communicator& world, std::vector<double>& target)
@@ -230,6 +233,7 @@ void slave(mpi::communicator& world, std::vector<double>& target)
         // send to master
         world.send(0, status.tag(), person.fitness);
     }
+    END_TIMER;
 }
 #endif
 
