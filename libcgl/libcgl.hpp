@@ -41,19 +41,23 @@ class Timer {
 private:
     std::chrono::high_resolution_clock::time_point start;
     std::string funName = "";
+	std::string line = "";
     std::string logFile = "time.prof";
     bool released = false;
 
 public:
-    Timer(std::string f)
+    Timer(std::string f, int l)
     {
         start = std::chrono::high_resolution_clock::now();
         funName = f;
+		line = std::to_string(l);
     }
-    Timer(std::string f, int r)
+
+    Timer(std::string f, int l, int r)
     {
         start = std::chrono::high_resolution_clock::now();
         funName = f;
+		line = std::to_string(l);
         logFile = "time." + std::to_string(r) + ".prof";
     }
 
@@ -68,18 +72,19 @@ public:
         std::ofstream out;
         out.open(logFile, std::ios_base::app);
         out << "[" << funName << "]: " << elapsed << std::endl;
-        std::cout << "fine" << std::endl;
     }
 
     ~Timer()
     {
-        assert("endTimer was not called" && released);
+		if(!released)
+			std::cout << "endTimer was not called" + line + funName << std::endl;
+        assert(released);
     }
 };
 
-#define TIMER auto __timer = Timer(__FUNCTION__)
+#define TIMER auto __timer = Timer(__FUNCTION__, __LINE__)
 #define END_TIMER __timer.endTimer()
-#define MPI_TIMER auto __timer = Timer(__FUNCTION__, world.rank())
+#define MPI_TIMER auto __timer = Timer(__FUNCTION__, __LINE__, world.rank())
 
 /**
  * Convert from 2d coordinates to 1d

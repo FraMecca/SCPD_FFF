@@ -226,7 +226,7 @@ void slave(mpi::communicator& world, std::vector<double>& target)
         auto status = world.recv(0, mpi::any_tag, buf);
 
         if (buf == "end") {
-            return;
+            break;
         }
         auto person = Cgl<DIM>(buf, SIDE, N_ITERATIONS);
         assert(person.max_iteration > 0);
