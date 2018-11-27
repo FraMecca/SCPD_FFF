@@ -1,6 +1,7 @@
 Griglia: 256, 512
 Pop: 500
 Iterazioni: 100
+Generazioni: 150
 side: 16
 
 # Relazione
@@ -80,6 +81,23 @@ function SEQUENTIAL(grid <- firstgeneration, fitness <- [])
 end function
 ```
 
+### Metodologia
+
+La computazione del nostro codice e\` divisa principalmente in due funzioni:
+* `GameAndFitness` calcola un esecuzione del CGL che richiede `DIM^2*(1+N_ITERAZIONI)` e
+  viene eseguito `N_GENERATIONS*POPSIZE` volte.
+* `Crossover` che richiede un numero di cicli pari a `DIM^2` e viene eseguito `N_GENERATIONS`
+  volte.
+
+Da questo si nota ed empiricamente si dimostra che all'aumentare della popolazione e/o
+del numero di generazioni il tempo richiesto alla funzione `Crossover` e\` insignificante
+rispetto al tempo totale. Il rapporto infatti risulta essere indipendente dal numero di
+generazioni e dal numero di individui, nonche\` dalla dimensione della griglia. Si puo\`
+predire che `Crossover` occupera\` all'incirca l'`1%` del tempo di esecuzione del programma,
+ed i risultati sperimentali confermano questa ipotesi.
+
+**Disegnino rapporto crossover / game and fitness**
+
 ## Grafo di esecuzione
 
 La nostra implementazione genera il seguente grafo di esecuzione:
@@ -124,6 +142,36 @@ tempi di esecuzione dei metodi sopra citati.
 * Profilazione
 * Grafici
 
+L'evoluzione di un individuo secondo la logica di `GameAndFitness` e\` logicamente
+indipendente dall'evoluzione di tutti gli altri individui. Per questo abbiamo considerato
+`GameAndFitness` come un calcolo **embarassingly parallel**. MPI ci ha permesso di
+dividere l'evoluzine di una popolazione di individui tra N core fisici distribuiti su piu\`
+macchine. Al contrario, `Crossover` richidede i dati di fitness di un'intera popolazione per
+ogni generazione, pertanto puo\` essere calcolato solo da un singolo processo che deve
+raccogliere i dati dai worker di `GameAndFitness`.
+
+**Disegno architettura**
+
+Per utilizzare MPI abbiamo quindi suddiviso i nostri processi in due classi:
+* N slave che si occupano del calcolo di `GameAndFitness`
+* 1 master che calcola `Crossover` e distribuisce i geni ottenuti dal crossover agli slave,
+  di modo che essi possano calcolare la generazione successiva.
+
+Abbiamo utilizzato 4 differenti tecniche di parallelizzazione.
+
+### Tecniche di parallelizzazione
+
+Abbiamo utilizzato due modelli diversi di parallelizzazione:
+
+* Collettive: Utilizzando `scatterv` e `gatherv` abbiamo distribuito i geni ai worker
+  (`scatterv`) e raccolto i risultati della funzione di fitness nel master (`gatherv`)
+* Punto-punto: Il master si occupa di distribuire gli individui uno alla volta agli slaves, i
+  quali lo notificano del completamento dell'evoluzione dell'individuo mandandogli il
+  risultato della funzione di fitness, aspettando il successivo individuo da evolvere. Questa
+  tecnica e\` implementata attraverso un buffer circolare con fair scheduling.
+
+**Disegnino?**
+
 ## Performance Analysis (Considerazioni)
 
 * quello che ci capita
@@ -143,28 +191,6 @@ Questo ha portato pero\` i seguenti svantaggi:
 
 ## Referenze
 
-## Il Conway's Game of Life
-
-Il lavoro svolto riguarda la parallelizzazione del famoso *Conway's Game of Life*, un esempio di automa cellulare che a partire da una configurazione iniziale di organismi disposti su una griglia, applica ad ogni iterazione la *Rule of Life*.
-
-La regola aggiorna la griglia seguendo questi principi:
-* Qualsiasi cella viva con meno di due celle vive adiacenti muore
-* Qualsiasi cella viva con esattamente due o tre celle vive adiacenti sopravvive
-* Qualsiasi cella viva con più di tre celle vive adiacenti muore
-* Qualsiasi cella morta con esattamente tre celle adiacenti diventa viva
-
-Le celle adiacenti sono rappresentate dalle 8 celle intorno a quella considerata.
-L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
-
-### Algoritmi genetici
-
-* Funzionamento algoritmo genetico (poco)
-* Come vengono utilizzati da noi (poco) (vedi abstract).
-
-  L'algoritmo genetico e\` evolutivo
-  nel senso che ogni generazione dipende dai risultati della precedente. Per questo
-  abbiamo parallelizzato le singole generazinoni, che vengono gestite da un master che
-  procede di generazione in generazione iterativamente.
 ## Metodologia (che titolo brutto)
 
 * Definizione dello stato iniziale (what?)
@@ -180,3 +206,57 @@ L'applicazione della regola della vita aggiorna la griglia ad ogni iterazione.
 
 BENCH: Openmpi + 1 processo + full stencil VS Openmpi + 2/3 processi + stencil bilanciato
 
+# GA
+
+Gli algoritmi genetici sono algoritmi euristici di ricerca e ottimizzazione che si ispirano alla teoria dell'evoluzione di Darwin.  
+
+Un tipico algoritmo genetico parte da un certo numero di possibili soluzioni generate casualmente (individui) chiamate popolazione e provvede a farle evolvere nel corso dell'esecuzione: a ciascuna iterazione, esso opera una selezione di individui della popolazione corrente, impiegandoli per generare nuovi individui della successiva popolazione. Tale successione di generazioni evolve verso una soluzione ottima del problema assegnato.
+
+Il gene di ogni individuo viene analizzato attraverso una funzione chiamata funzione di *fitness*. Gli individui con valore della funzione di fitness piu` alta hanno hanno quindi maggiori possibilità di sopravvivere e riprodursi. Nel nostro progetto la funzione di fitness e` costituita da una prima evoluzione del gene attraverso il Conway's Game of Life e il calcolo della distanza di Manhattan della griglie ottenute nelle ultime dieci generazioni rispetto all'obbiettivo desiderato.
+
+L'evoluzione delle popolazioni viene ottenuta attraverso una parziale ricombinazione delle soluzioni, ogni individuo trasmette parte del suo patrimonio genetico ai propri discendenti, e l'introduzione di mutazioni casuali nella popolazione di partenza, sporadicamente quindi nascono individui con caratteristiche non comprese tra quelle presenti nel corredo genetico della specie originaria.
+Tale ricombinazione viene chiamata *crossover* e puo` essere implementato attraverso differenti tecniche. Nel nostro caso il gene rappresentato da un'array di bit viene scisso in 4 parti di equa lunghezza: il gene del figlio sara` costituito dalla prima parte del padre, seconda della madre, terza del padre e quarta
+ della madre.
+
+Alla fine ci si aspetta di trovare una popolazione di soluzioni che riescano a risolvere adeguatamente il problema posto. Non vi è modo di decidere a priori se l'algoritmo sarà effettivamente in grado di trovare una soluzione accettabile. Di norma gli algoritmi genetici vengono utilizzati per problemi di ottimizzazione per i quali non si conoscono algoritmi di complessità lineare o polinomiale.
+
+Pseudocodice:
+
+```
+for i <- 1 to POPSIZE
+	population[i] <- random(gene)		
+endfor
+for cnt <- 1 to N_GENERATIONS
+	for i <- 1 to POPSIZE
+		fitness[i]  <- compute_fitness(population[i])		
+	endfor
+	for i <- 1 to POPSIZE
+		mutation_prob = random()
+		if mutation_prob > mutation_threshold
+			new_population[i] = random(gene)
+		else
+			parent1 = take_random(population)
+			survive_prob = random()
+			if survive_prob > survive_threshold:
+				new_population[i] = parent1
+			else
+				parent2 = take_random(population - parent1)
+				new_population = crossover(parent1, parent2)
+			endif
+		endif
+	endfor
+	population = new_population
+endfor
+```
+
+# CGL
+
+Il Conway's Game of Life e` un automa cellulare la cui evoluzione e` determinata dallo stato iniziale.
+Lo stato iniziale e` definito da una griglia, chiamata *mondo*, dove ogni cella e` definita da uno stato booleano di vita / morte ed ha 8 celle adiacenti.
+Il mondo evolve in tempi discreti dove lo stato di ogni cella e` calcolato a partire dallo stato precedente della cella e dei suoi vicini, secondo queste regole:
+- qualsiasi cella viva con meno di due celle vive adiacenti muore, come per effetto d'isolamento;
+- qualsiasi cella viva con due o tre celle vive adiacenti sopravvive alla generazione successiva;
+- qualsiasi cella viva con più di tre celle vive adiacenti muore, come per effetto di sovrappopolazione;
+- qualsiasi cella morta con esattamente tre celle vive adiacenti diventa una cella viva, come per effetto di riproduzione;
+
+Vi sono configurazione del Conway's Game of Life per cui la griglia evolve indefinitivamente senza che la vita nel mondo si estingua. 
