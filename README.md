@@ -141,7 +141,9 @@ x = 2 altrimenti
 ```
 Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
 della partizione. Con questa configurazione, il calcolo di ogni partizione puo\` avvenire in
-un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`.
+un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inoltre, non sono
+possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
+per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
 
 La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 16` e `N = 8`.
 
