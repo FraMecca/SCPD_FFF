@@ -126,12 +126,39 @@ POPSIZE: 50
 Variando i parametri il grafo presenta una variazione trascurabile nelle percentuale dei
 tempi di esecuzione dei metodi sopra citati.
 
-## Shared memory (Stencil)
+## Partitionin in Shared memory
 
-* Motivazione
-* Descrizione dell'algoritmo (step / pseudocodice)
-* Profilazione
-* Grafici
+Il calcolo del CGL si presta a tecniche di parallelizzazione *embarassingly parallel*
+come il *partitioning* in quanto e\` possibile applicare la *rule of life* utilizzando
+solamente i vicini di una data cella, per ogni cella della griglia.
+
+Questo ha permesso di suddividere ogni griglia in N partizioni orizzontali, ognuna di
+dimensione `(DIM/N) + x`, dove DIM e\` la dimensione totale. Ogni partizione ha
+`x` righe aggiuntive, dove `x` si puo\` definire a seconda della posizione della partizione:
+```
+x = 1 se la partizione si trova all'estremo superiore o inferiore della griglia
+x = 2 altrimenti
+```
+Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
+della partizione. Con questa configurazione, il calcolo di ogni partizione puo\` avvenire in
+un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`.
+
+La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 16` e `N = 8`.
+
+**Disegno partitioning**.
+
+La tecnica del partitioning e\` stata applicata utilizzando una parallelizzazione shared
+memory grazie a OpenMP. Ad ogni griglia viene associata una threadpool alla quale vengono
+distribuite le partizioni, dopodiche\` il risultato di ogni partizione viene ricostruito per
+ottenere una griglia evoluta da cui sia possibile calcolare il fitness.
+
+**Grafo partitioning (shm)**
+
+Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma grazie ad essa
+e\` stato possibile implementare una parallelizzazione a due livelli, il primo in shared
+memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
+
+**Risultati speedup shm**
 
 ## Message passing (MPI)
 
