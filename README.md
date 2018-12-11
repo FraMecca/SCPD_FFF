@@ -230,6 +230,36 @@ s(p) = ts / tp
 
 Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sara\` effettuato utilizzanto questa tecnica.
 
+### Variazione del numero di core
+
+#### Speedup
+
+Il calcolo dello speedup al variare del numero di core utilizzati e\` stato effettuato
+utilizzando la configurazione di default mostrata sopra.
+
+Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
+utilizzati, assieme al linear speedup teorico.
+
+**Grafico speedup**
+![Grafico Speedup](./speedup.svg)
+
+#### Efficienza
+
+Mostriamo il grafico dell'efficienza al variare del numero di cores, definita come:
+
+```
+p = num. cores
+efficiency = speedup(p) / p
+```
+
+![Grafico Efficienza](./efficency.svg)
+
+Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
+aumentando il numero di cores si presenta un'efficienza decrescente.
+Questo risultato puo\` essere spiegato analizzando come OpenMPI implementa la comunicazione.
+Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comunicazione 
+avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
+comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 
 ## Conclusioni
 
