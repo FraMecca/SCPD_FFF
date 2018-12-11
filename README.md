@@ -37,9 +37,10 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 
 ## L'algoritmo
 
-![Grafico cgl](./HighLevelCgl.png)
+![Grafico cgl](./HighLevelAlg.jpg)
 
-![Grafico cgl](./HighLevelAlg.png)
+![Grafico cgl](./HighLevelCgl.jpg)
+
 
 L'algoritmo e\` configurato tramite i parametri:
 * POPSIZE: Numero degli individui che compongono la popolazione ad ogni iterazione dell'AG.
