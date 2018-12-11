@@ -101,7 +101,7 @@ ed i risultati sperimentali confermano questa ipotesi.
 ## Grafo di esecuzione
 
 La nostra implementazione genera il seguente grafo di esecuzione:
-**callgrind.svg**
+![Grafico Callgrind](./cgl_seq/graph.svg)
 
 Si nota come alcuni path traggano un beneficio maggiore dalla parallelizzazione rispetto ad
 altri.
