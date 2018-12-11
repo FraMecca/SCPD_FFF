@@ -206,6 +206,30 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
 * quello che ci capita
 * possibili ottimizzazioni ulteriori
 
+Per eseguire l'analisi abbiamo utilizzato diverse configurazioni dei parametri sopra citati.
+Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi parametri, successivamente si valuta lo speedup con MPI e un numero di core crescente.
+
+### Confronto tra tecniche di parallelizzazione
+
+Abbiamo utilizzato questa configurazione per la prima analisi:
+* DIM 512
+* SIDE 16
+* N_ITERATIONS 100
+* POPSIZE 500
+* N_GENERATIONS 150
+* N_CORE 24
+* N_PARTITIONS 8
+
+Abbiamo diviso il tempo di esecuzione utilizzando le diverse tecniche di parallelizzazione con il tempo di esecuzione dell'algoritmo sequenziale, ottenendo i seguenti risultati.
+* shared memory con partitioning: 5
+* MPI sequenziale: 14
+* MPI sequenziale collettivo: 10
+* MPI partitioning: 7
+* MPI partitioning collettivo: 5
+
+Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing senza collettive.
+
+
 ## Conclusioni
 
 L'utilizzo di C++ e in particolare delle data structure utilizzate per gestire la
@@ -215,7 +239,7 @@ griglia in memoria (`std::bitset`), ha portato i seguenti vantaggi:
 * ?
 
 Questo ha portato pero\` i seguenti svantaggi:
-* No native implementation di `std::bitset` in CUDA 
+* No native implementation di `std::bitset` in CUDA
 * No copy on write (CoW)
 
 ## Referenze
@@ -230,7 +254,7 @@ Questo ha portato pero\` i seguenti svantaggi:
 	* L'architettura della macchina di test si presta all'utilizzo del modello di Message
 	  Passing, implementato con MPI. (blablabla su cos'e` mpi?)
 * Strumenti utilizzati (hardware / software)
-	* Software: 
+	* Software:
 * Considerazioni sulle strutture dati (copyGrid)
 
 BENCH: Openmpi + 1 processo + full stencil VS Openmpi + 2/3 processi + stencil bilanciato
@@ -288,4 +312,4 @@ Il mondo evolve in tempi discreti dove lo stato di ogni cella e` calcolato a par
 - qualsiasi cella viva con più di tre celle vive adiacenti muore, come per effetto di sovrappopolazione;
 - qualsiasi cella morta con esattamente tre celle vive adiacenti diventa una cella viva, come per effetto di riproduzione;
 
-Vi sono configurazione del Conway's Game of Life per cui la griglia evolve indefinitivamente senza che la vita nel mondo si estingua. 
+Vi sono configurazione del Conway's Game of Life per cui la griglia evolve indefinitivamente senza che la vita nel mondo si estingua.
