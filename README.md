@@ -39,7 +39,6 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 
 ![Grafico cgl](./HighLevelCgl.png)
 
-L'algoritmo sequenziale rispetta il seguente *flowchart*:
 ![Grafico cgl](./HighLevelAlg.png)
 
 L'algoritmo e\` configurato tramite i parametri:
