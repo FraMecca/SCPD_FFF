@@ -228,14 +228,7 @@ s(p) = ts / tp
 |:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
 |          5         |    14    |           10           |          7          |                 5                |
 
-**Speedup factors (Tseq / Tpar) per differenti tecniche di parallelizzazione**
-* shared memory con partitioning: 5
-* MPI sequenziale: 14
-* MPI sequenziale collettivo: 10
-* MPI partitioning: 7
-* MPI partitioning collettivo: 5
-
-Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing senza collettive.
+Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sara\` effettuato utilizzanto questa tecnica.
 
 
 ## Conclusioni
