@@ -225,7 +225,7 @@ tp = tempo di esecuzione con p processori
 s(p) = ts / tp
 ```
 | SHM (partitioning) | MPI only | MPI only (collectives) | MPI + partitioning  | MPI + partitioning (collectives) |
-|--------------------|----------|:----------------------:|---------------------|:--------------------------------:|
+|:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
 |          5         |    14    |           10           |          7          |                 5                |
 
 **Speedup factors (Tseq / Tpar) per differenti tecniche di parallelizzazione**
