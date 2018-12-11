@@ -37,12 +37,7 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 
 ## L'algoritmo
 
-**Disegni flowchart**
 ![Grafico cgl](./HighLevelCgl.png)
-
-* Profilazione
-* Hotpath con -O0 / -O2
-* Grafici hotpath (scrot grafo)
 
 L'algoritmo sequenziale rispetta il seguente *flowchart*:
 ![Grafico cgl](./HighLevelAlg.png)
@@ -127,7 +122,7 @@ POPSIZE: 50
 Variando i parametri il grafo presenta una variazione trascurabile nelle percentuale dei
 tempi di esecuzione dei metodi sopra citati.
 
-## Partitionin in Shared memory
+## Partitioning in Shared memory
 
 Il calcolo del CGL si presta a tecniche di parallelizzazione *embarassingly parallel*
 come il *partitioning* in quanto e\` possibile applicare la *rule of life* utilizzando
