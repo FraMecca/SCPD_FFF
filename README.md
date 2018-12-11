@@ -38,13 +38,14 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 ## L'algoritmo
 
 **Disegni flowchart**
+![Grafico cgl](./HighLevelCgl.png)
 
 * Profilazione
 * Hotpath con -O0 / -O2
 * Grafici hotpath (scrot grafo)
 
 L'algoritmo sequenziale rispetta il seguente *flowchart*:
-**Disegno highlevelalg.xml**
+![Grafico cgl](./HighLevelAlg.png)
 
 L'algoritmo e\` configurato tramite i parametri:
 * POPSIZE: Numero degli individui che compongono la popolazione ad ogni iterazione dell'AG.
