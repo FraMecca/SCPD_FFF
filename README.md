@@ -141,9 +141,9 @@ un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inol
 possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
 per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
 
-La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 16` e `N = 8`.
+La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
 
-**Disegno partitioning**.
+![Schema Partitioning](./cgl_shm/schema_partitioning.jpg)
 
 La tecnica del partitioning e\` stata applicata utilizzando una parallelizzazione shared
 memory grazie a OpenMP. Ad ogni griglia viene associata una threadpool alla quale vengono
@@ -155,8 +155,6 @@ ottenere una griglia evoluta da cui sia possibile calcolare il fitness.
 Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma grazie ad essa
 e\` stato possibile implementare una parallelizzazione a due livelli, il primo in shared
 memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
-
-**Risultati speedup shm**
 
 ## Message passing (MPI)
 
