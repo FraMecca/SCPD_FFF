@@ -240,7 +240,6 @@ utilizzando la configurazione di default mostrata sopra.
 Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
 utilizzati, assieme al linear speedup teorico.
 
-**Grafico speedup**
 ![Grafico Speedup](./speedup.svg)
 
 #### Efficienza
