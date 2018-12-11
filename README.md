@@ -164,13 +164,6 @@ memory e il secondo in message passing all'interno dell'ambiente di test distrib
 
 ## Message passing (MPI)
 
-* Motivazione
-* Descrizione dell'algoritmo (step / pseudocodice)
-* primitive di openmpi / due varianti algoritmo
-* Parallellizzazione interna esterna
-* Profilazione
-* Grafici
-
 L'evoluzione di un individuo secondo la logica di `GameAndFitness` e\` logicamente
 indipendente dall'evoluzione di tutti gli altri individui. Per questo abbiamo considerato
 `GameAndFitness` come un calcolo **embarassingly parallel**. MPI ci ha permesso di
@@ -214,20 +207,28 @@ Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizza
 Abbiamo utilizzato questa configurazione per la prima analisi:
 * DIM 512
 * SIDE 16
-* N_ITERATIONS 100
+* N\_ITERATIONS 100
 * POPSIZE 500
-* N_GENERATIONS 150
-* N_CORE 24
-* N_PARTITIONS 8
+* N\_GENERATIONS 150
+* N\_PARTITIONS 8
+* N\_CORE 24
 
-Abbiamo diviso il tempo di esecuzione utilizzando le diverse tecniche di parallelizzazione con il tempo di esecuzione dell'algoritmo sequenziale, ottenendo i seguenti risultati.
-* shared memory con partitioning: 5
-* MPI sequenziale: 14
-* MPI sequenziale collettivo: 10
-* MPI partitioning: 7
-* MPI partitioning collettivo: 5
+Abbiamo calcolato dei fattori di speedup preliminari confrontando il tempo di esecuzione
+dell'algoritmo sequenziale con i tempi di esecuzione degli algoritmi paralleli. Lo speedup
+factor e\` stato calcolato sul cluster `paradigm`, che fornisce 24 core, tramite la
+seguente formula:
 
-Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing senza collettive.
+```
+ts = tempo di esecuzione sequenziale
+tp = tempo di esecuzione con p processori
+
+s(p) = ts / tp
+```
+| SHM (partitioning) | MPI only | MPI only (collectives) | MPI + partitioning  | MPI + partitioning (collectives) |
+|:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
+|          5         |    14    |           10           |          7          |                 5                |
+
+Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sara\` effettuato utilizzanto questa tecnica.
 
 
 ## Conclusioni
