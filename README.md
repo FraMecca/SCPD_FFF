@@ -37,7 +37,7 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 
 ## L'algoritmo
 
-![Grafico cgl](./HighLevelAlg.jpg)
+![Grafico algoritmo](./HighLevelAlg.jpg)
 
 ![Grafico cgl](./HighLevelCgl.jpg)
 
@@ -168,7 +168,7 @@ macchine. Al contrario, `Crossover` richidede i dati di fitness di un'intera pop
 ogni generazione, pertanto puo\` essere calcolato solo da un singolo processo che deve
 raccogliere i dati dai worker di `GameAndFitness`.
 
-**Disegno architettura**
+![Grafico cgl](./HighLevel_mpi.jpg)
 
 Per utilizzare MPI abbiamo quindi suddiviso i nostri processi in due classi:
 * N slave che si occupano del calcolo di `GameAndFitness`
