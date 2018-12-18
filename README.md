@@ -1,9 +1,3 @@
-Griglia: 256, 512
-Pop: 500
-Iterazioni: 100
-Generazioni: 150
-side: 16
-
 # Relazione
 
 ## Introduzione
@@ -11,8 +5,6 @@ side: 16
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
 (CGL). Piu\` nel dettaglio ci proponiamo, dato uno stato finale, di trovare lo stato iniziale
 della matrice CGL che permette di trovare l'approssimazione migliore del suddetto stato.
-
-**Disegno 1: stato finale (target), 2/3 gene**
 
 ## Terminologia
 
@@ -31,9 +23,8 @@ La definizione del CGL e dell'algoritmo genetico utilizzati sono oltre l'obbiett
 questa relazione. In appendice si presenta una breve descrizione.
 
 Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguenti:
-* Locally synchronous computations in shared memory utilizzando la tecnica *stencil* con
-  *halo swap*. Questa tecnica e\` implementata attraverso le API di *OpenMP*.
-* Architettura master-slave con message passing utilizzando MPI.
+* Locally synchronous computations in shared memory utilizzando la tecnica *partitioning*. Questa tecnica e\` implementata attraverso le API di *OpenMP*.
+* Architettura master-slave con message passing utilizzando le primitive collettive (scatter,gather) e punto-punto (send,recv) di MPI.
 
 ## L'algoritmo
 
@@ -82,7 +73,7 @@ end function
 La computazione del nostro codice e\` divisa principalmente in due funzioni:
 * `GameAndFitness` calcola un esecuzione del CGL che richiede `DIM^2*(1+N_ITERAZIONI)` e
   viene eseguito `N_GENERATIONS*POPSIZE` volte.
-* `Crossover` che richiede un numero di cicli pari a `DIM^2` e viene eseguito `N_GENERATIONS`
+* `Crossover` che richiede un numero di cicli pari a `DIM^2*POPSIZE` e viene eseguito `N_GENERATIONS`
   volte.
 
 Da questo si nota ed empiricamente si dimostra che all'aumentare della popolazione e/o
@@ -91,8 +82,6 @@ rispetto al tempo totale. Il rapporto infatti risulta essere indipendente dal nu
 generazioni e dal numero di individui, nonche\` dalla dimensione della griglia. Si puo\`
 predire che `Crossover` occupera\` all'incirca l'`1%` del tempo di esecuzione del programma,
 ed i risultati sperimentali confermano questa ipotesi.
-
-**Disegnino rapporto crossover / game and fitness**
 
 ## Grafo di esecuzione
 
@@ -111,7 +100,7 @@ della funzione `Cgl<T>::updateCell`, che applica le regole del Game of Life a un
 Da questa osservazione presentiamo nella prossima sezione la prima tecnica di
 parallelizzazione.
 
-Nota: i parametri utilizzati per generare il grafo di esecuzione sono i seguenti:
+I parametri utilizzati per generare il grafo di esecuzione sono i seguenti:
 ```
 DIM: 64
 SIZE: 8
@@ -124,7 +113,7 @@ tempi di esecuzione dei metodi sopra citati.
 
 ## Partitioning in Shared memory
 
-Il calcolo del CGL si presta a tecniche di parallelizzazione *embarassingly parallel*
+Il calcolo del CGL si presta a tecniche di parallelizzazione *locally synchronous*
 come il *partitioning* in quanto e\` possibile applicare la *rule of life* utilizzando
 solamente i vicini di una data cella, per ogni cella della griglia.
 
@@ -146,13 +135,11 @@ La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 8` e `N
 ![Schema Partitioning](./cgl_shm/schema_partitioning.jpg)
 
 La tecnica del partitioning e\` stata applicata utilizzando una parallelizzazione shared
-memory grazie a OpenMP. Ad ogni griglia viene associata una threadpool alla quale vengono
+memory attraverso l'utilizzo di OpenMP. Ad ogni griglia viene associata una threadpool alla quale vengono
 distribuite le partizioni, dopodiche\` il risultato di ogni partizione viene ricostruito per
 ottenere una griglia evoluta da cui sia possibile calcolare il fitness.
 
-**Grafo partitioning (shm)**
-
-Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma grazie ad essa
+Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma con essa
 e\` stato possibile implementare una parallelizzazione a due livelli, il primo in shared
 memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
 
@@ -161,7 +148,7 @@ memory e il secondo in message passing all'interno dell'ambiente di test distrib
 L'evoluzione di un individuo secondo la logica di `GameAndFitness` e\` logicamente
 indipendente dall'evoluzione di tutti gli altri individui. Per questo abbiamo considerato
 `GameAndFitness` come un calcolo **embarassingly parallel**. MPI ci ha permesso di
-dividere l'evoluzine di una popolazione di individui tra N core fisici distribuiti su piu\`
+dividere l'evoluzione di una popolazione di individui tra N core fisici distribuiti su piu\`
 macchine. Al contrario, `Crossover` richidede i dati di fitness di un'intera popolazione per
 ogni generazione, pertanto puo\` essere calcolato solo da un singolo processo che deve
 raccogliere i dati dai worker di `GameAndFitness`.
@@ -186,12 +173,7 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
   risultato della funzione di fitness, aspettando il successivo individuo da evolvere. Questa
   tecnica e\` implementata attraverso un buffer circolare con fair scheduling.
 
-**Disegnino?**
-
 ## Performance Analysis (Considerazioni)
-
-* quello che ci capita
-* possibili ottimizzazioni ulteriori
 
 Per eseguire l'analisi abbiamo utilizzato diverse configurazioni dei parametri sopra citati.
 Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi parametri, successivamente si valuta lo speedup con MPI e un numero di core crescente.
@@ -260,30 +242,14 @@ L'utilizzo di C++ e in particolare delle data structure utilizzate per gestire l
 griglia in memoria (`std::bitset`), ha portato i seguenti vantaggi:
 * Minore consumo in memoria
 * Facilita\` di implementazione
-* ?
 
 Questo ha portato pero\` i seguenti svantaggi:
 * No native implementation di `std::bitset` in CUDA
 * No copy on write (CoW)
 
-## Referenze
+# Appendice
 
-## Metodologia (che titolo brutto)
-
-* Definizione dello stato iniziale (what?)
-* Definizione dello stato finale (what?)
-* Perche\` parallelizzare
-	* L'algoritmo presenta componenti fortemente ripetitive (embarassingly?)
-	* L'utilizzo di griglie permette di lavorare con tecniche locally synchronous
-	* L'architettura della macchina di test si presta all'utilizzo del modello di Message
-	  Passing, implementato con MPI. (blablabla su cos'e` mpi?)
-* Strumenti utilizzati (hardware / software)
-	* Software:
-* Considerazioni sulle strutture dati (copyGrid)
-
-BENCH: Openmpi + 1 processo + full stencil VS Openmpi + 2/3 processi + stencil bilanciato
-
-# GA
+## Algoritmi Genetici
 
 Gli algoritmi genetici sono algoritmi euristici di ricerca e ottimizzazione che si ispirano alla teoria dell'evoluzione di Darwin.  
 
@@ -326,7 +292,7 @@ for cnt <- 1 to N_GENERATIONS
 endfor
 ```
 
-# CGL
+## Conway's Game of Life
 
 Il Conway's Game of Life e` un automa cellulare la cui evoluzione e` determinata dallo stato iniziale.
 Lo stato iniziale e` definito da una griglia, chiamata *mondo*, dove ogni cella e` definita da uno stato booleano di vita / morte ed ha 8 celle adiacenti.
