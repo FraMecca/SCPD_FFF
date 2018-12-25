@@ -25,7 +25,6 @@ using namespace std;
 #define MAX_NEIGH 8 /** Max number of neighbour for each cell*/
 
 #ifdef STENCIL
-#include "../cgl_shm/partition.hpp"
 #include <omp.h>
 #endif
 
@@ -329,7 +328,6 @@ public:
     /**
          * Prints the array visualisation of the grid, from right to left.
          */
-#ifdef SEQUENTIAL
     void printGrid()
     {
         assert(dim > 0);
@@ -346,18 +344,7 @@ public:
         }
         cout << endl;
     }
-#endif
-    /***
-         * debugging (print partition grids)
-         */
-#ifdef STENCIL
-    void printGrid(bool full = false)
-    {
-        for (int t = 0; t < N_PARTITIONS; t++) {
-            partitions[t].printGrid(full);
-        }
-    }
-#endif
+
     /**
          * Returns the number of cellc in the grid
          */
