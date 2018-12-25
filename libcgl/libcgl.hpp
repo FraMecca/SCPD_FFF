@@ -110,10 +110,6 @@ private:
     short fitnessIterations = N_FITGRIDS; /** Number of iterations in which fitness is computed */
     bool fitnessDone = false; /** flags if fitness has been computed */
 
-#ifdef STENCIL
-    Partition<T> partitions[N_PARTITIONS];
-#endif
-
 public:
 
     std::vector<double> density; /** A vector of fitness scores for each area **/
@@ -134,9 +130,6 @@ public:
         fitness = 0.0;
         side = _side;
         prepareGrid();
-#ifdef STENCIL
-        fill_partitions();
-#endif
     }
 
     /// Constructor for strings
@@ -149,9 +142,6 @@ public:
         density = std::vector<double>();
         fitness = 0.0;
         side = _side;
-#ifdef STENCIL
-        fill_partitions();
-#endif
     }
 
     /**
@@ -168,9 +158,6 @@ public:
         density = std::vector<double>();
         fitness = 0.0;
         side = _side;
-#ifdef STENCIL
-        fill_partitions();
-#endif
     }
 
     /**
@@ -297,45 +284,20 @@ public:
 
     void startCgl(unsigned int n_iter = N_ITERATIONS)
     {
-        //TIMER;
-        fill_partitions();
-        GRID stepGrid = newGRID;
+        auto write = newGRID;
         for (size_t i = 0; i < n_iter; i++) {
 			// spawn a thread pool
 			// set thread number dynamically
 			omp_set_dynamic(0);
 			omp_set_num_threads(N_PARTITIONS+1);
-			#pragma omp parallel
-            {
-				// distribute partitions between threads
-				#pragma omp for
-                for (int p = 0; p < N_PARTITIONS; p++) {
-                    partitions[p].computeCells();
-                }
-            }
+			#pragma omp parallel for collapse(2)
+			for (size_t x = 0; x < dim; ++x) {
+                for (size_t y = 0; y < dim; ++y)
+                    updateCell(write, x, y);
+			}
         }
-        dump_partitions(stepGrid);
-        copyGrid(stepGrid, grid);
+        copyGrid(write, grid);
     }
-#endif
-#ifdef STENCIL
-    /***
-         * Helper function to fill all partitions based on their index
-         */
-    void fill_partitions()
-    {
-        for (int t = 0; t < N_PARTITIONS; t++) {
-            partitions[t].fill(t, grid);
-        }
-    }
-
-    void dump_partitions(GRID& stepGrid)
-    {
-        for (int p = 0; p < N_PARTITIONS; p++) {
-            partitions[p].dumpGrid(stepGrid);
-        }
-    }
-
 #endif
     /**
         * Starts the game and apply fitness at the last iterations.
@@ -495,7 +457,6 @@ private:
     /**
          * Apply the rule of life to the given cell.
          */
-#ifdef SEQUENTIAL
     void applyRuleOfLife(GRID& new_grid, int x, int y, int alive)
     {
         int pos = getPos(x, y, dim);
@@ -508,7 +469,6 @@ private:
         else
             new_grid->reset(pos);
     }
-#endif
 
     /**
          * print the bitset
