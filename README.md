@@ -117,27 +117,11 @@ Il calcolo del CGL si presta a tecniche di parallelizzazione *locally synchronou
 come il *partitioning* in quanto e\` possibile applicare la *rule of life* utilizzando
 solamente i vicini di una data cella, per ogni cella della griglia.
 
-Questo ha permesso di suddividere ogni griglia in N partizioni orizzontali, ognuna di
-dimensione `(DIM/N) + x`, dove DIM e\` la dimensione totale. Ogni partizione ha
-`x` righe aggiuntive, dove `x` si puo\` definire a seconda della posizione della partizione:
-```
-x = 1 se la partizione si trova all'estremo superiore o inferiore della griglia
-x = 2 altrimenti
-```
-Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
-della partizione. Con questa configurazione, il calcolo di ogni partizione puo\` avvenire in
-un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inoltre, non sono
-possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
-per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
-
-La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
-
-![Schema Partitioning](./cgl_shm/schema_partitioning.jpg)
+Questo ha permesso di suddividere ogni griglia in N partizioni che vengono lette ciascuna da un thread indipendente, i quali a loro volta calcolano il risultato sulla matrice di scrittura.
+Con questa configurazione i thread lavorano in assenza di race conditions, in quanto una matrice è di sola lettura, mentre la matrice di sola scrittura è suddivisa in partizioni indipendenti assegnate esclusivamente agli N thread.
 
 La tecnica del partitioning e\` stata applicata utilizzando una parallelizzazione shared
-memory attraverso l'utilizzo di OpenMP. Ad ogni griglia viene associata una threadpool alla quale vengono
-distribuite le partizioni, dopodiche\` il risultato di ogni partizione viene ricostruito per
-ottenere una griglia evoluta da cui sia possibile calcolare il fitness.
+memory attraverso l'utilizzo di OpenMP.
 
 Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma con essa
 e\` stato possibile implementare una parallelizzazione a due livelli, il primo in shared
@@ -232,7 +216,7 @@ efficiency = speedup(p) / p
 Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
 aumentando il numero di cores si presenta un'efficienza decrescente.
 Questo risultato puo\` essere spiegato analizzando come OpenMPI implementa la comunicazione.
-Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comunicazione 
+Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comunicazione
 avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
 comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 
