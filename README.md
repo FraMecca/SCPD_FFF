@@ -200,7 +200,7 @@ utilizzando la configurazione di default mostrata sopra.
 Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
 utilizzati, assieme al linear speedup teorico.
 
-![Grafico Speedup](./all speedup.png)
+![Grafico Speedup](./all_speedup.png)
 
 #### Efficienza
 
@@ -211,7 +211,7 @@ p = num. cores
 efficiency = speedup(p) / p
 ```
 
-![Grafico Efficienza](./all efficency.png)
+![Grafico Efficienza](./all_efficency.png)
 
 Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
 aumentando il numero di cores si presenta un'efficienza decrescente.
