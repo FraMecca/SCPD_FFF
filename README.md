@@ -186,7 +186,7 @@ s(p) = ts / tp
 ```
 | SHM (partitioning) | MPI only | MPI only (collectives) | MPI + partitioning  | MPI + partitioning (collectives) |
 |:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
-|          5         |    14    |           10           |          7          |                 5                |
+|          3         |    14    |           10           |          7          |                 5                |
 
 Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sarà effettuato utilizzanto questa tecnica.
 
@@ -200,7 +200,7 @@ utilizzando la configurazione di default mostrata sopra.
 Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
 utilizzati, assieme al linear speedup teorico.
 
-![Grafico Speedup](./speedup.png)
+![Grafico Speedup](./all_speedup.png)
 
 #### Efficienza
 
@@ -211,7 +211,7 @@ p = num. cores
 efficiency = speedup(p) / p
 ```
 
-![Grafico Efficienza](./efficency.svg)
+![Grafico Efficienza](./all_efficency.png)
 
 Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
 aumentando il numero di cores si presenta un'efficienza decrescente.
