@@ -296,6 +296,7 @@ public:
 			}
         }
         copyGrid(write, grid);
+	delete(write);
     }
 #endif
     /**
