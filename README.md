@@ -3,7 +3,7 @@
 ## Introduzione
 
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
-(CGL). Piu\` nel dettaglio ci proponiamo, dato uno stato finale, di trovare lo stato iniziale
+(CGL). Più nel dettaglio ci proponiamo, dato uno stato finale, di trovare lo stato iniziale
 della matrice CGL che permette di trovare l'approssimazione migliore del suddetto stato.
 
 ## Terminologia
@@ -23,7 +23,7 @@ La definizione del CGL e dell'algoritmo genetico utilizzati sono oltre l'obbiett
 questa relazione. In appendice si presenta una breve descrizione.
 
 Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguenti:
-* Locally synchronous computations in shared memory utilizzando la tecnica *partitioning*. Questa tecnica e\` implementata attraverso le API di *OpenMP*.
+* Locally synchronous computations in shared memory utilizzando la tecnica *partitioning*. Questa tecnica è implementata attraverso le API di *OpenMP*.
 * Architettura master-slave con message passing utilizzando le primitive collettive (scatter,gather) e punto-punto (send,recv) di MPI.
 
 ## L'algoritmo
@@ -33,13 +33,13 @@ Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguen
 ![Grafico cgl](./HighLevelCgl.jpg)
 
 
-L'algoritmo e\` configurato tramite i parametri:
+L'algoritmo è configurato tramite i parametri:
 * POPSIZE: Numero degli individui che compongono la popolazione ad ogni iterazione dell'AG.
 * N\_ITERAZIONI: Numero di iterazioni per l'evoluzione del CGL.
 * N\_GENERATIONS: Numero di iterazioni per l'evoluzione dell'AG.
-* DIM: Dimensione della griglia. Una griglia e\` composta da DIM\*DIM celle.
+* DIM: Dimensione della griglia. Una griglia è composta da DIM\*DIM celle.
 * SIDE: Dimensione della sottogriglia utilizzata per il calcolo del fitness (vedi...). Una
-  sottogriglia e\` composta da SIDE\*SIDE celle.
+  sottogriglia è composta da SIDE\*SIDE celle.
 
 L'algoritmo genera POPSIZE\*N\_GENERATIONS\*N\_ITERAZIONI griglie durante la sua esecuzione.
 Il blocco logico CGL evolve un individuo dal gene fino allo stato finale, calcolandone il
@@ -70,17 +70,17 @@ end function
 
 ### Metodologia
 
-La computazione del nostro codice e\` divisa principalmente in due funzioni:
+La computazione del nostro codice è divisa principalmente in due funzioni:
 * `GameAndFitness` calcola un esecuzione del CGL che richiede `DIM^2*(1+N_ITERAZIONI)` e
   viene eseguito `N_GENERATIONS*POPSIZE` volte.
 * `Crossover` che richiede un numero di cicli pari a `DIM^2*POPSIZE` e viene eseguito `N_GENERATIONS`
   volte.
 
 Da questo si nota ed empiricamente si dimostra che all'aumentare della popolazione e/o
-del numero di generazioni il tempo richiesto alla funzione `Crossover` e\` insignificante
+del numero di generazioni il tempo richiesto alla funzione `Crossover` è insignificante
 rispetto al tempo totale. Il rapporto infatti risulta essere indipendente dal numero di
-generazioni e dal numero di individui, nonche\` dalla dimensione della griglia. Si puo\`
-predire che `Crossover` occupera\` all'incirca l'`1%` del tempo di esecuzione del programma,
+generazioni e dal numero di individui, nonchè dalla dimensione della griglia. Si può
+predire che `Crossover` occuperà all'incirca l'`1%` del tempo di esecuzione del programma,
 ed i risultati sperimentali confermano questa ipotesi.
 
 ## Grafo di esecuzione
@@ -114,27 +114,27 @@ tempi di esecuzione dei metodi sopra citati.
 ## Partitioning in Shared memory
 
 Il calcolo del CGL si presta a tecniche di parallelizzazione *locally synchronous*
-come il *partitioning* in quanto e\` possibile applicare la *rule of life* utilizzando
+come il *partitioning* in quanto è possibile applicare la *rule of life* utilizzando
 solamente i vicini di una data cella, per ogni cella della griglia.
 
 Questo ha permesso di suddividere ogni griglia in N partizioni che vengono lette ciascuna da un thread indipendente, i quali a loro volta calcolano il risultato sulla matrice di scrittura.
 Con questa configurazione i thread lavorano in assenza di race conditions, in quanto una matrice è di sola lettura, mentre la matrice di sola scrittura è suddivisa in partizioni indipendenti assegnate esclusivamente agli N thread.
 
-La tecnica del partitioning e\` stata applicata utilizzando una parallelizzazione shared
+La tecnica del partitioning è stata applicata utilizzando una parallelizzazione shared
 memory attraverso l'utilizzo di OpenMP.
 
-Questa tecnica e\` stata applicata direttamente sull'algoritmo sequenziale ma con essa
-e\` stato possibile implementare una parallelizzazione a due livelli, il primo in shared
+Questa tecnica è stata applicata direttamente sull'algoritmo sequenziale ma con essa
+è stato possibile implementare una parallelizzazione a due livelli, il primo in shared
 memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
 
 ## Message passing (MPI)
 
-L'evoluzione di un individuo secondo la logica di `GameAndFitness` e\` logicamente
+L'evoluzione di un individuo secondo la logica di `GameAndFitness` è logicamente
 indipendente dall'evoluzione di tutti gli altri individui. Per questo abbiamo considerato
 `GameAndFitness` come un calcolo **embarassingly parallel**. MPI ci ha permesso di
-dividere l'evoluzione di una popolazione di individui tra N core fisici distribuiti su piu\`
+dividere l'evoluzione di una popolazione di individui tra N core fisici distribuiti su più
 macchine. Al contrario, `Crossover` richidede i dati di fitness di un'intera popolazione per
-ogni generazione, pertanto puo\` essere calcolato solo da un singolo processo che deve
+ogni generazione, pertanto può essere calcolato solo da un singolo processo che deve
 raccogliere i dati dai worker di `GameAndFitness`.
 
 ![Grafico cgl](./HighLevel_mpi.jpg)
@@ -155,7 +155,7 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
 * Punto-punto: Il master si occupa di distribuire gli individui uno alla volta agli slaves, i
   quali lo notificano del completamento dell'evoluzione dell'individuo mandandogli il
   risultato della funzione di fitness, aspettando il successivo individuo da evolvere. Questa
-  tecnica e\` implementata attraverso un buffer circolare con fair scheduling.
+  tecnica è implementata attraverso un buffer circolare con fair scheduling.
 
 ## Performance Analysis (Considerazioni)
 
@@ -175,7 +175,7 @@ Abbiamo utilizzato questa configurazione per la prima analisi:
 
 Abbiamo calcolato dei fattori di speedup preliminari confrontando il tempo di esecuzione
 dell'algoritmo sequenziale con i tempi di esecuzione degli algoritmi paralleli. Lo speedup
-factor e\` stato calcolato sul cluster `paradigm`, che fornisce 24 core, tramite la
+factor è stato calcolato sul cluster `paradigm`, che fornisce 24 core, tramite la
 seguente formula:
 
 ```
@@ -188,13 +188,13 @@ s(p) = ts / tp
 |:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
 |          5         |    14    |           10           |          7          |                 5                |
 
-Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sara\` effettuato utilizzanto questa tecnica.
+Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sarà effettuato utilizzanto questa tecnica.
 
 ### Variazione del numero di core
 
 #### Speedup
 
-Il calcolo dello speedup al variare del numero di core utilizzati e\` stato effettuato
+Il calcolo dello speedup al variare del numero di core utilizzati è stato effettuato
 utilizzando la configurazione di default mostrata sopra.
 
 Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
@@ -215,7 +215,7 @@ efficiency = speedup(p) / p
 
 Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
 aumentando il numero di cores si presenta un'efficienza decrescente.
-Questo risultato puo\` essere spiegato analizzando come OpenMPI implementa la comunicazione.
+Questo risultato può essere spiegato analizzando come OpenMPI implementa la comunicazione.
 Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comunicazione
 avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
 comunicazione ha un overhead maggiore a causa della comunicazione in rete.
@@ -225,9 +225,9 @@ comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 L'utilizzo di C++ e in particolare delle data structure utilizzate per gestire la
 griglia in memoria (`std::bitset`), ha portato i seguenti vantaggi:
 * Minore consumo in memoria
-* Facilita\` di implementazione
+* Facilità di implementazione
 
-Questo ha portato pero\` i seguenti svantaggi:
+Questo ha portato però i seguenti svantaggi:
 * No native implementation di `std::bitset` in CUDA
 * No copy on write (CoW)
 
