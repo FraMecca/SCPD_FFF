@@ -186,7 +186,7 @@ s(p) = ts / tp
 ```
 | SHM (partitioning) | MPI only | MPI only (collectives) | MPI + partitioning  | MPI + partitioning (collectives) |
 |:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
-|          5         |    14    |           10           |          7          |                 5                |
+|          3         |    14    |           10           |          7          |                 5                |
 
 Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sara\` effettuato utilizzanto questa tecnica.
 
