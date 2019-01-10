@@ -31,6 +31,7 @@ SETM4=$DIR/bench/settings/settingsm4.hpp
 HOST=$DIR/bench/settings/hostfile
 
 # results directory
+rm -r $RES
 mkdir -p $RES
 mkdir -p $BIN
 

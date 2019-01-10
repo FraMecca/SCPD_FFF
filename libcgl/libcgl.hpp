@@ -288,7 +288,7 @@ public:
 			// spawn a thread pool
 			// set thread number dynamically
 			omp_set_dynamic(0);
-			omp_set_num_threads(N_PARTITIONS+1);
+			omp_set_num_threads(N_PARTITIONS);
 			#pragma omp parallel for collapse(2)
 			for (size_t x = 0; x < dim; ++x) {
                 for (size_t y = 0; y < dim; ++y)
