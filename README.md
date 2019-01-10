@@ -220,6 +220,11 @@ Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comun
 avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
 comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 
+TODO: dire che con mpi settato come 2 thread (partitioning) e 4 processi (mpi), la perfomance e` la seguente:
+
+       cores 	master 	        speedup 	efficiency 	ideal
+com24 	24 	14345757891300 	12.905183 	0.537716 	24
+
 ## Conclusioni
 
 L'utilizzo di C++ e in particolare delle data structure utilizzate per gestire la
