@@ -1,6 +1,8 @@
 # Relazione
 
 TODO: calcolare COMP/COMM ratio
+TODO: crossover come classico esempio di pipeline
+TODO: Facciamo centralized dynamic load balancing per MPI p2p. Va detto?
 
 ## Introduzione
 
