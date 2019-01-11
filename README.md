@@ -1,5 +1,7 @@
 # Relazione
 
+TODO: calcolare COMP/COMM ratio
+
 ## Introduzione
 
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
