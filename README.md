@@ -1,6 +1,5 @@
 # Relazione
 
-TODO: calcolare COMP/COMM ratio
 TODO: crossover come classico esempio di pipeline
 TODO: correggere immagine speedup mpi
 
@@ -195,7 +194,7 @@ s(p) = ts / tp
 ```
 
 | SHM (partitioning, 8 cores) | MPI (point-to-point) | MPI (collectives) | MPI + Partitioning  |
-|:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
+|:--------------------:|:----------------------:|:---------------------:|:--------------------------------:|
 |          3         |    14    |           10           |          13          |
 
 Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI point-to-point.
