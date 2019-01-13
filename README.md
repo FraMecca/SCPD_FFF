@@ -3,6 +3,31 @@
 TODO: crossover come classico esempio di pipeline
 TODO: correggere immagine speedup mpi
 
+Table of Contents
+=================
+
+   * [Relazione](#relazione)
+      * [Introduzione](#introduzione)
+      * [Terminologia](#terminologia)
+      * [Definizione del problema](#definizione-del-problema)
+      * [L'algoritmo](#lalgoritmo)
+         * [Pseudocodice (sequenziale)](#pseudocodice-sequenziale)
+         * [Metodologia](#metodologia)
+      * [Grafo di esecuzione](#grafo-di-esecuzione)
+      * [Partitioning in Shared memory](#partitioning-in-shared-memory)
+      * [Message passing (MPI)](#message-passing-mpi)
+         * [Tecniche di parallelizzazione](#tecniche-di-parallelizzazione)
+      * [Performance Analysis](#performance-analysis)
+         * [Confronto tra tecniche di parallelizzazione](#confronto-tra-tecniche-di-parallelizzazione)
+         * [Variazione del numero di core](#variazione-del-numero-di-core)
+            * [Speedup](#speedup)
+            * [Efficienza](#efficienza)
+      * [Conclusioni](#conclusioni)
+   * [Appendice](#appendice)
+      * [Algoritmi Genetici](#algoritmi-genetici)
+      * [Conway's Game of Life](#conways-game-of-life)
+      * [Considerazioni su std::bitset e shared memory](#considerazioni-su-stdbitset-e-shared-memory)
+
 ## Introduzione
 
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
@@ -229,7 +254,7 @@ comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 
 Per quanto riguarda l'algoritmo con partitioning, siamo stati sorpresi dalla diminuzione
 del valore di speedup e di efficienza all'aumentare dei cores. Abbiamo investigato le
-motivazioni di questo rallentamento nell'[appendice](#Considerazioni su std::bitset e shared memory).
+motivazioni di questo rallentamento nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
 
 ## Conclusioni
 
