@@ -172,7 +172,8 @@ a un numero di core crescente.
 
 Abbiamo utilizzato questa configurazione per la prima analisi:
 
-|:----:|:----:|
+|||
+|----:|:----|
 | DIM |512 |
 | SIDE |16 |
 | N\_ITERATIONS |100 |
