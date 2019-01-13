@@ -2,7 +2,6 @@
 
 TODO: calcolare COMP/COMM ratio
 TODO: crossover come classico esempio di pipeline
-TODO: Facciamo centralized dynamic load balancing per MPI p2p. Va detto?
 
 ## Introduzione
 
@@ -144,7 +143,7 @@ raccogliere i dati dai worker di `GameAndFitness`.
 ![Grafico cgl](./HighLevel_mpi.jpg)
 
 Per utilizzare MPI abbiamo quindi suddiviso i nostri processi in due classi:
-* N slave che si occupano del calcolo di `GameAndFitness`
+* N slaves che si occupano del calcolo di `GameAndFitness`
 * 1 master che calcola `Crossover` e distribuisce i geni ottenuti dal crossover agli slave,
   di modo che essi possano calcolare la generazione successiva.
 
@@ -156,26 +155,31 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
 
 * Collettive: Utilizzando `scatterv` e `gatherv` abbiamo distribuito i geni ai worker
   (`scatterv`) e raccolto i risultati della funzione di fitness nel master (`gatherv`)
-* Punto-punto: Il master si occupa di distribuire gli individui uno alla volta agli slaves, i
-  quali lo notificano del completamento dell'evoluzione dell'individuo mandandogli il
-  risultato della funzione di fitness, aspettando il successivo individuo da evolvere. Questa
-  tecnica è implementata attraverso un buffer circolare con fair scheduling.
 
-## Performance Analysis (Considerazioni)
+* Punto-punto: Abbiamo utilizzato il centralized dynamic load balancing per distribuire i
+  task sulla workpool formata dagli slaves.
+  Gli slaves, completata l'evoluzione dell'individuo, notificano il master restituendo il
+  risultato della funzione di fitness, accodandosi nel buffer circolare del master.
+
+## Performance Analysis
 
 Per eseguire l'analisi abbiamo utilizzato diverse configurazioni dei parametri sopra citati.
-Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi parametri, successivamente si valuta lo speedup con MPI e un numero di core crescente.
+Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi
+parametri, successivamente si valuta lo speedup ottenuto utilizzando MPI e OpenMP, in relazione
+a un numero di core crescente.
 
 ### Confronto tra tecniche di parallelizzazione
 
 Abbiamo utilizzato questa configurazione per la prima analisi:
-* DIM 512
-* SIDE 16
-* N\_ITERATIONS 100
-* POPSIZE 500
-* N\_GENERATIONS 150
-* N\_PARTITIONS 8
-* N\_CORE 24
+
+|:----:|:----:|
+| DIM |512 |
+| SIDE |16 |
+| N\_ITERATIONS |100 |
+| POPSIZE |500 | |
+| N\_GENERATIONS |150 |
+| N\_PARTITIONS |8 |
+| N\_CORE |24 |
 
 Abbiamo calcolato dei fattori di speedup preliminari confrontando il tempo di esecuzione
 dell'algoritmo sequenziale con i tempi di esecuzione degli algoritmi paralleli. Lo speedup
