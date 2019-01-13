@@ -226,7 +226,7 @@ Si può vedere come la tecnica che ottiene il rapporto migliore, su questa confi
 
 ### Variazione del numero di core
 
-La seguente analisi e\` stata effettuata utilizzando le tecniche MPI point-to-point (fino a
+La seguente analisi è stata effettuata utilizzando le tecniche MPI point-to-point (fino a
 24 cores) e partitioning in shared memory (fino a 8 cores).
 
 #### Speedup
@@ -235,7 +235,7 @@ La seguente analisi e\` stata effettuata utilizzando le tecniche MPI point-to-po
 
 #### Efficienza
 
-L'efficienza e\` definita come:
+L'efficienza è definita come:
 
 ```
 p = num. cores
@@ -333,12 +333,12 @@ utilizzata in scrittura, con l'obbiettivo di evitare accesso concorrente alle st
 di memoria.
 
 Nonostante questo, si verifica un progressivo degradarsi della performance all'aumentare dei
-cores a disposizione. Questo risultato inatteso puo\` essere spiegato analizzando
+cores a disposizione. Questo risultato inatteso può essere spiegato analizzando
 l'implementazione di `std::bitset` in C++17.
 
-Lo storage alla base di `std::bitset` e\` costituito da un array contiguo di interi, ognuno
+Lo storage alla base di `std::bitset` è costituito da un array contiguo di interi, ognuno
 dei quali mantiene 32 bit, manipolati attraverso delle bitmask.
-Puo\` succedere quindi che, durante il calcolo della medesima griglia, thread separati
+Può succedere quindi che, durante il calcolo della medesima griglia, thread separati
 richiedano accesso a bit che costituiscono parte dello stesso intero.
 Una possibile soluzione a questo problema consiste nel suddividere con precisione il range di
 bit assegnato ad ogni thread, piuttosto che lasciare che OpenMP suddivida il vettore secondo
@@ -346,16 +346,16 @@ la sua strategia.
 
 Inoltre, abbiamo notato che anche evitando possibili race conditions, la performance di
 `std::bitset` degrada all'aumentare della lunghezza del vettore di storage.
-In particolare, a parita\` di numero di bit letti un bitset di lunghezza `512*512` e\` 9 volte
-piu\` lento di un bitset di lunghezza `512*512/8` (dimensione di una partizione nella
+In particolare, a parità di numero di bit letti un bitset di lunghezza `512*512` è 9 volte
+più lento di un bitset di lunghezza `512*512/8` (dimensione di una partizione nella
 configurazione di test).
 
 Per questo motivo abbiamo analizzato un altro modello di partizionamento, che sfrutta copie
 della griglia originale, di dimensione corrispondente a quella di una partizione.
 
 In particolare, ogni griglia viene suddivisa in N *strip-partitions* orizzontali, ognuna di 
-dimensione `(DIM/N) + x`, dove DIM e\` la dimensione totale. Ogni partizione ha
-`x` righe aggiuntive di *ghost points*, dove `x` si puo\` definire a seconda della
+dimensione `(DIM/N) + x`, dove DIM è la dimensione totale. Ogni partizione ha
+`x` righe aggiuntive di *ghost points*, dove `x` si può definire a seconda della
 posizione della partizione rispetto alla griglia:
 
 ```
@@ -364,11 +364,11 @@ x = 2 altrimenti
 ```
 
 Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
-della partizione. Con questa configurazione, il calcolo di ogni partizione puo\` avvenire in
+della partizione. Con questa configurazione, il calcolo di ogni partizione può avvenire in
 un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inoltre, non sono
 possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
 per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
 
-La configurazione e\` raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
+La configurazione è raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
 
 ![Schema Partitioning](./cgl_shm/schema_partitioning.jpg)
