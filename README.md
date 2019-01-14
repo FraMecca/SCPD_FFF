@@ -21,6 +21,7 @@ Table of Contents
          * [Variazione del numero di cores](#variazione-del-numero-di-cores)
             * [Speedup](#speedup)
             * [Efficienza](#efficienza)
+	    * [Shared Memory versus Message Passing](#shared-memory-versus-message-passing)
       * [Conclusioni](#conclusioni)
    * [Appendice](#appendice)
       * [Algoritmi Genetici](#algoritmi-genetici)
@@ -154,6 +155,8 @@ Questa tecnica è stata applicata direttamente sull'algoritmo sequenziale ma con
 è stato possibile implementare una parallelizzazione a due livelli, il primo in shared
 memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
 
+Abbiamo utilizzato una differente strategia di partizionamento, mettendola a confronto con quella sopra citata nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
+
 ## Message passing (MPI)
 
 L'evoluzione di un individuo secondo la logica di `GameAndFitness` è logicamente
@@ -251,9 +254,29 @@ Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comun
 avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
 comunicazione ha un overhead maggiore a causa della comunicazione in rete.
 
-Per quanto riguarda l'algoritmo con partitioning, siamo stati sorpresi dalla diminuzione
-del valore di speedup e di efficienza all'aumentare dei cores. Abbiamo investigato le
-motivazioni di questo rallentamento nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
+Con i parametri utilizzati negli esperimenti precedenti, il message passing ha un'efficienza maggiore dell'algoritmo con partitioning. Questo risultato si puo\` spiegare considerando il livello di parallelizzazione a cui agiscono le due implementazioni.
+
+* Il message passing delega il calcolo di un singolo individuo ad un singolo core. Ogni core
+  riceve quindi una griglia da evolvere, esegue i calcoli richiesti sequenzialmente e manda
+  un valore di fitness al processo *master*.
+
+* L'algoritmo con partitioning evolve ogni individuo sequenzialmente, ma partiziona il carico
+  derivato dalla computazione della griglia su tutti i cores a disposizione. Questo approccio
+  risulta molto efficiente per griglie di dimensione elevata, ma aumentando il numero di
+  cores impiegati (e quindi riducendo la dimensione di ogni partizione) si ottiene un minore
+  carico sui singoli cores, e di conseguenza una decrescita dell'efficienza.
+
+#### Shared Memory versus Message Passing
+
+Per verificare la performance dell'algoritmo in SHM contro quella dell'algoritmo in Message Passing abbiamo alterato i parametri dell'esperimento in modo da rendere il calcolo della griglia la computazione più costosa del nostro programma.
+
+Con una griglia di dimensione `2048*2048` ed una singola macchina da 8 cores abbiamo potuto misurare i seguenti tempi di esecuzione complessivi (in secondi) per l'algoritmo sequenziale, l'algoritmo in SHM e l'algoritmo con Message Passing.
+
+![Grafico 2048_3e ](./2048.png)
+
+Abbiamo constatato che l'algoritmo in SHM e l'algoritmo con Message Passing impiegano la seguente frazione di tempo rispetto all'algoritmo sequenziale. 
+
+![Grafico Normalizzato](./normalized_bar.png)
 
 ## Conclusioni
 
