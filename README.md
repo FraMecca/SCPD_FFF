@@ -1,7 +1,6 @@
 # Relazione
 
 TODO: crossover come classico esempio di pipeline
-TODO: correggere immagine speedup mpi
 
 Table of Contents
 =================
@@ -19,7 +18,7 @@ Table of Contents
          * [Tecniche di parallelizzazione](#tecniche-di-parallelizzazione)
       * [Performance Analysis](#performance-analysis)
          * [Confronto tra tecniche di parallelizzazione](#confronto-tra-tecniche-di-parallelizzazione)
-         * [Variazione del numero di core](#variazione-del-numero-di-core)
+         * [Variazione del numero di cores](#variazione-del-numero-di-cores)
             * [Speedup](#speedup)
             * [Efficienza](#efficienza)
       * [Conclusioni](#conclusioni)
@@ -160,7 +159,7 @@ memory e il secondo in message passing all'interno dell'ambiente di test distrib
 L'evoluzione di un individuo secondo la logica di `GameAndFitness` è logicamente
 indipendente dall'evoluzione di tutti gli altri individui. Per questo abbiamo considerato
 `GameAndFitness` come un calcolo **embarassingly parallel**. MPI ci ha permesso di
-dividere l'evoluzione di una popolazione di individui tra N core fisici distribuiti su più
+dividere l'evoluzione di una popolazione di individui tra N cores fisici distribuiti su più
 macchine. Al contrario, `Crossover` richidede i dati di fitness di un'intera popolazione per
 ogni generazione, pertanto può essere calcolato solo da un singolo processo che deve
 raccogliere i dati dai worker di `GameAndFitness`.
@@ -191,7 +190,7 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
 Per eseguire l'analisi abbiamo utilizzato diverse configurazioni dei parametri sopra citati.
 Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi
 parametri, successivamente si valuta lo speedup ottenuto utilizzando MPI e OpenMP, in relazione
-a un numero di core crescente.
+a un numero di cores crescente.
 
 ### Confronto tra tecniche di parallelizzazione
 
@@ -224,7 +223,7 @@ s(p) = ts / tp
 
 Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI point-to-point.
 
-### Variazione del numero di core
+### Variazione del numero di cores
 
 La seguente analisi è stata effettuata utilizzando le tecniche MPI point-to-point (fino a
 24 cores) e partitioning in shared memory (fino a 8 cores).
