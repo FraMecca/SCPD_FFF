@@ -1,5 +1,33 @@
 # Relazione
 
+TODO: crossover come classico esempio di pipeline
+TODO: correggere immagine speedup mpi
+
+Table of Contents
+=================
+
+   * [Relazione](#relazione)
+      * [Introduzione](#introduzione)
+      * [Terminologia](#terminologia)
+      * [Definizione del problema](#definizione-del-problema)
+      * [L'algoritmo](#lalgoritmo)
+         * [Pseudocodice (sequenziale)](#pseudocodice-sequenziale)
+         * [Metodologia](#metodologia)
+      * [Grafo di esecuzione](#grafo-di-esecuzione)
+      * [Partitioning in Shared memory](#partitioning-in-shared-memory)
+      * [Message passing (MPI)](#message-passing-mpi)
+         * [Tecniche di parallelizzazione](#tecniche-di-parallelizzazione)
+      * [Performance Analysis](#performance-analysis)
+         * [Confronto tra tecniche di parallelizzazione](#confronto-tra-tecniche-di-parallelizzazione)
+         * [Variazione del numero di core](#variazione-del-numero-di-core)
+            * [Speedup](#speedup)
+            * [Efficienza](#efficienza)
+      * [Conclusioni](#conclusioni)
+   * [Appendice](#appendice)
+      * [Algoritmi Genetici](#algoritmi-genetici)
+      * [Conway's Game of Life](#conways-game-of-life)
+      * [Considerazioni su std::bitset e shared memory](#considerazioni-su-stdbitset-e-shared-memory)
+
 ## Introduzione
 
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
@@ -140,7 +168,7 @@ raccogliere i dati dai worker di `GameAndFitness`.
 ![Grafico cgl](./HighLevel_mpi.jpg)
 
 Per utilizzare MPI abbiamo quindi suddiviso i nostri processi in due classi:
-* N slave che si occupano del calcolo di `GameAndFitness`
+* N slaves che si occupano del calcolo di `GameAndFitness`
 * 1 master che calcola `Crossover` e distribuisce i geni ottenuti dal crossover agli slave,
   di modo che essi possano calcolare la generazione successiva.
 
@@ -152,31 +180,36 @@ Abbiamo utilizzato due modelli diversi di parallelizzazione:
 
 * Collettive: Utilizzando `scatterv` e `gatherv` abbiamo distribuito i geni ai worker
   (`scatterv`) e raccolto i risultati della funzione di fitness nel master (`gatherv`)
-* Punto-punto: Il master si occupa di distribuire gli individui uno alla volta agli slaves, i
-  quali lo notificano del completamento dell'evoluzione dell'individuo mandandogli il
-  risultato della funzione di fitness, aspettando il successivo individuo da evolvere. Questa
-  tecnica è implementata attraverso un buffer circolare con fair scheduling.
 
-## Performance Analysis (Considerazioni)
+* Punto-punto: Abbiamo utilizzato il centralized dynamic load balancing per distribuire i
+  task sulla workpool formata dagli slaves.
+  Gli slaves, completata l'evoluzione dell'individuo, notificano il master restituendo il
+  risultato della funzione di fitness, accodandosi nel buffer circolare del master.
+
+## Performance Analysis
 
 Per eseguire l'analisi abbiamo utilizzato diverse configurazioni dei parametri sopra citati.
-Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi parametri, successivamente si valuta lo speedup con MPI e un numero di core crescente.
+Inizialmente si confrontano le differenti tecniche di parallelizzazione utilizzando gli stessi
+parametri, successivamente si valuta lo speedup ottenuto utilizzando MPI e OpenMP, in relazione
+a un numero di core crescente.
 
 ### Confronto tra tecniche di parallelizzazione
 
 Abbiamo utilizzato questa configurazione per la prima analisi:
-* DIM 512
-* SIDE 16
-* N\_ITERATIONS 100
-* POPSIZE 500
-* N\_GENERATIONS 150
-* N\_PARTITIONS 8
-* N\_CORE 24
+
+| Parameter| Value|
+|----:|:----|
+| DIM |512 |
+| SIDE |16 |
+| N\_ITERATIONS |100 |
+| POPSIZE |500 | |
+| N\_GENERATIONS |150 |
+| N\_PARTITIONS |8 |
+| N\_CORE |24 |
 
 Abbiamo calcolato dei fattori di speedup preliminari confrontando il tempo di esecuzione
 dell'algoritmo sequenziale con i tempi di esecuzione degli algoritmi paralleli. Lo speedup
-factor è stato calcolato sul cluster `paradigm`, che fornisce 24 core, tramite la
-seguente formula:
+factor è stato calcolato sul cluster `paradigm`, tramite la seguente formula:
 
 ```
 ts = tempo di esecuzione sequenziale
@@ -184,27 +217,25 @@ tp = tempo di esecuzione con p processori
 
 s(p) = ts / tp
 ```
-| SHM (partitioning) | MPI only | MPI only (collectives) | MPI + partitioning  | MPI + partitioning (collectives) |
-|:--------------------:|:----------:|:----------------------:|:---------------------:|:--------------------------------:|
-|          3         |    14    |           10           |          7          |                 5                |
 
-Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI, senza collettive. Pertanto il calcolo dello speedup variando il numero di core utilizzati sarà effettuato utilizzanto questa tecnica.
+| SHM (partitioning, 8 cores) | MPI (point-to-point) | MPI (collectives) | MPI + Partitioning  |
+|:--------------------:|:----------------------:|:---------------------:|:--------------------------------:|
+|          3         |    14    |           10           |          13          |
+
+Si può vedere come la tecnica che ottiene il rapporto migliore, su questa configurazione, è il message passing con MPI point-to-point.
 
 ### Variazione del numero di core
 
+La seguente analisi è stata effettuata utilizzando le tecniche MPI point-to-point (fino a
+24 cores) e partitioning in shared memory (fino a 8 cores).
+
 #### Speedup
-
-Il calcolo dello speedup al variare del numero di core utilizzati è stato effettuato
-utilizzando la configurazione di default mostrata sopra.
-
-Mostriamo di seguito il grafico dello speedup calcolato alla variazione del numero di cores
-utilizzati, assieme al linear speedup teorico.
 
 ![Grafico Speedup](./all_speedup.png)
 
 #### Efficienza
 
-Mostriamo il grafico dell'efficienza al variare del numero di cores, definita come:
+L'efficienza è definita come:
 
 ```
 p = num. cores
@@ -213,12 +244,17 @@ efficiency = speedup(p) / p
 
 ![Grafico Efficienza](./all_efficency.png)
 
-Si nota come l'esecuzione con 8 cores mostra un'efficienza molto vicina all'ideale, mentre
-aumentando il numero di cores si presenta un'efficienza decrescente.
+Si noti come, nel caso di MPI point-to-point, l'esecuzione con 8 cores mostra un'efficienza
+molto vicina all'ideale, mentre aumentando il numero di cores si presenta un'efficienza
+decrescente.
 Questo risultato può essere spiegato analizzando come OpenMPI implementa la comunicazione.
 Nel caso in cui tutti i processi sono istanziati sulla stessa macchina, la comunicazione
 avviene in **shared memory**, mentre se i processi sono istanziati su macchine in LAN, la
 comunicazione ha un overhead maggiore a causa della comunicazione in rete.
+
+Per quanto riguarda l'algoritmo con partitioning, siamo stati sorpresi dalla diminuzione
+del valore di speedup e di efficienza all'aumentare dei cores. Abbiamo investigato le
+motivazioni di questo rallentamento nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
 
 ## Conclusioni
 
@@ -231,6 +267,7 @@ Questo ha portato però i seguenti svantaggi:
 * No native implementation di `std::bitset` in CUDA
 * No copy on write (CoW)
 
+
 # Appendice
 
 ## Algoritmi Genetici
@@ -239,10 +276,10 @@ Gli algoritmi genetici sono algoritmi euristici di ricerca e ottimizzazione che 
 
 Un tipico algoritmo genetico parte da un certo numero di possibili soluzioni generate casualmente (individui) chiamate popolazione e provvede a farle evolvere nel corso dell'esecuzione: a ciascuna iterazione, esso opera una selezione di individui della popolazione corrente, impiegandoli per generare nuovi individui della successiva popolazione. Tale successione di generazioni evolve verso una soluzione ottima del problema assegnato.
 
-Il gene di ogni individuo viene analizzato attraverso una funzione chiamata funzione di *fitness*. Gli individui con valore della funzione di fitness piu` alta hanno hanno quindi maggiori possibilità di sopravvivere e riprodursi. Nel nostro progetto la funzione di fitness e` costituita da una prima evoluzione del gene attraverso il Conway's Game of Life e il calcolo della distanza di Manhattan della griglie ottenute nelle ultime dieci generazioni rispetto all'obbiettivo desiderato.
+Il gene di ogni individuo viene analizzato attraverso una funzione chiamata funzione di *fitness*. Gli individui con valore della funzione di fitness più alta hanno hanno quindi maggiori possibilità di sopravvivere e riprodursi. Nel nostro progetto la funzione di fitness è costituita da una prima evoluzione del gene attraverso il Conway's Game of Life e il calcolo della distanza di Manhattan della griglie ottenute nelle ultime dieci generazioni rispetto all'obbiettivo desiderato.
 
 L'evoluzione delle popolazioni viene ottenuta attraverso una parziale ricombinazione delle soluzioni, ogni individuo trasmette parte del suo patrimonio genetico ai propri discendenti, e l'introduzione di mutazioni casuali nella popolazione di partenza, sporadicamente quindi nascono individui con caratteristiche non comprese tra quelle presenti nel corredo genetico della specie originaria.
-Tale ricombinazione viene chiamata *crossover* e puo` essere implementato attraverso differenti tecniche. Nel nostro caso il gene rappresentato da un'array di bit viene scisso in 4 parti di equa lunghezza: il gene del figlio sara` costituito dalla prima parte del padre, seconda della madre, terza del padre e quarta
+Tale ricombinazione viene chiamata *crossover* e può essere implementato attraverso differenti tecniche. Nel nostro caso il gene rappresentato da un'array di bit viene scisso in 4 parti di equa lunghezza: il gene del figlio sarà costituito dalla prima parte del padre, seconda della madre, terza del padre e quarta
  della madre.
 
 Alla fine ci si aspetta di trovare una popolazione di soluzioni che riescano a risolvere adeguatamente il problema posto. Non vi è modo di decidere a priori se l'algoritmo sarà effettivamente in grado di trovare una soluzione accettabile. Di norma gli algoritmi genetici vengono utilizzati per problemi di ottimizzazione per i quali non si conoscono algoritmi di complessità lineare o polinomiale.
@@ -278,12 +315,60 @@ endfor
 
 ## Conway's Game of Life
 
-Il Conway's Game of Life e` un automa cellulare la cui evoluzione e` determinata dallo stato iniziale.
-Lo stato iniziale e` definito da una griglia, chiamata *mondo*, dove ogni cella e` definita da uno stato booleano di vita / morte ed ha 8 celle adiacenti.
-Il mondo evolve in tempi discreti dove lo stato di ogni cella e` calcolato a partire dallo stato precedente della cella e dei suoi vicini, secondo queste regole:
+Il Conway's Game of Life è un automa cellulare la cui evoluzione è determinata dallo stato iniziale.
+Lo stato iniziale è definito da una griglia, chiamata *mondo*, dove ogni cella è definita da uno stato booleano di vita / morte ed ha 8 celle adiacenti.
+Il mondo evolve in tempi discreti dove lo stato di ogni cella è calcolato a partire dallo stato precedente della cella e dei suoi vicini, secondo queste regole:
 - qualsiasi cella viva con meno di due celle vive adiacenti muore, come per effetto d'isolamento;
 - qualsiasi cella viva con due o tre celle vive adiacenti sopravvive alla generazione successiva;
 - qualsiasi cella viva con più di tre celle vive adiacenti muore, come per effetto di sovrappopolazione;
 - qualsiasi cella morta con esattamente tre celle vive adiacenti diventa una cella viva, come per effetto di riproduzione;
 
 Vi sono configurazione del Conway's Game of Life per cui la griglia evolve indefinitivamente senza che la vita nel mondo si estingua.
+
+## Considerazioni su std::bitset e shared memory
+
+Per implementare il partitioning sono state utilizzate due griglie, per ogni individuo, per
+ogni iterazione. Una di queste viene utilizzata in sola lettura, mentre l'altra viene
+utilizzata in scrittura, con l'obbiettivo di evitare accesso concorrente alle stesse aree
+di memoria.
+
+Nonostante questo, si verifica un progressivo degradarsi della performance all'aumentare dei
+cores a disposizione. Questo risultato inatteso può essere spiegato analizzando
+l'implementazione di `std::bitset` in C++17.
+
+Lo storage alla base di `std::bitset` è costituito da un array contiguo di interi, ognuno
+dei quali mantiene 32 bit, manipolati attraverso delle bitmask.
+Può succedere quindi che, durante il calcolo della medesima griglia, thread separati
+richiedano accesso a bit che costituiscono parte dello stesso intero.
+Una possibile soluzione a questo problema consiste nel suddividere con precisione il range di
+bit assegnato ad ogni thread, piuttosto che lasciare che OpenMP suddivida il vettore secondo
+la sua strategia.
+
+Inoltre, abbiamo notato che anche evitando possibili race conditions, la performance di
+`std::bitset` degrada all'aumentare della lunghezza del vettore di storage.
+In particolare, a parità di numero di bit letti un bitset di lunghezza `512*512` è 9 volte
+più lento di un bitset di lunghezza `512*512/8` (dimensione di una partizione nella
+configurazione di test).
+
+Per questo motivo abbiamo analizzato un altro modello di partizionamento, che sfrutta copie
+della griglia originale, di dimensione corrispondente a quella di una partizione.
+
+In particolare, ogni griglia viene suddivisa in N *strip-partitions* orizzontali, ognuna di 
+dimensione `(DIM/N) + x`, dove DIM è la dimensione totale. Ogni partizione ha
+`x` righe aggiuntive di *ghost points*, dove `x` si può definire a seconda della
+posizione della partizione rispetto alla griglia:
+
+```
+x = 1 se la partizione si trova all'estremo superiore o inferiore della griglia
+x = 2 altrimenti
+```
+
+Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
+della partizione. Con questa configurazione, il calcolo di ogni partizione può avvenire in
+un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inoltre, non sono
+possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
+per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
+
+La configurazione è raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
+
+![Schema Partitioning](./cgl_shm/schema_partitioning.jpg)
