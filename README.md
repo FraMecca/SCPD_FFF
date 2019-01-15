@@ -1,8 +1,4 @@
-# Relazione
-
-TODO: crossover come classico esempio di pipeline
-
-Table of Contents
+Relazione
 =================
 
    * [Relazione](#relazione)
@@ -21,25 +17,19 @@ Table of Contents
          * [Variazione del numero di cores](#variazione-del-numero-di-cores)
             * [Speedup](#speedup)
             * [Efficienza](#efficienza)
-	    * [Shared Memory versus Message Passing](#shared-memory-versus-message-passing)
+            * [Shared Memory versus Message Passing](#shared-memory-versus-message-passing)
       * [Conclusioni](#conclusioni)
    * [Appendice](#appendice)
       * [Algoritmi Genetici](#algoritmi-genetici)
       * [Conway's Game of Life](#conways-game-of-life)
       * [Considerazioni su std::bitset e shared memory](#considerazioni-su-stdbitset-e-shared-memory)
+         * [Un differente modello di partitizionamento](#un-differente-modello-di-partitizionamento)
 
 ## Introduzione
 
 Il progetto consiste nell'utilizzare algoritmi genetici applicati al Conway's Game of Life
 (CGL). Più nel dettaglio ci proponiamo, dato uno stato finale, di trovare lo stato iniziale
 della matrice CGL che permette di trovare l'approssimazione migliore del suddetto stato.
-
-## Terminologia
-
-* Griglia: matrice bidimensionale di bit che rappresenta lo stato del CGL durante la sua
-  evoluzione. All'interno dell'algoritmo genetico rappresenta un individuo.
-* Gene: Griglia all'iterazione 0, utilizzata come gene dell'algoritmo genetico.
-* TODO speedup, stencil, halo swap, AG, stato finale, stato iniziale, generazione
 
 ## Definizione del problema
 
@@ -51,7 +41,7 @@ La definizione del CGL e dell'algoritmo genetico utilizzati sono oltre l'obbiett
 questa relazione. In appendice si presenta una breve descrizione.
 
 Le tecniche di parallelizzazione utilizzate per la nostra analisi sono le seguenti:
-* Locally synchronous computations in shared memory utilizzando la tecnica *partitioning*. Questa tecnica è implementata attraverso le API di *OpenMP*.
+* Partitioning in shared memory per ridurre il tempo di evoluzione del CGL. Questa tecnica è implementata attraverso le API di *OpenMP*.
 * Architettura master-slave con message passing utilizzando le primitive collettive (scatter,gather) e punto-punto (send,recv) di MPI.
 
 ## L'algoritmo
@@ -66,7 +56,7 @@ L'algoritmo è configurato tramite i parametri:
 * N\_ITERAZIONI: Numero di iterazioni per l'evoluzione del CGL.
 * N\_GENERATIONS: Numero di iterazioni per l'evoluzione dell'AG.
 * DIM: Dimensione della griglia. Una griglia è composta da DIM\*DIM celle.
-* SIDE: Dimensione della sottogriglia utilizzata per il calcolo del fitness (vedi...). Una
+* SIDE: Dimensione della sottogriglia utilizzata per il calcolo del fitness. Una
   sottogriglia è composta da SIDE\*SIDE celle.
 
 L'algoritmo genera POPSIZE\*N\_GENERATIONS\*N\_ITERAZIONI griglie durante la sua esecuzione.
@@ -141,21 +131,28 @@ tempi di esecuzione dei metodi sopra citati.
 
 ## Partitioning in Shared memory
 
-Il calcolo del CGL si presta a tecniche di parallelizzazione *locally synchronous*
-come il *partitioning* in quanto è possibile applicare la *rule of life* utilizzando
+Il calcolo del CGL si presta a tecniche di parallelizzazione come il *partitioning*
+in quanto è possibile applicare la *rule of life* utilizzando
 solamente i vicini di una data cella, per ogni cella della griglia.
 
-Questo ha permesso di suddividere ogni griglia in N partizioni che vengono lette ciascuna da un thread indipendente, i quali a loro volta calcolano il risultato sulla matrice di scrittura.
-Con questa configurazione i thread lavorano in assenza di race conditions, in quanto una matrice è di sola lettura, mentre la matrice di sola scrittura è suddivisa in partizioni indipendenti assegnate esclusivamente agli N thread.
+Vengono utilizzate due matrici per evolvere la griglia, ad ogni iterazione. Una matrice è di sola lettura,
+mentre l'altra, utilizzata in scrittura, è suddivisa in partizioni indipendenti assegnate esclusivamente agli N thread.
+
+Questo ha permesso di suddividere ogni griglia in N partizioni che vengono lette ciascuna da un thread indipendente,
+i quali a loro volta calcolano il risultato sulla matrice di scrittura.
+Con questa configurazione i thread lavorano in assenza di race conditions, in quanto
+modificano unicamente dati *thread-local*.
 
 La tecnica del partitioning è stata applicata utilizzando una parallelizzazione shared
-memory attraverso l'utilizzo di OpenMP.
+memory attraverso il costrutto *data-parallel* forall, che corrisponde alla
+compiler directive `parallel for` in OpenMP.
 
 Questa tecnica è stata applicata direttamente sull'algoritmo sequenziale ma con essa
 è stato possibile implementare una parallelizzazione a due livelli, il primo in shared
 memory e il secondo in message passing all'interno dell'ambiente di test distribuito.
 
-Abbiamo utilizzato una differente strategia di partizionamento, mettendola a confronto con quella sopra citata nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
+Abbiamo utilizzato una differente strategia di partizionamento, mettendola a confronto con quella
+sopra citata nell'[appendice](#considerazioni-su-stdbitset-e-shared-memory).
 
 ## Message passing (MPI)
 
@@ -281,14 +278,10 @@ Abbiamo constatato che l'algoritmo in SHM e l'algoritmo con Message Passing impi
 ## Conclusioni
 
 L'utilizzo di C++ e in particolare delle data structure utilizzate per gestire la
-griglia in memoria (`std::bitset`), ha portato i seguenti vantaggi:
-* Minore consumo in memoria
-* Facilità di implementazione
+griglia in memoria (`std::bitset`), ha portato a un minore consumo in memoria, poichè il bitset è ottimizzato per memorizzare valori booleani con un solo bit. Inoltre la standard library di C++ contiene implementazioni efficienti di strutture dati basilari come i vettori che hanno semplificato e velocizzato l'implementazione degli algoritmi permettendo di focalizzarci meglio sullo sviluppo degli algoritmi paralleli. 
+Tuttavia l'utilizzo del bitset ha impedito un possibile sviluppo in ambiente CUDA su GPU Nvidia con la stessa struttura dati, dal momento che non esiste un'implementazione di `std::bitset`.
 
-Questo ha portato però i seguenti svantaggi:
-* No native implementation di `std::bitset` in CUDA
-* No copy on write (CoW)
-
+Durante le sperimentazioni ci siamo resi conto che il processo di crossover occupa una piccolissima percentuale del tempo di esecuzione, circa l'1%, pertanto abbiamo ritenuto priva di vantaggi una sua implementazione parallela.
 
 # Appendice
 
@@ -372,13 +365,15 @@ In particolare, a parità di numero di bit letti un bitset di lunghezza `512*512
 più lento di un bitset di lunghezza `512*512/8` (dimensione di una partizione nella
 configurazione di test).
 
-Per questo motivo abbiamo analizzato un altro modello di partizionamento, che sfrutta copie
+### Un differente modello di partitizionamento
+
+Abbiamo analizzato un altro modello di partizionamento, che sfrutta copie
 della griglia originale, di dimensione corrispondente a quella di una partizione.
 
-In particolare, ogni griglia viene suddivisa in N *strip-partitions* orizzontali, ognuna di 
-dimensione `(DIM/N) + x`, dove DIM è la dimensione totale. Ogni partizione ha
-`x` righe aggiuntive di *ghost points*, dove `x` si può definire a seconda della
-posizione della partizione rispetto alla griglia:
+In particolare, utilizzando un modello di parallelizzazione *stencil*, ogni griglia viene
+suddivisa in N *strip-partitions* orizzontali, ognuna di dimensione `DIM * (DIM/N + x)`.
+Ogni partizione ha `x` righe aggiuntive di *ghost points*, dove `x` si può definire
+a seconda della posizione della partizione rispetto alla griglia:
 
 ```
 x = 1 se la partizione si trova all'estremo superiore o inferiore della griglia
@@ -387,9 +382,12 @@ x = 2 altrimenti
 
 Le `x` righe aggiuntive rappresentano i vicini necessari a calcolare la prima e l'ultima riga
 della partizione. Con questa configurazione, il calcolo di ogni partizione può avvenire in
-un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Inoltre, non sono
-possibili race conditions in quanto le partizioni sono assegnate ai thread *by value*, quindi
-per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
+un thread indipendente, riducendo il tempo di calcolo di un fattore `<= N`. Non si necessita
+di sincronizzazione tra i thread addetti al calcolo, in quanto ogni partizione contiene i
+valori necessari provenienti dalle partizioni vicine.
+
+Inoltre, non sono possibili race conditions in quanto le partizioni sono assegnate ai thread
+*by value*, quindi per copia. Allo stesso modo, la ricostruzione della griglia avviene *by value*.
 
 La configurazione è raffigurata nel seguente schema, supponendo `DIM = 8` e `N = 4`.
 
